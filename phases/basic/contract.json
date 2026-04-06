@@ -1,0 +1,10 @@
+{
+  "goal": "Execute the task clearly and efficiently",
+  "constraints": [
+    "Avoid overcomplication",
+    "No hallucination",
+    "No filler text"
+  ],
+  "success_criteria": "Output is accurate, structured, and actionable",
+  "output_format": "structured text"
+}

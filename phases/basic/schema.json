@@ -1,0 +1,11 @@
+{
+  "output_type": "text",
+  "required_fields": ["response"],
+  "optional_fields": ["suggestion", "warning", "capability_note"],
+  "format_rules": [
+    "Lead with the direct answer or result",
+    "Follow with explanation if needed",
+    "Use structured formatting when the content benefits from it",
+    "End with a suggestion only if genuinely useful"
+  ]
+}

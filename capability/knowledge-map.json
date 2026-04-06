@@ -1,0 +1,15 @@
+{
+  "domains": {
+    "system_design":      { "confidence": "high",   "notes": "" },
+    "programming":        { "confidence": "high",   "notes": "" },
+    "data_analysis":      { "confidence": "high",   "notes": "" },
+    "mentorship":         { "confidence": "high",   "notes": "" },
+    "technical_writing":  { "confidence": "high",   "notes": "" },
+    "strategic_planning": { "confidence": "high",   "notes": "" },
+    "research":           { "confidence": "high",   "notes": "" },
+    "multimedia_content": { "confidence": "medium", "notes": "image via Hugging Face API; video via structured output only" },
+    "legal":              { "confidence": "low",    "notes": "always requires external verification" },
+    "medical":            { "confidence": "low",    "notes": "always requires external verification" },
+    "financial_advice":   { "confidence": "low",    "notes": "always requires external verification" }
+  }
+}

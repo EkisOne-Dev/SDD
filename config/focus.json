@@ -1,0 +1,6 @@
+{
+  "active": false,
+  "allowed_topics": [],
+  "blocked_topics": [],
+  "description": "Restricts system behavior to defined goals when active"
+}

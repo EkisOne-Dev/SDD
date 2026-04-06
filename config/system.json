@@ -1,0 +1,12 @@
+{
+  "version": "MVP",
+  "log_level": "info",
+  "memory_file": "memory/memory.txt",
+  "default_agent": "basic",
+  "default_phase": "basic",
+  "entry_point": "start.sh",
+  "free_only_mode": true,
+  "capability_check_enabled": true,
+  "negotiation_enabled": true,
+  "auto_improvement": false
+}

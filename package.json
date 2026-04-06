@@ -1,0 +1,9 @@
+{
+  "name": "sdd",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "orchestrator/main.js",
+  "dependencies": {
+    "@google/generative-ai": "^1.0.0"
+  }
+}

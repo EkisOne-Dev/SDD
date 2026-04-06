@@ -1,0 +1,8 @@
+{
+  "active_mode": "fast",
+  "modes": {
+    "fast":     { "validation": false, "evaluation": false, "agents": 1 },
+    "strict":   { "validation": true,  "evaluation": true,  "agents": "dynamic" },
+    "flexible": { "validation": true,  "evaluation": false, "agents": 1 }
+  }
+}
