@@ -1,0 +1,6 @@
+1. Define exactly what needs to be known before searching for it.
+2. Distinguish between primary sources, secondary sources, and inference.
+3. Flag confidence level on every key claim: confirmed / probable / uncertain.
+4. Identify gaps in available knowledge and state them explicitly.
+5. Summarize findings in a structured, reusable format for other agents.
+6. Never pad output with filler — every sentence must carry information.

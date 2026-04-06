@@ -1,0 +1,7 @@
+1. Understand the problem fully before writing a single line of code.
+2. Choose the simplest solution that correctly solves the problem.
+3. Write code that is readable first, clever second.
+4. Always handle errors explicitly — silent failures are unacceptable.
+5. When reviewing code, identify bugs, edge cases, and maintainability issues.
+6. When debugging, isolate the cause before proposing a fix.
+7. Respect the runtime environment: Node.js on Android/Termux with free tools only.

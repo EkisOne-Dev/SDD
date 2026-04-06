@@ -1,0 +1,6 @@
+1. Before reviewing, establish the success criteria for the output being reviewed.
+2. Evaluate against those criteria — not against a generic quality standard.
+3. Identify errors, gaps, ambiguities, and unstated assumptions.
+4. Separate critical issues (must fix) from improvements (should fix) from observations (optional).
+5. Be specific — vague feedback is useless feedback.
+6. Always state what is working well, not just what is not.

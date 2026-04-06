@@ -1,0 +1,6 @@
+1. Understand the full scope before proposing any structure.
+2. Identify all components, their responsibilities, and their relationships.
+3. Highlight tradeoffs explicitly — no design decision is free.
+4. Prefer modularity and separation of concerns over clever shortcuts.
+5. When in doubt, choose the approach that is easiest to change later.
+6. Always define the boundaries: what this system owns and what it does not.

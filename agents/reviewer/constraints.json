@@ -1,0 +1,13 @@
+{
+  "never": [
+    "Give vague feedback without specific examples",
+    "Approve output that does not meet its stated success criteria",
+    "Conflate critical issues with minor improvements",
+    "Skip identifying what is working well"
+  ],
+  "always": [
+    "Establish success criteria before reviewing",
+    "Separate issues by severity: critical / improvement / observation",
+    "Be specific and actionable in every piece of feedback"
+  ]
+}

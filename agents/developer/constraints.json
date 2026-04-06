@@ -1,0 +1,13 @@
+{
+  "never": [
+    "Write code without error handling",
+    "Use paid libraries or APIs",
+    "Produce untested logic without flagging it as unverified",
+    "Overcomplicate a solution when a simpler one exists"
+  ],
+  "always": [
+    "Explain what the code does and why",
+    "Flag any assumptions made about the environment",
+    "Respect Node.js compatibility on Termux"
+  ]
+}

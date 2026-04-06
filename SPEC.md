@@ -9,9 +9,9 @@
 
 | Field | Value |
 |---|---|
-| Document Version | 1.3.0 |
+| Document Version | 1.4.0 |
 | System Version | MVP → Phase 1 Complete |
-| Last Updated | 2026-04-05 |
+| Last Updated | 2026-04-06 |
 | Status | Active Development |
 | Platform | Android / Termux |
 | Runtime | Node.js |
@@ -420,8 +420,8 @@ cd ~/sdd && npm install @google/generative-ai
 |---|---|---|
 | 0 | MVP baseline (CLI, orchestrator, single agent, memory, config) | ✅ Complete |
 | 1 | Preflight + Capability Validation + Negotiation Layer | ✅ Complete |
-| 2 | Full agent roster (architect, developer, researcher, reviewer) + negotiator prompt injection | 🔲 Next |
-| 3 | Real phase system (propose→spec→design→tasks→apply→verify→archive) | 🔲 Planned |
+| 2 | Full agent roster (architect, developer, researcher, reviewer) + negotiator prompt injection | ✅ Complete |
+| 3 | Real phase system (propose→spec→design→tasks→apply→verify→archive) | 🔲 Next |
 | 4 | Skills execution layer (router + self-research) | 🔲 Planned |
 | 5 | Multi-agent orchestration | 🔲 Planned |
 | 6 | Scoring system (clarity, usefulness, efficiency, redundancy) | 🔲 Planned |
@@ -437,7 +437,6 @@ cd ~/sdd && npm install @google/generative-ai
 ## KNOWN LIMITATIONS (Current)
 
 - Single-agent execution only (basic agent)
-- Negotiator B choice does not yet modify the prompt (Phase 2 fix)
 - No scoring, meta learning, or improvement proposals
 - No skills router or registry
 - No versioning UI (git only)
@@ -496,5 +495,9 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-05 | 1.3.0 | Known limitation noted: negotiator B does not yet modify prompt | Scheduled for Phase 2 |
 
 ---
+
+| 2026-04-06 | 1.4.0 | Phase 2 complete — architect, developer, researcher, reviewer agents built | Full agent file set with identity, strategy, constraints |
+| 2026-04-06 | 1.4.0 | Agent routing added to main.js | Keyword-based selection, falls back to basic |
+| 2026-04-06 | 1.4.0 | Negotiator prompt injection implemented | Choosing B now rewrites the task before execution — known limitation resolved |
 
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*

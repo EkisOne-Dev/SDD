@@ -1,33 +1,31 @@
 import * as readline from "readline";
 
-// ── Negotiation triggers ──────────────────────────────────────────────────────
-// Each entry defines a pattern to detect and a better approach to suggest
-
+// ── Negotiation triggers ─────────────────────────────────────────────────────
 const TRIGGERS = [
   {
     detect: task => /^(make|create|write|build|give me)\s+a\s+list/i.test(task),
     suggestion: "A structured document with categories may be more useful than a plain list.",
-    alternative: "Structured categorized document"
+    rewrite: task => `Create a structured categorized document for: ${task}`
   },
   {
     detect: task => /explain\s+.{0,30}\s+simply|explain\s+.{0,30}\s+like/i.test(task),
     suggestion: "An explanation with a real-world analogy and a concrete example produces better understanding than a simple definition.",
-    alternative: "Analogy-based explanation with example"
+    rewrite: task => `Explain using a real-world analogy and a concrete example: ${task}`
   },
   {
     detect: task => /fix\s+(this|my)\s+(code|bug|error|issue)/i.test(task) && task.length < 60,
     suggestion: "You have not included the code or error message. I need that to actually fix it.",
-    alternative: "Please re-run and include the code and the exact error message"
+    rewrite: task => `${task} — NOTE: No code or error was provided. Ask the user to supply both before attempting a fix.`
   },
   {
     detect: task => /^(what is|what are)\s+the\s+best/i.test(task),
     suggestion: "A comparison with clear criteria (speed, cost, ease of use) is more actionable than a generic best-of list.",
-    alternative: "Criteria-based comparison"
+    rewrite: task => `Produce a criteria-based comparison (speed, cost, ease of use) for: ${task}`
   },
   {
     detect: task => /translate\s+.{0,40}\s+to/i.test(task) && !/context|formal|tone/i.test(task),
     suggestion: "Translations vary significantly by tone and context. Specifying formal, casual, or technical will produce a better result.",
-    alternative: "Ask for tone/context before translating"
+    rewrite: task => `${task} — NOTE: No tone was specified. Ask the user whether they want formal, casual, or technical before translating.`
   }
 ];
 
@@ -45,19 +43,18 @@ function ask(question) {
 }
 
 // ── Main export ───────────────────────────────────────────────────────────────
+// Returns the task string to use (original or rewritten), or null if cancelled.
 
 export async function checkNegotiation(task) {
   const trigger = TRIGGERS.find(t => t.detect(task));
 
-  // No trigger matched — proceed silently
   if (!trigger) {
-    return true;
+    return task;
   }
 
   console.log("\n💡  SUGGESTION BEFORE I PROCEED");
-  console.log(`You asked for:       ${task}`);
-  console.log(`Better approach:     ${trigger.suggestion}`);
-  console.log(`Alternative output:  ${trigger.alternative}`);
+  console.log(`You asked for:      ${task}`);
+  console.log(`Better approach:    ${trigger.suggestion}`);
   console.log("");
   console.log("Options:");
   console.log("  A. Proceed with your original request");
@@ -69,15 +66,14 @@ export async function checkNegotiation(task) {
 
   if (answer === "C") {
     console.log("\nTask cancelled. Re-run with your updated request.\n");
-    return false;
+    return null;
   }
 
   if (answer === "B") {
-    console.log(`\nProceeding with: ${trigger.alternative}\n`);
-    // The suggestion is noted — the agent identity and strategy will guide output quality
-    return true;
+    const rewritten = trigger.rewrite(task);
+    console.log(`\nProceeding with: ${rewritten}\n`);
+    return rewritten;
   }
 
-  // A or anything else — proceed with original
-  return true;
+  return task;
 }

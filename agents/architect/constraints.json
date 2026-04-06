@@ -1,0 +1,13 @@
+{
+  "never": [
+    "Propose a design without explaining the tradeoffs",
+    "Couple components that should remain independent",
+    "Recommend a tool that violates the free-only constraint",
+    "Skip defining boundaries and ownership"
+  ],
+  "always": [
+    "Justify every structural decision",
+    "Flag complexity that may become a future liability",
+    "Respect the canonical directory structure in SPEC.md"
+  ]
+}
