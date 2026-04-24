@@ -9,8 +9,8 @@
 
 | Field | Value |
 |---|---|
-| Document Version | 1.5.0 |
-| System Version | MVP → Phase 1 Complete |
+| Document Version | 1.6.0 |
+| System Version | MVP → Phase 4 Complete |
 | Last Updated | 2026-04-24 |
 | Status | Active Development |
 | Platform | Android / Termux |
@@ -33,6 +33,7 @@
 - Self-improving environment with user-controlled approval gates
 - Capability-aware execution (validates competence before acting)
 - Interactive negotiation layer (proposes better alternatives to user)
+- Skills execution layer (routes tasks to skills, injects context into prompt)
 
 ---
 
@@ -67,12 +68,12 @@
 │       ├── prompt.txt
 │       └── schema.json
 ├── skills/
-│   ├── router.js                  ← Selects skill, validates inputs
-│   ├── registry.json              ← Skill manifest
+│   ├── router.js                  ← ✅ Active — Phase 4
+│   ├── registry.json              ← ✅ Active — Phase 4
 │   └── tools/
 │       ├── capability-check.js    ← ✅ Active — Phase 1
 │       ├── negotiator.js          ← ✅ Active — Phase 1
-│       ├── self-research.js       ← Phase 4
+│       ├── self-research.js       ← ✅ Active — Phase 4
 │       └── image-gen.js           ← Phase 11
 ├── memory/
 │   ├── core/
@@ -345,13 +346,17 @@ Git-based at `~/sdd/`. Run `git init && git add . && git commit -m "Phase 1 comp
       → Pattern match against triggers
       → Match found: present A/B/C options → user decides
       → No match: proceed silently
-6.  Load memory, agent (basic), phase (basic)
-7.  Build prompt from template
-8.  Send to AI engine (Gemini by default)
-9.  Print result + save to memory + log TASK COMPLETED
-10. [Phase 6] Scoring
-11. [Phase 7] Meta observation → stage proposal if improvement found
-12. [Phase 8] Postmortem
+6.  [✅ Active] SKILLS CHECK:
+      → router.js matches task to registry triggers
+      → Match found: run self-research → inject context into memory block
+      → No match or no context: proceed silently
+7.  Load memory (+ skill context if present), agent, phase
+8.  Build prompt from template
+9.  Send to AI engine (Gemini by default)
+10. Print result + save to memory + log TASK COMPLETED
+11. [Phase 6] Scoring
+12. [Phase 7] Meta observation → stage proposal if improvement found
+13. [Phase 8] Postmortem
 ```
 
 ---
@@ -422,7 +427,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 1 | Preflight + Capability Validation + Negotiation Layer | ✅ Complete |
 | 2 | Full agent roster (architect, developer, researcher, reviewer) + negotiator prompt injection | ✅ Complete |
 | 3 | Real phase system (propose→spec→design→tasks→apply→verify→archive) | ✅ Complete |
-| 4 | Skills execution layer (router + self-research) | 🔲 Planned |
+| 4 | Skills execution layer (router + self-research) | ✅ Complete |
 | 5 | Multi-agent orchestration | 🔲 Planned |
 | 6 | Scoring system (clarity, usefulness, efficiency, redundancy) | 🔲 Planned |
 | 7 | Meta system + Controlled self-improvement proposal system | 🔲 Planned |
@@ -436,9 +441,9 @@ cd ~/sdd && npm install @google/generative-ai
 
 ## KNOWN LIMITATIONS (Current)
 
-- Single-agent execution only (basic agent)
+- Single-agent execution only (no multi-agent coordination yet)
 - No scoring, meta learning, or improvement proposals
-- No skills router or registry
+- Self-research local mode only surfaces what already exists in memory/projects
 - No versioning UI (git only)
 - Limited error handling (API safety filter rejections show generic error)
 - Memory is a single flat file — no semantic retrieval
@@ -502,5 +507,11 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-24 | 1.5.0 | pipeline.js — new stage runner with auto-advance, pause, resume, abort | stateful project execution with artifact chaining |
 | 2026-04-24 | 1.5.0 | sdd project \ "idea\" and sdd resume <name> commands added to main.js | backward compatible — single-shot mode unchanged |
 | 2026-04-06 | 1.4.0 | Negotiator prompt injection implemented | Choosing B now rewrites the task before execution — known limitation resolved |
+
+| 2026-04-24 | 1.6.0 | Phase 4 complete — skills router, registry, and self-research tool live | Task-to-skill matching with context injection into prompt |
+| 2026-04-24 | 1.6.0 | skills/registry.json — skill manifest with trigger keywords | Extensible registry for future skills |
+| 2026-04-24 | 1.6.0 | skills/router.js — keyword-based skill matcher | Routes tasks to skills before agent execution |
+| 2026-04-24 | 1.6.0 | skills/tools/self-research.js — local + optional AI synthesis mode | Scans memory, knowledge map, projects for relevant context |
+| 2026-04-24 | 1.6.0 | self_research_enabled and self_research_mode added to system.json | Config-controlled skill activation |
 
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
