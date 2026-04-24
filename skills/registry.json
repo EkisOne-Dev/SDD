@@ -1,0 +1,17 @@
+{
+  "skills": [
+    {
+      "id": "self-research",
+      "name": "Self Research",
+      "description": "Scans memory, knowledge map, and past projects for context relevant to the current task. Optionally uses AI to synthesize findings.",
+      "file": "tools/self-research.js",
+      "triggers": [
+        "research", "find", "look up", "what is", "explain",
+        "summarize", "how does", "why does", "background", "history",
+        "overview", "fact", "compare", "difference", "source"
+      ],
+      "inputs": ["task"],
+      "enabled": true
+    }
+  ]
+}

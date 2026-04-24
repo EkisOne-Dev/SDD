@@ -13,6 +13,8 @@ import {
 import { checkCapability } from "../skills/tools/capability-check.js";
 import { checkNegotiation } from "../skills/tools/negotiator.js";
 import { runPipeline, resumePipeline } from "./pipeline.js";
+import { routeSkill } from "../skills/router.js";
+import { runSelfResearch } from "../skills/tools/self-research.js";
 
 // ── Agent routing ────────────────────────────────────────────────────────────
 function selectAgent(task) {
@@ -66,7 +68,6 @@ function selectAgent(task) {
 async function run() {
   let task = process.argv.slice(2).join(' ');
 
-  // ── Pipeline mode branch ─────────────────────────────────────────────────
   if (task.toLowerCase().startsWith('project ')) {
     const projectTask = task.slice(8).trim();
     const deps = { loadAgent, loadMemory, config: loadConfig(), runEngine, adapter: loadEngineAdapter(), logExecution };
@@ -88,13 +89,11 @@ async function run() {
     return;
   }
 
-  // ── Load system config ───────────────────────────────────────────────────
   const config = loadConfig();
   const adapter = loadEngineAdapter();
 
   logExecution(`TASK RECEIVED: ${task}`);
 
-  // ── Capability check ─────────────────────────────────────────────────────
   if (config.capability_check_enabled) {
     const capable = await checkCapability(task);
     if (!capable) {
@@ -103,7 +102,6 @@ async function run() {
     }
   }
 
-  // ── Negotiation check ────────────────────────────────────────────────────
   if (config.negotiation_enabled) {
     const negotiated = await checkNegotiation(task);
     if (negotiated === null) {
@@ -116,16 +114,32 @@ async function run() {
     task = negotiated;
   }
 
-  // ── Select and load agent ────────────────────────────────────────────────
+  // ── Skills check ─────────────────────────────────────────────────────────
+  let skillContext = null;
+  if (config.self_research_enabled) {
+    const matchedSkill = routeSkill(task);
+    if (matchedSkill) {
+      console.log(`\n🔍 Skill: ${matchedSkill.name}`);
+      logExecution(`SKILL MATCHED: ${matchedSkill.id}`);
+    }
+    skillContext = await runSelfResearch(task, config, adapter);
+    if (skillContext) {
+      logExecution(`SKILL CONTEXT INJECTED`);
+    }
+  }
+
   const agentName = selectAgent(task);
   console.log(`\n🤖 Agent: ${agentName}`);
   logExecution(`AGENT SELECTED: ${agentName}`);
 
-  const memory = loadMemory(config);
+  const rawMemory = loadMemory(config);
+  const memory = skillContext
+    ? rawMemory + "\n\n[SKILL CONTEXT — Self Research]\n" + skillContext
+    : rawMemory;
+
   const agent = loadAgent(agentName);
   const phase = loadPhase(config.default_phase);
 
-  // ── Build and send prompt ────────────────────────────────────────────────
   const prompt = buildPrompt(
     phase.promptTemplate,
     phase.contract,

@@ -8,5 +8,7 @@
   "free_only_mode": true,
   "capability_check_enabled": true,
   "negotiation_enabled": true,
-  "auto_improvement": false
+  "auto_improvement": false,
+  "self_research_enabled": true,
+  "self_research_mode": "local"
 }
