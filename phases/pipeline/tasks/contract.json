@@ -1,0 +1,13 @@
+{
+  "stage": "tasks",
+  "goal": "Break the design into an ordered, executable task list",
+  "constraints": [
+    "Tasks must be atomic — one clear action each",
+    "Include dependencies between tasks",
+    "Estimate relative effort (S/M/L)",
+    "No implementation yet — task definition only"
+  ],
+  "success_criteria": "Developer can execute each task in order with no ambiguity",
+  "output_format": "structured markdown",
+  "next_stage": "apply"
+}

@@ -1,0 +1,13 @@
+{
+  "stage": "design",
+  "goal": "Produce a complete technical architecture from the specification",
+  "constraints": [
+    "Must respect platform constraints (Android/Termux/Node.js where applicable)",
+    "No implementation code — structure and decisions only",
+    "Every component must trace back to a requirement",
+    "Free-only constraint applies to all tool choices"
+  ],
+  "success_criteria": "A developer could implement every component without further design decisions",
+  "output_format": "structured markdown",
+  "next_stage": "tasks"
+}

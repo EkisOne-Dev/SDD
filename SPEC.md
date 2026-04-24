@@ -9,9 +9,9 @@
 
 | Field | Value |
 |---|---|
-| Document Version | 1.4.0 |
+| Document Version | 1.5.0 |
 | System Version | MVP → Phase 1 Complete |
-| Last Updated | 2026-04-06 |
+| Last Updated | 2026-04-24 |
 | Status | Active Development |
 | Platform | Android / Termux |
 | Runtime | Node.js |
@@ -421,7 +421,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 0 | MVP baseline (CLI, orchestrator, single agent, memory, config) | ✅ Complete |
 | 1 | Preflight + Capability Validation + Negotiation Layer | ✅ Complete |
 | 2 | Full agent roster (architect, developer, researcher, reviewer) + negotiator prompt injection | ✅ Complete |
-| 3 | Real phase system (propose→spec→design→tasks→apply→verify→archive) | 🔲 Next |
+| 3 | Real phase system (propose→spec→design→tasks→apply→verify→archive) | ✅ Complete |
 | 4 | Skills execution layer (router + self-research) | 🔲 Planned |
 | 5 | Multi-agent orchestration | 🔲 Planned |
 | 6 | Scoring system (clarity, usefulness, efficiency, redundancy) | 🔲 Planned |
@@ -498,6 +498,9 @@ cd ~/sdd && npm install @google/generative-ai
 
 | 2026-04-06 | 1.4.0 | Phase 2 complete — architect, developer, researcher, reviewer agents built | Full agent file set with identity, strategy, constraints |
 | 2026-04-06 | 1.4.0 | Agent routing added to main.js | Keyword-based selection, falls back to basic |
+| 2026-04-24 | 1.5.0 | Phase 3 complete — 7-stage pipeline system built and verified | propose→spec→design→tasks→apply→verify→archive all live |
+| 2026-04-24 | 1.5.0 | pipeline.js — new stage runner with auto-advance, pause, resume, abort | stateful project execution with artifact chaining |
+| 2026-04-24 | 1.5.0 | sdd project \ "idea\" and sdd resume <name> commands added to main.js | backward compatible — single-shot mode unchanged |
 | 2026-04-06 | 1.4.0 | Negotiator prompt injection implemented | Choosing B now rewrites the task before execution — known limitation resolved |
 
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*

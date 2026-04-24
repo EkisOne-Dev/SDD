@@ -1,0 +1,13 @@
+{
+  "stage": "verify",
+  "goal": "Verify the deliverable against the specification's acceptance criteria",
+  "constraints": [
+    "Be objective and critical",
+    "Every acceptance criterion must be checked",
+    "Do not assume — verify explicitly",
+    "Flag gaps, not just failures"
+  ],
+  "success_criteria": "Every acceptance criterion is assessed with a clear PASS/FAIL/GAP verdict",
+  "output_format": "structured markdown verification report",
+  "next_stage": "archive"
+}

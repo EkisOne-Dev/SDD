@@ -1,0 +1,13 @@
+{
+  "stage": "spec",
+  "goal": "Translate the proposal into precise functional requirements",
+  "constraints": [
+    "Requirements must be testable",
+    "No design decisions — requirements only",
+    "Cover edge cases explicitly",
+    "No ambiguity"
+  ],
+  "success_criteria": "A developer could build from this spec without asking clarifying questions",
+  "output_format": "structured markdown",
+  "next_stage": "design"
+}

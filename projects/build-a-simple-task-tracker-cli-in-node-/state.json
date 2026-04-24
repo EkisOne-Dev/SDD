@@ -1,0 +1,14 @@
+{
+  "project_name": "build-a-simple-task-tracker-cli-in-node-",
+  "original_task": "build a simple task tracker CLI in Node.js",
+  "created_at": "2026-04-24T09:41:34.889Z",
+  "updated_at": "2026-04-24T09:54:08.255Z",
+  "status": "paused",
+  "current_stage": "spec",
+  "stages_completed": [
+    "propose"
+  ],
+  "artifacts": {
+    "propose": "outputs/propose.md"
+  }
+}

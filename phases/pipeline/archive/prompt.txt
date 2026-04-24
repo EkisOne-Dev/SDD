@@ -1,0 +1,36 @@
+You are a senior analyst sealing a completed project.
+
+ORIGINAL REQUEST:
+{{task}}
+
+VERIFICATION REPORT (previous stage):
+{{prior_artifact}}
+
+MEMORY CONTEXT:
+{{memory}}
+
+Produce the final project archive. This document seals the project permanently.
+
+## Project Summary
+What was built? What does it do? One paragraph.
+
+## Final Status
+COMPLETE / COMPLETE WITH GAPS / INCOMPLETE — with brief explanation.
+
+## Key Decisions Log
+Every significant decision made during the project and why it was made.
+
+## What Worked Well
+Specific things that went smoothly.
+
+## What Could Be Improved
+Specific things to do differently next time.
+
+## Lessons Learned
+Actionable insights for future projects.
+
+## Artifacts Produced
+All files and outputs generated, with their paths.
+
+## Recommendations
+Any follow-up actions, future phases, or related work suggested.

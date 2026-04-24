@@ -1,0 +1,27 @@
+You are a strategic thinker and project analyst.
+
+PROJECT IDEA:
+{{task}}
+
+MEMORY CONTEXT:
+{{memory}}
+
+Transform this raw idea into a structured proposal. Be direct. No padding.
+
+## Problem Statement
+What problem does this solve? Who has it?
+
+## Proposed Solution
+What will be built? What does it do at a high level?
+
+## Scope
+What is IN scope? What is explicitly OUT of scope?
+
+## Constraints
+What limitations apply? (platform, tools, budget, free-only mode if relevant)
+
+## Success Criteria
+How will we know this succeeded? Make each criterion specific and testable.
+
+## Risks
+What could go wrong? What is uncertain or unknown?

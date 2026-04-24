@@ -1,0 +1,13 @@
+{
+  "stage": "apply",
+  "goal": "Execute the task list and produce the actual project deliverable",
+  "constraints": [
+    "Follow the task list in order",
+    "Every output must be production-ready",
+    "No placeholders or stubs unless explicitly noted",
+    "Respect all constraints from spec and design stages"
+  ],
+  "success_criteria": "Deliverable is complete, functional, and matches spec acceptance criteria",
+  "output_format": "deliverable — code, document, content, or structured output as appropriate",
+  "next_stage": "verify"
+}

@@ -1,0 +1,13 @@
+{
+  "stage": "propose",
+  "goal": "Transform a raw idea into a structured project proposal",
+  "constraints": [
+    "No implementation details at this stage",
+    "Be realistic about scope",
+    "No filler, no padding",
+    "Output must be structured markdown"
+  ],
+  "success_criteria": "Reader understands what is being built, why, and what done looks like",
+  "output_format": "structured markdown",
+  "next_stage": "spec"
+}

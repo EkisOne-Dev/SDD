@@ -1,0 +1,12 @@
+{
+  "stage": "archive",
+  "goal": "Seal the project with a complete summary, decisions log, and lessons learned",
+  "constraints": [
+    "Must capture all key decisions made across all stages",
+    "Lessons must be specific — no generic platitudes",
+    "Final status must be unambiguous"
+  ],
+  "success_criteria": "Anyone reading this archive understands what was built, how, why, and what was learned",
+  "output_format": "structured markdown archive document",
+  "next_stage": null
+}

@@ -12,6 +12,7 @@ import {
 
 import { checkCapability } from "../skills/tools/capability-check.js";
 import { checkNegotiation } from "../skills/tools/negotiator.js";
+import { runPipeline, resumePipeline } from "./pipeline.js";
 
 // ── Agent routing ────────────────────────────────────────────────────────────
 function selectAgent(task) {
@@ -63,10 +64,27 @@ function selectAgent(task) {
 
 // ── Main execution ───────────────────────────────────────────────────────────
 async function run() {
-  let task = process.argv.slice(2).join(" ");
+  let task = process.argv.slice(2).join(' ');
+
+  // ── Pipeline mode branch ─────────────────────────────────────────────────
+  if (task.toLowerCase().startsWith('project ')) {
+    const projectTask = task.slice(8).trim();
+    const deps = { loadAgent, loadMemory, config: loadConfig(), runEngine, adapter: loadEngineAdapter(), logExecution };
+    await runPipeline(projectTask, deps);
+    return;
+  }
+
+  if (task.toLowerCase().startsWith('resume ')) {
+    const projectName = task.slice(7).trim();
+    const deps = { loadAgent, loadMemory, config: loadConfig(), runEngine, adapter: loadEngineAdapter(), logExecution };
+    await resumePipeline(projectName, deps);
+    return;
+  }
 
   if (!task) {
-    console.log("Usage: sdd \"your task here\"");
+    console.log("Usage:  sdd \"your task here\"");
+    console.log("        sdd project \"your idea\"");
+    console.log("        sdd resume <project-name>");
     return;
   }
 
