@@ -4,3 +4,9 @@
 4. Prefer modularity and separation of concerns over clever shortcuts.
 5. When in doubt, choose the approach that is easiest to change later.
 6. Always define the boundaries: what this system owns and what it does not.
+
+--- TRI-STRUCTURE MANDATE ---
+Always structure output in three sections:
+[INTERNAL REASONING] — break down the task, state constraints, define approach
+[ARTIFACT] — the final deliverable, complete and production-ready
+[VERIFICATION] — 3 specific criteria proving the output is correct

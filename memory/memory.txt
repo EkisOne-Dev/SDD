@@ -412,3 +412,559 @@ A negotiator operates by engaging in a structured process aimed at reaching a mu
 *   Negotiators rely on **preparation**, **active listening**, **clear communication**, and **problem-solving**. (Confirmed)
 *   They must be **adaptable**, **patient**, **assertive**, and possess strong **emotional intelligence**. (Confirmed)
 *   The goal is to achieve an outcome that is not only acceptable but ideally creates value or strengthens the relationship for future interactions. (Confirmed)
+
+User: design a REST API for a task manager
+Assistant: [INTERNAL REASONING]
+The user wants a REST API design for a task manager. My role is the Reviewer, so I need to evaluate the provided `Architect` agent's output against the task requirements and the `Architect`'s own stated approach and constraints.
+
+**Task Breakdown:**
+The core task is to design a REST API for a task manager. This involves defining resources, endpoints, HTTP methods, data models, and non-functional aspects.
+
+**Constraints & Dependencies:**
+*   **SDD Basic Execution Phase:** Output must be clear, efficient, avoid overcomplication, no hallucination, no filler text, accurate, structured, and actionable.
+*   **Architect's Constraints:** Focus on system design, modularity, boundaries, tradeoffs, RESTful principles, and TRI-STRUCTURE.
+*   **User's Implicit Request:** The output should be a concrete, implementable API design.
+
+**Architect's Approach (as stated):**
+Define resources (`Tasks`, `Users`, `Categories`), specify endpoints, HTTP methods, example JSON payloads, status codes, and incorporate general API design considerations (authentication, error handling, etc.). Explicitly state design decisions and tradeoffs.
+
+**Review Plan:**
+1.  **Check against Architect's approach:** Does the provided artifact follow the stated approach?
+2.  **Check against SDD constraints:** Is the output clear, efficient, accurate, structured, actionable? Is there filler or hallucination?
+3.  **Check for completeness:** Are all essential API design elements present? Are the examples sufficient?
+4.  **Check for correctness:** Are the RESTful principles applied correctly? Are the status codes appropriate? Is the data model sensible?
+5.  **Identify critical issues, improvements, and observations.**
+
+**Initial Assessment:**
+The `Architect`'s output is truncated significantly. This is the primary issue. I cannot fully verify the completeness or correctness of the API design as presented. The `[VERIFICATION]` section in the `Architect`'s output is also incomplete.
+
+**Specific Review Focus:**
+*   **Truncation:** The output is incomplete, making it impossible to judge the full design. This is a critical failure.
+*   **Completeness of API Design:** Even the visible parts suggest missing elements (e.g., full `status` enum for tasks, `Users` and `Categories` resource definitions are missing).
+*   **Verification Section:** The `[VERIFICATION]` criteria themselves are placeholders or incomplete.
+
+[ARTIFACT]
+**Critique of Architect's REST API Design for Task Manager**
+
+The provided REST API design by the `Architect` agent has significant issues, primarily stemming from its incomplete nature due to truncation. This prevents a thorough review of its quality, completeness, and adherence to best practices.
+
+**I. Critical Issues (Must Fix)**
+
+1.  **Truncated Output:** The `[ARTIFACT]` section is severely truncated, particularly within the `Tasks` resource definition and the entire absence of definitions for `Users` and `Categories`. This makes the output unusable and impossible to evaluate fully.
+    *   **Impact:** The core task of designing the API is not fulfilled due to missing content. Status codes, request/response bodies, and entire resource definitions are absent.
+2.  **Incomplete `Tasks` Resource:** Even within the visible portion of the `Tasks` resource, essential details are missing:
+    *   The `status` field's possible values are cut off, leaving it undefined.
+    *   Endpoint definitions (e.g., `POST /tasks`, `GET /tasks/{id}`) are completely absent.
+    *   Request/response examples for these endpoints are missing.
+    *   HTTP status codes for operations are not provided.
+3.  **Missing Resource Definitions:** The `Users` and `Categories` resources are mentioned but have no corresponding endpoint definitions, data models, or operational details.
+
+**II. Areas for Improvement (Should Fix)**
+
+1.  **Verification Section Incompleteness:** The `[VERIFICATION]` section within the `Architect`'s output contains placeholder text or is incomplete. It needs to list *specific* criteria that prove the correctness of the *actual* design, not just general statements.
+2.  **Error Handling and Status Codes:** While mentioned in the `Architect`'s approach, concrete examples of error responses (e.g., `400 Bad Request`, `401 Unauthorized`, `404 Not Found`) and their corresponding JSON structures are missing, even in the truncated parts. Standard HTTP status codes for each operation (e.g., `200 OK`, `201 Created`, `204 No Content`) are also absent.
+3.  **Pagination and Filtering:** These are mentioned as general considerations but lack specific implementation details or examples for the `Tasks` resource (e.g., `GET /tasks?status=pending&limit=10&offset=20`).
+
+**III. Observations (Optional)**
+
+1.  **Data Model Detail:** The `Tasks` data model, where visible, includes `id`, `title`, and `description`. A more robust model might include fields like `dueDate`, `priority`, `assigneeId`, `categoryId`, `createdAt`, `updatedAt`.
+2.  **Authentication/Authorization:** Mentioned as a consideration, but no specific strategy (e.g., JWT, OAuth) is proposed or exemplified in the API endpoints.
+
+**Overall:**
+The `Architect` agent's output is fundamentally flawed due to significant truncation. It fails to deliver a complete or actionable API design, rendering it unusable. The `[VERIFICATION]` section is also not properly populated. The core task is not met.
+
+[VERIFICATION]
+1.  **Completeness of API Design:** The `[ARTIFACT]` section is severely truncated, omitting critical details like the full definition of the `Tasks` resource, and the entire definitions for `Users` and `Categories` resources, making the API design incomplete and unbuildable.
+2.  **Adherence to Architect's Stated Approach:** The `Architect` stated it would provide endpoints, methods, payloads, and status codes for each resource. The provided output lacks this for most resources and operations, failing to execute its stated approach.
+3.  **Actionable and Structured Output:** The truncated nature of the output prevents it from being actionable or fully structured as intended by the user and the SDD phase, failing to meet the success criteria of being "accurate, structured, and actionable."
+
+User: design a REST API for a task manager
+Assistant: [INTERNAL REASONING]
+The user has requested a REST API design for a task manager. My role as the Reviewer agent is to critically evaluate the `Architect` agent's output. The `Architect`'s output is provided in a truncated format, which is the primary issue to address.
+
+My goal is to identify:
+1.  **Critical Issues:** The most severe problems that prevent the output from being usable or fulfilling the task.
+2.  **Areas for Improvement:** Significant issues that detract from the quality or completeness of the design.
+3.  **Observations:** Less critical points that could enhance the design.
+
+I will assess the `Architect`'s output against the SDD basic execution phase constraints (clear, efficient, accurate, structured, actionable, no hallucination, no filler) and the `Architect`'s own stated approach (defining resources, endpoints, data models, status codes, global considerations, tradeoffs).
+
+The `Architect`'s output is incomplete due to truncation. Therefore, the main focus will be on the incompleteness of the API design and its failure to be actionable and structured as required.
+
+**Review Plan:**
+1.  Verify the extent of truncation and its impact on the API design.
+2.  Assess the completeness of the defined resources (`Tasks`, `Users`, `Categories`) and their associated endpoints, data models, and status codes, considering the truncated nature.
+3.  Evaluate if the `Architect`'s stated approach was followed, despite the truncation.
+4.  Check the `[VERIFICATION]` section for its accuracy and relevance to the *actual* provided artifact.
+
+[ARTIFACT]
+
+**Critique of Architect's REST API Design for Task Manager**
+
+The provided REST API design by the `Architect` agent is critically flawed due to severe truncation of its output. This prevents a comprehensive evaluation and renders the design incomplete and unusable.
+
+**I. Critical Issues (Must Fix)**
+
+1.  **Truncated Output:** The `[ARTIFACT]` section is significantly cut off, particularly within the `Tasks` resource definition and the complete absence of definitions for `Users` and `Categories` resources. This makes the API design unbuildable and does not fulfill the core task requirements.
+    *   **Impact:** Essential details such as the full `status` enum for tasks, all endpoints (`POST /tasks`, `GET /tasks/{id}`, `PUT /tasks/{id}`, `PATCH /tasks/{id}`, `DELETE /tasks/{id}`), request/response bodies for these endpoints, and entire resource definitions (`Users`, `Categories`) are missing.
+2.  **Incomplete `Tasks` Resource Definition:** Even in the visible portion, the `Tasks` resource is not fully defined. Key operational details are missing:
+    *   The `status` field's enum values are cut off.
+    *   Endpoint definitions for `POST`, `GET /tasks/{id}`, `PUT`, `PATCH`, and `DELETE` are not provided.
+    *   Corresponding HTTP status codes and example response bodies for these operations are absent.
+3.  **Missing Resource Definitions (`Users`, `Categories`):** The `Users` and `Categories` resources are mentioned conceptually but have no corresponding API endpoints, data models, or operational specifications. This leaves the relationships between tasks, users, and categories undefined at the API level.
+
+**II. Areas for Improvement (Should Fix)**
+
+1.  **Incomplete `[VERIFICATION]` Section:** The `[VERIFICATION]` section, like the `[ARTIFACT]`, is incomplete. The stated criteria are placeholders and do not accurately reflect the actual provided (truncated) artifact. A proper verification section should list specific, testable criteria that confirm the *completeness and correctness* of the *full* API design.
+2.  **Lack of Concrete Examples:** While query parameters are listed for `GET /tasks`, there are no concrete examples of how they would be used in a request URL (e.g., `/tasks?status=pending&limit=10`). Similarly, request and response bodies for all defined operations (even the incomplete ones) are missing.
+3.  **Error Handling and Status Codes:** Global error handling and specific status codes for common scenarios (like `400 Bad Request` for invalid parameters or `401 Unauthorized`) are mentioned, but their structures and specific use cases are not fully elaborated or exemplified, especially for the missing endpoints.
+
+**III. Observations (Optional)**
+
+1.  **Data Model Granularity:** The `Task` data model includes fields like `assignedTo` and `categoryId`, implying relationships. However, the API design lacks explicit endpoints to manage these relationships (e.g., assigning a user to a task via the API, or listing tasks by category).
+2.  **PATCH vs. PUT:** The `PUT` method for updating tasks is mentioned, but a `PATCH` method, which is often more appropriate for partial updates (e.g., changing only the status), is not defined.
+
+**Overall:**
+The `Architect` agent's output is critically flawed due to severe truncation. It fails to deliver a complete, actionable, or structured API design, thereby not meeting the primary task requirements or the SDD phase success criteria. The `[VERIFICATION]` section is also inadequate.
+
+[VERIFICATION]
+1.  **Completeness of API Design Artifact:** The `[ARTIFACT]` section is severely truncated, omitting the definitions for `Users` and `Categories` resources, as well as substantial portions of the `Tasks` resource and its endpoints, making the API design incomplete and unbuildable.
+2.  **Adherence to Architect's Stated Approach:** The `Architect` stated it would define endpoints, data models, and status codes for each resource. The provided truncated output fails to deliver these for most resources and operations, indicating an incomplete execution of its stated approach.
+3.  **Actionable and Structured Output:** Due to the truncation and missing information, the API design is neither actionable nor fully structured. It cannot be used by a developer to implement the task manager API, failing the "accurate, structured, and actionable" success criteria.
+
+User: design a REST API for a task manager
+Assistant: [INTERNAL REASONING]
+**1. Break down the task into first principles:**
+The user requires a REST API design for a task manager. This involves defining resources (Tasks, Users, Categories), their relationships, and the API endpoints for performing CRUD (Create, Read, Update, Delete) operations. The design must follow RESTful principles, including statelessness, resource identification, standard HTTP methods, and appropriate status codes. The output needs to be structured, actionable, and free from overcomplication or filler.
+
+**2. Identify constraints and dependencies:**
+*   **SDD Basic Execution Phase:** Output must be clear, efficient, accurate, structured, actionable, avoid overcomplication, and have no hallucination or filler.
+*   **Architect Agent Constraints:** My role requires me to focus on system design, technical structure, modularity, component definition, boundaries, dependencies, and tradeoffs. All design decisions must have a clear rationale ("why").
+*   **TRI-STRUCTURE MANDATE:** The output must strictly follow the `[INTERNAL REASONING]`, `[ARTIFACT]`, `[VERIFICATION]` structure.
+*   **Dependencies:** The design will assume standard JSON for request and response payloads and leverage common REST API patterns.
+
+**3. State your approach before executing:**
+My approach will be as follows:
+
+*   **Define Core Resources:** Identify the primary entities for a task manager: `Tasks`, `Users`, and `Categories`.
+*   **Data Models:** Specify the JSON structure for each resource, including required fields, data types, and enumerations where applicable.
+*   **API Endpoints:** For each resource, define:
+    *   Base URI prefix.
+    *   Supported HTTP methods (GET, POST, PUT, PATCH, DELETE).
+    *   Specific endpoint paths.
+    *   Expected request bodies (for POST, PUT, PATCH).
+    *   Example response bodies (for successful operations).
+    *   Appropriate HTTP status codes for success and common errors.
+    *   Query parameters for collection retrieval (pagination, filtering, sorting).
+*   **Relationships:** Illustrate how resources connect (e.g., task assignment, task categorization).
+*   **Global API Considerations:** Address cross-cutting concerns such as authentication, authorization, error handling, and API versioning.
+*   **Design Decisions & Tradeoffs:** Explain the rationale behind key architectural choices and note any tradeoffs.
+*   **Boundaries:** Clearly define the scope of this API design.
+
+[ARTIFACT]
+
+**REST API Design for a Task Manager**
+
+**1. System Overview**
+
+This document details a RESTful API design for a task management system. The API enables clients to perform CRUD operations on tasks, manage users, and organize tasks using categories. It emphasizes statelessness, a uniform interface, and resource-based interactions.
+
+**2. Core Resources & Data Models**
+
+*   **Resource: `Task`**
+    *   Represents a single actionable item.
+    *   **Data Model (`Task` Object):**
+        ```json
+        {
+            "id": "string (UUID)",           // Unique identifier for the task.
+            "title": "string",               // Required. Concise summary of the task.
+            "description": "string",         // Optional. Detailed explanation of the task.
+            "status": "string (enum)",       // Required. Current state of the task. Allowed values: "pending", "in_progress", "completed", "cancelled".
+            "dueDate": "string (ISO 8601)",  // Optional. Timestamp indicating when the task is due.
+            "priority": "string (enum)",     // Optional. Importance level of the task. Allowed values: "low", "medium", "high". Default: "medium".
+            "assignedTo": "string (UUID)",   // Optional. ID of the user assigned to this task. References User resource.
+            "categoryId": "string (UUID)",   // Optional. ID of the category this task belongs to. References Category resource.
+            "createdAt": "string (ISO 8601)",// Read-only. Timestamp when the task was created.
+            "updatedAt": "string (ISO 8601)" // Read-only. Timestamp when the task was last updated.
+        }
+        ```
+
+*   **Resource: `User`**
+    *   Represents an individual user of the system.
+    *   **Data Model (`User` Object):**
+        ```json
+        {
+            "id": "string (UUID)",           // Unique identifier for the user.
+            "username": "string",            // Required. Unique login name for the user.
+            "email": "string",               // Required. Unique email address for the user.
+            "firstName": "string",           // Optional. User's first name.
+            "lastName": "string",            // Optional. User's last name.
+            "createdAt": "string (ISO 8601)",// Read-only. Timestamp when the user was created.
+            "updatedAt": "string (ISO 8601)" // Read-only. Timestamp when the user was last updated.
+        }
+        ```
+
+*   **Resource: `Category`**
+    *   Represents a logical grouping or project for tasks.
+    *   **Data Model (`Category` Object):**
+        ```json
+        {
+            "id": "string (UUID)",           // Unique identifier for the category.
+            "name": "string",                // Required. Name of the category (e.g., "Work", "Personal", "Project Alpha").
+            "description": "string",         // Optional. Detailed description of the category.
+            "ownerId": "string (UUID)",      // Required. ID of the user who created/owns this category. References User resource.
+            "createdAt": "string (ISO 8601)",// Read-only. Timestamp when the category was created.
+            "updatedAt": "string (ISO 8601)" // Read-only. Timestamp when the category was last updated.
+        }
+        ```
+
+**3. API Endpoints**
+
+All API endpoints are prefixed with `/api/v1/`.
+
+---
+
+**3.1. `Tasks` Resource (`/tasks`)**
+
+*   **`GET /tasks`**
+    *   **Description:** Retrieve a list of tasks.
+    *   **Query Parameters:**
+        *   `status`: (string, enum) Filter tasks by status.
+        *   `assignedTo`: (string, UUID) Filter tasks assigned to a specific user.
+        *   `categoryId`: (string, UUID) Filter tasks belonging to a specific category.
+        *   `priority`: (string, enum) Filter tasks by priority.
+        *   `dueDateBefore`: (string, ISO 8601) Filter tasks due before this timestamp.
+        *   `dueDateAfter`: (string, ISO 8601) Filter tasks due after this timestamp.
+        *   `sortBy`: (string) Field to sort by (e.g., "createdAt", "dueDate", "priority").
+        *   `sortOrder`: (string, enum: "asc", "desc") Order of sorting ("asc" or "desc"). Default: "asc".
+        *   `limit`: (integer) Maximum number of results per page. Default: 20.
+        *   `offset`: (integer) Number of results to skip (for pagination). Default: 0.
+    *   **Success Response (`200 OK`):**
+        ```json
+        {
+            "data": [
+                // Array of Task Objects
+                {
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "title": "Complete API Design",
+                    "description": "Finalize REST API for the task manager.",
+                    "status": "in_progress",
+                    "dueDate": "2024-07-26T17:00:00Z",
+                    "priority": "high",
+                    "assignedTo": "uuid-of-developer-1",
+                    "categoryId": "uuid-of-project-api",
+                    "createdAt": "2024-07-25T10:00:00Z",
+                    "updatedAt": "2024-07-25T11:00:00Z"
+                }
+                // ... more tasks
+            ],
+            "pagination": {
+                "total": 150,
+                "limit": 20,
+                "offset": 0,
+                "hasNext": true
+            }
+        }
+        ```
+    *   **Error Responses:** `400 Bad Request` (invalid query parameters), `500 Internal Server Error`.
+
+*   **`POST /tasks`**
+    *   **Description:** Create a new task.
+    *   **Request Body:**
+        ```json
+        {
+            "title": "string",               // Required
+            "description": "string",         // Optional
+            "status": "string (enum)",       // Optional. Default: "pending"
+            "dueDate": "string (ISO 8601)",  // Optional
+            "priority": "string (enum)",     // Optional. Default: "medium"
+            "assignedTo": "string (UUID)",   // Optional
+            "categoryId": "string (UUID)"    // Optional
+        }
+        ```
+    *   **Success Response (`201 Created`):**
+        *   Headers: `Location: /api/v1/tasks/{new_task_id}`
+        *   Body: The newly created `Task` Object.
+    *   **Error Responses:** `400 Bad Request` (validation errors, missing required fields), `401 Unauthorized`, `404 Not Found` (if `assignedTo` or `categoryId` do not exist), `500 Internal Server Error`.
+
+*   **`GET /tasks/{id}`**
+    *   **Description:** Retrieve a specific task by its ID.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the task to retrieve.
+    *   **Success Response (`200 OK`):**
+        *   Body: The requested `Task` Object.
+    *   **Error Responses:** `400 Bad Request` (invalid ID format), `401 Unauthorized`, `404 Not Found` (task not found), `500 Internal Server Error`.
+
+*   **`PUT /tasks/{id}`**
+    *   **Description:** Update an existing task entirely. Replaces the entire resource with the provided payload.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the task to update.
+    *   **Request Body:** A complete `Task` Object (excluding `id`, `createdAt`, `updatedAt`). All fields that are not sent will be cleared or reset to default if applicable.
+        ```json
+        {
+            "title": "string",               // Required
+            "description": "string",         // Optional
+            "status": "string (enum)",       // Required
+            "dueDate": "string (ISO 8601)",  // Optional
+            "priority": "string (enum)",     // Optional
+            "assignedTo": "string (UUID)",   // Optional
+            "categoryId": "string (UUID)"    // Optional
+        }
+        ```
+    *   **Success Response (`200 OK`):**
+        *   Body: The updated `Task` Object.
+    *   **Error Responses:** `400 Bad Request` (validation errors, missing required fields), `401 Unauthorized`, `404 Not Found` (task or related resource not found), `500 Internal Server Error`.
+
+*   **`PATCH /tasks/{id}`**
+    *   **Description:** Partially update an existing task. Only fields provided in the payload are updated.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the task to update.
+    *   **Request Body:** A partial `Task` Object containing only the fields to be updated.
+        ```json
+        {
+            "status": "completed",
+            "description": "Task completed successfully."
+        }
+        ```
+    *   **Success Response (`200 OK`):**
+        *   Body: The updated `Task` Object.
+    *   **Error Responses:** `400 Bad Request` (validation errors), `401 Unauthorized`, `404 Not Found` (task or related resource not found), `500 Internal Server Error`.
+
+*   **`DELETE /tasks/{id}`**
+    *   **Description:** Delete a specific task.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the task to delete.
+    *   **Success Response (`204 No Content`):** No response body.
+    *   **Error Responses:** `400 Bad Request` (invalid ID format), `401 Unauthorized`, `404 Not Found` (task not found), `500 Internal Server Error`.
+
+---
+
+**3.2. `Users` Resource (`/users`)**
+
+*   **`GET /users`**
+    *   **Description:** Retrieve a list of all users.
+    *   **Query Parameters:**
+        *   `username`: (string) Filter by username.
+        *   `email`: (string) Filter by email.
+        *   `limit`: (integer) Max results per page. Default: 20.
+        *   `offset`: (integer) Number of results to skip. Default: 0.
+    *   **Success Response (`200 OK`):**
+        ```json
+        {
+            "data": [
+                // Array of User Objects
+                {
+                    "id": "uuid-of-developer-1",
+                    "username": "dev1",
+                    "email": "dev1@example.com",
+                    "firstName": "Alice",
+                    "lastName": "Smith",
+                    "createdAt": "2024-07-20T09:00:00Z",
+                    "updatedAt": "2024-07-20T09:00:00Z"
+                }
+                // ... more users
+            ],
+            "pagination": {
+                "total": 5,
+                "limit": 20,
+                "offset": 0,
+                "hasNext": false
+            }
+        }
+        ```
+    *   **Error Responses:** `400 Bad Request`, `401 Unauthorized`, `500 Internal Server Error`.
+
+*   **`POST /users`**
+    *   **Description:** Create a new user.
+    *   **Request Body:**
+        ```json
+        {
+            "username": "string",     // Required. Unique
+            "email": "string",        // Required. Unique
+            "firstName": "string",    // Optional
+            "lastName": "string",     // Optional
+            "password": "string"      // Required. Client must hash before sending if using password auth
+        }
+        ```
+    *   **Success Response (`201 Created`):**
+        *   Headers: `Location: /api/v1/users/{new_user_id}`
+        *   Body: The newly created `User` Object (excluding password).
+    *   **Error Responses:** `400 Bad Request` (validation errors, missing required fields, username/email not unique), `401 Unauthorized`, `500 Internal Server Error`.
+
+*   **`GET /users/{id}`**
+    *   **Description:** Retrieve a specific user by ID.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the user to retrieve.
+    *   **Success Response (`200 OK`):**
+        *   Body: The requested `User` Object (excluding password).
+    *   **Error Responses:** `400 Bad Request`, `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.
+
+*   **`PUT /users/{id}`**
+    *   **Description:** Update an existing user entirely.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the user to update.
+    *   **Request Body:** A complete `User` Object (excluding `id`, `createdAt`, `updatedAt`, and password).
+        ```json
+        {
+            "username": "string",     // Required (must be unique if changed)
+            "email": "string",        // Required (must be unique if changed)
+            "firstName": "string",    // Optional
+            "lastName": "string"      // Optional
+        }
+        ```
+    *   **Success Response (`200 OK`):**
+        *   Body: The updated `User` Object (excluding password).
+    *   **Error Responses:** `400 Bad Request` (validation errors, missing required fields, username/email not unique), `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.
+
+*   **`PATCH /users/{id}`**
+    *   **Description:** Partially update an existing user.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the user to update.
+    *   **Request Body:** Partial `User` Object with fields to update.
+        ```json
+        {
+            "firstName": "Alicia"
+        }
+        ```
+    *   **Success Response (`200 OK`):**
+        *   Body: The updated `User` Object (excluding password).
+    *   **Error Responses:** `400 Bad Request` (validation errors, username/email not unique), `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.
+
+*   **`DELETE /users/{id}`**
+    *   **Description:** Delete a specific user. This might cascade to delete their tasks or reassign them, depending on system policy.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the user to delete.
+    *   **Success Response (`204 No Content`):** No response body.
+    *   **Error Responses:** `400 Bad Request`, `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.
+
+---
+
+**3.3. `Categories` Resource (`/categories`)**
+
+*   **`GET /categories`**
+    *   **Description:** Retrieve a list of all categories.
+    *   **Query Parameters:**
+        *   `ownerId`: (string, UUID) Filter categories owned by a specific user.
+        *   `name`: (string) Filter by category name.
+        *   `limit`: (integer) Max results per page. Default: 20.
+        *   `offset`: (integer) Number of results to skip. Default: 0.
+    *   **Success Response (`200 OK`):**
+        ```json
+        {
+            "data": [
+                // Array of Category Objects
+                {
+                    "id": "uuid-of-project-api",
+                    "name": "API Development",
+                    "description": "Tasks related to API design and implementation.",
+                    "ownerId": "uuid-of-developer-1",
+                    "createdAt": "2024-07-20T09:00:00Z",
+                    "updatedAt": "2024-07-20T09:00:00Z"
+                }
+                // ... more categories
+            ],
+            "pagination": {
+                "total": 3,
+                "limit": 20,
+                "offset": 0,
+                "hasNext": false
+            }
+        }
+        ```
+    *   **Error Responses:** `400 Bad Request`, `401 Unauthorized`, `500 Internal Server Error`.
+
+*   **`POST /categories`**
+    *   **Description:** Create a new category.
+    *   **Request Body:**
+        ```json
+        {
+            "name": "string",                // Required
+            "description": "string",         // Optional
+            "ownerId": "string (UUID)"       // Required. ID of the user creating the category.
+        }
+        ```
+    *   **Success Response (`201 Created`):**
+        *   Headers: `Location: /api/v1/categories/{new_category_id}`
+        *   Body: The newly created `Category` Object.
+    *   **Error Responses:** `400 Bad Request` (validation errors, missing required fields), `401 Unauthorized`, `404 Not Found` (if `ownerId` does not exist), `500 Internal Server Error`.
+
+*   **`GET /categories/{id}`**
+    *   **Description:** Retrieve a specific category by ID.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the category to retrieve.
+    *   **Success Response (`200 OK`):**
+        *   Body: The requested `Category` Object.
+    *   **Error Responses:** `400 Bad Request`, `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.
+
+*   **`PUT /categories/{id}`**
+    *   **Description:** Update an existing category entirely.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the category to update.
+    *   **Request Body:** A complete `Category` Object (excluding `id`, `ownerId`, `createdAt`, `updatedAt`).
+        ```json
+        {
+            "name": "string",                // Required
+            "description": "string"          // Optional
+        }
+        ```
+    *   **Success Response (`200 OK`):**
+        *   Body: The updated `Category` Object.
+    *   **Error Responses:** `400 Bad Request` (validation errors), `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.
+
+*   **`PATCH /categories/{id}`**
+    *   **Description:** Partially update an existing category.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the category to update.
+    *   **Request Body:** Partial `Category` Object with fields to update.
+        ```json
+        {
+            "description": "Updated description for the API project."
+        }
+        ```
+    *   **Success Response (`200 OK`):**
+        *   Body: The updated `Category` Object.
+    *   **Error Responses:** `400 Bad Request` (validation errors), `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.
+
+*   **`DELETE /categories/{id}`**
+    *   **Description:** Delete a specific category. Consider implications for tasks within this category (e.g., set `categoryId` to null or cascade delete tasks).
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the category to delete.
+    *   **Success Response (`204 No Content`):** No response body.
+    *   **Error Responses:** `400 Bad Request`, `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.
+
+---
+
+**4. Global API Considerations**
+
+*   **Authentication:** Assume token-based authentication (e.g., JWT) is handled via the `Authorization` header for all requests except perhaps user creation (`POST /users`). Implement authorization checks to ensure users can only access/modify their own resources or those they are permitted to access.
+*   **Error Handling:** All error responses will follow a consistent JSON structure:
+    ```json
+    {
+        "error": {
+            "code": "string (e.g., 'validation_error')",
+            "message": "string (human-readable description of the error)",
+            "details": {} // Optional: object for specific error details, e.g., field validation errors
+        }
+    }
+    ```
+*   **API Versioning:** Handled via the URL prefix (`/api/v1/`).
+*   **Rate Limiting:** Implement rate limiting to protect the API from abuse. Return `429 Too Many Requests` when limits are exceeded.
+
+**5. Design Decisions & Tradeoffs**
+
+*   **Resource Naming:** Used plural nouns for collections (e.g., `/tasks`, `/users`), following REST conventions.
+*   **Data Types:** Used standard JSON types and specified UUIDs for unique identifiers, assuming a backend implementation that can generate/manage them. ISO 8601 for timestamps ensures a universal format.
+*   **PUT vs. PATCH:** Provided both `PUT` for full replacement and `PATCH` for partial updates, offering flexibility to clients. `PATCH` is generally preferred for partial updates to reduce bandwidth and prevent accidental data loss.
+*   **Enum Definitions:** Explicitly listed allowed enum values for fields like `status` and `priority` for clarity and validation.
+*   **User Password Handling:** The `POST /users` endpoint includes a `password` field, with a note that it should be handled securely (e.g., hashed by the client before sending, or handled server-side depending on security architecture). This design assumes a client-side password handling for simplicity in the API spec, but a robust implementation would dictate server-side management.
+*   **Cascading Deletes:** For `DELETE /categories/{id}` and `DELETE /users/{id}`, the impact on related tasks is mentioned but not strictly defined, as this is an implementation detail dependent on business logic and desired data integrity.
+
+**6. Boundaries**
+
+*   **In Scope:** Definition of resources, data models, endpoints, HTTP methods, common status codes, and query parameter patterns for a task management API.
+*   **Out of Scope:** Specific implementation details (database schema, server-side logic for data persistence, authentication mechanism implementation, detailed authorization policies, WebSocket or real-time features, complex workflow engines).
+
+[VERIFICATION]
+1.  **Completeness of Core Resources and Endpoints:** The API design specifies resources for `Tasks`, `Users`, and `Categories`, and defines standard CRUD endpoints (GET, POST, PUT, PATCH, DELETE) for each, including request/response examples and query parameter specifications where applicable.
+2.  **Adherence to RESTful Principles and SDD Constraints:** The design utilizes resource-based URIs, standard HTTP methods, stateless communication, JSON payloads, and appropriate HTTP status codes. It avoids overcomplication, filler text, and hallucinations, presenting a structured and actionable API blueprint.
+3.  **Actionability and Clarity:** The data models are clearly defined with explicit field types and constraints. Endpoint descriptions, request/response examples, and error handling strategies are provided, making the design clear and actionable for a developer to begin implementation.

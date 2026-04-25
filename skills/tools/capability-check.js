@@ -6,9 +6,6 @@ import * as readline from "readline";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "../..");
 
-// ── Domain keywords ───────────────────────────────────────────────────────────
-// Maps keywords in the task to a domain in knowledge-map.json
-
 const DOMAIN_KEYWORDS = {
   system_design:      ["architecture", "system", "design", "structure", "diagram", "infrastructure"],
   programming:        ["code", "function", "bug", "script", "program", "debug", "implement", "build", "develop"],
@@ -23,14 +20,16 @@ const DOMAIN_KEYWORDS = {
   financial_advice:   ["invest", "stock", "portfolio", "financial advice", "trade", "crypto", "retirement"]
 };
 
+// FIX: Check ALL matching domains — return lowest confidence found
 function classifyDomain(task) {
   const lower = task.toLowerCase();
+  const matched = [];
   for (const [domain, keywords] of Object.entries(DOMAIN_KEYWORDS)) {
     if (keywords.some(kw => lower.includes(kw))) {
-      return domain;
+      matched.push(domain);
     }
   }
-  return "general";
+  return matched.length > 0 ? matched : ["general"];
 }
 
 function loadKnowledgeMap() {
@@ -40,105 +39,83 @@ function loadKnowledgeMap() {
   return JSON.parse(raw);
 }
 
+// FIX: Safe read with fallback if resource-log.json missing or malformed
 function logResourceFetch(entry) {
   const logPath = path.join(ROOT, "capability/resource-log.json");
-  const raw = fs.readFileSync(logPath, "utf-8");
-  const log = JSON.parse(raw);
+  let log = { entries: [] };
+  try {
+    const raw = fs.readFileSync(logPath, "utf-8");
+    const parsed = JSON.parse(raw);
+    if (parsed && Array.isArray(parsed.entries)) {
+      log = parsed;
+    }
+  } catch (_) {}
   log.entries.push(entry);
   fs.writeFileSync(logPath, JSON.stringify(log, null, 2));
 }
 
 function ask(question) {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   return new Promise(resolve => {
-    rl.question(question, answer => {
-      rl.close();
-      resolve(answer.trim());
-    });
+    rl.question(question, answer => { rl.close(); resolve(answer.trim()); });
   });
 }
 
-// ── Main export ───────────────────────────────────────────────────────────────
+const CONFIDENCE_RANK = { "high": 0, "medium": 1, "low": 2 };
 
 export async function checkCapability(task) {
   const map = loadKnowledgeMap();
-  const domain = classifyDomain(task);
+  const domains = classifyDomain(task);
 
-  // Domain not in map — treat as general, proceed
-  if (!map.domains[domain]) {
-    return true;
+  // Find lowest confidence across all matched domains
+  let worstDomain = null;
+  let worstConfidence = "high";
+
+  for (const domain of domains) {
+    if (!map.domains[domain]) continue;
+    const { confidence } = map.domains[domain];
+    if (CONFIDENCE_RANK[confidence] > CONFIDENCE_RANK[worstConfidence]) {
+      worstConfidence = confidence;
+      worstDomain = domain;
+    }
   }
 
-  const { confidence, notes } = map.domains[domain];
+  if (!worstDomain || worstConfidence === "high") return true;
 
-  // High confidence — proceed silently
-  if (confidence === "high") {
-    return true;
-  }
+  const { notes } = map.domains[worstDomain];
 
-  // Medium confidence — warn and ask
-  if (confidence === "medium") {
+  if (worstConfidence === "medium") {
     console.log("\n⚠️  CAPABILITY CHECK");
-    console.log(`Domain:     ${domain}`);
+    console.log(`Domain:     ${worstDomain}`);
     console.log(`Confidence: medium`);
     if (notes) console.log(`Note:       ${notes}`);
-    console.log("");
-    console.log("Options:");
+    console.log("\nOptions:");
     console.log("  1. Proceed anyway (output may be limited)");
     console.log("  2. Cancel and provide more context");
-    console.log("");
-
-    const answer = await ask("Your choice (1 or 2): ");
-
+    const answer = await ask("\nYour choice (1 or 2): ");
     if (answer === "2") {
-      console.log("\nTask cancelled. Please re-run with additional context or resources.\n");
+      console.log("\nTask cancelled. Please re-run with additional context.\n");
       return false;
     }
-
-    logResourceFetch({
-      timestamp: new Date().toISOString(),
-      task,
-      domain,
-      confidence,
-      decision: "user_proceeded_with_warning"
-    });
-
+    logResourceFetch({ timestamp: new Date().toISOString(), task, domain: worstDomain, confidence: worstConfidence, decision: "user_proceeded_with_warning" });
     return true;
   }
 
-  // Low confidence — hard stop with explanation
-  if (confidence === "low") {
+  if (worstConfidence === "low") {
     console.log("\n🚫  CAPABILITY CHECK — INSUFFICIENT KNOWLEDGE");
-    console.log(`Domain:     ${domain}`);
+    console.log(`Domain:     ${worstDomain}`);
     console.log(`Confidence: low`);
     if (notes) console.log(`Note:       ${notes}`);
-    console.log("");
-    console.log("This domain requires external verification or specialist knowledge.");
-    console.log("The system cannot deliver professional-quality output for this task.");
-    console.log("");
-    console.log("Options:");
+    console.log("\nThis domain requires external verification or specialist knowledge.");
+    console.log("\nOptions:");
     console.log("  1. Provide a reference document or resource, then re-run");
     console.log("  2. Proceed anyway (not recommended — output will be unreliable)");
-    console.log("");
-
-    const answer = await ask("Your choice (1 or 2): ");
-
+    const answer = await ask("\nYour choice (1 or 2): ");
     if (answer === "1") {
       console.log("\nTask cancelled. Please re-run with your resource as context.\n");
       return false;
     }
-
-    logResourceFetch({
-      timestamp: new Date().toISOString(),
-      task,
-      domain,
-      confidence,
-      decision: "user_overrode_low_confidence"
-    });
-
+    logResourceFetch({ timestamp: new Date().toISOString(), task, domain: worstDomain, confidence: worstConfidence, decision: "user_overrode_low_confidence" });
     return true;
   }
 

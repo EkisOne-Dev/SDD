@@ -4,7 +4,7 @@
     "model": "gemini-2.5-flash-lite",
     "api_key_env": "GEMINI_API_KEY",
     "base_url": "https://generativelanguage.googleapis.com",
-    "max_tokens": 2048,
+    "max_tokens": 8192,
     "timeout_ms": 15000
   },
   "fallback": {
@@ -12,7 +12,7 @@
     "model": "meta-llama/llama-4-scout:free",
     "api_key_env": "OPENROUTER_API_KEY",
     "base_url": "https://openrouter.ai/api/v1",
-    "max_tokens": 2048,
+    "max_tokens": 8192,
     "timeout_ms": 15000
   },
   "local_fallback": {
@@ -23,5 +23,43 @@
     "max_tokens": 2048,
     "timeout_ms": 30000
   },
-  "active": "primary"
+  "active": "primary",
+  "agent_models": {
+    "basic": {
+      "simple": "gemini-2.5-flash-lite",
+      "complex": "gemini-2.5-flash-lite"
+    },
+    "researcher": {
+      "simple": "gemini-2.5-flash-lite",
+      "complex": "gemini-2.5-flash"
+    },
+    "reviewer": {
+      "simple": "gemini-2.5-flash-lite",
+      "complex": "gemini-2.5-flash-lite"
+    },
+    "developer": {
+      "simple": "gemini-2.5-flash",
+      "complex": "gemini-2.5-flash"
+    },
+    "architect": {
+      "simple": "gemini-2.5-flash",
+      "complex": "gemini-2.5-flash"
+    },
+    "analyst": {
+      "simple": "gemini-2.5-flash",
+      "complex": "gemini-2.5-flash"
+    },
+    "mentor": {
+      "simple": "gemini-2.5-flash",
+      "complex": "gemini-2.5-flash"
+    },
+    "strategist": {
+      "simple": "gemini-2.5-flash",
+      "complex": "gemini-2.5-flash"
+    },
+    "creator": {
+      "simple": "gemini-2.5-flash-lite",
+      "complex": "gemini-2.5-flash-lite"
+    }
+  }
 }

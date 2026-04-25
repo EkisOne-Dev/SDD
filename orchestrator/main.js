@@ -4,8 +4,6 @@ import {
   loadMemory,
   saveMemory,
   loadAgent,
-  loadPhase,
-  buildPrompt,
   logExecution,
   runEngine
 } from "./orchestrator.js";
@@ -15,59 +13,14 @@ import { checkNegotiation } from "../skills/tools/negotiator.js";
 import { runPipeline, resumePipeline } from "./pipeline.js";
 import { routeSkill } from "../skills/router.js";
 import { runSelfResearch } from "../skills/tools/self-research.js";
-
-// ── Agent routing ────────────────────────────────────────────────────────────
-function selectAgent(task) {
-  const t = task.toLowerCase();
-
-  const routes = [
-    {
-      agent: "architect",
-      keywords: [
-        "design", "architecture", "structure", "system", "plan",
-        "diagram", "component", "module", "schema", "blueprint",
-        "scaffold", "layout", "hierarchy", "dependency"
-      ]
-    },
-    {
-      agent: "developer",
-      keywords: [
-        "code", "bug", "fix", "debug", "function", "script",
-        "implement", "programming", "refactor", "error", "exception",
-        "class", "method", "api", "build", "compile", "test"
-      ]
-    },
-    {
-      agent: "researcher",
-      keywords: [
-        "research", "find", "look up", "what is", "explain",
-        "summarize", "fact", "source", "compare", "difference",
-        "how does", "why does", "background", "history", "overview"
-      ]
-    },
-    {
-      agent: "reviewer",
-      keywords: [
-        "review", "check", "critique", "evaluate", "assess",
-        "feedback", "quality", "improve", "audit", "validate",
-        "proofread", "analyse", "analyze", "rate", "score"
-      ]
-    }
-  ];
-
-  for (const route of routes) {
-    if (route.keywords.some(k => t.includes(k))) {
-      return route.agent;
-    }
-  }
-
-  return "basic";
-}
+import { selectChain, runChain } from "./chains.js";
+import { runSelfCritique } from "../skills/tools/self-critique.js";
 
 // ── Main execution ───────────────────────────────────────────────────────────
 async function run() {
   let task = process.argv.slice(2).join(' ');
 
+  // ── Pipeline mode branch ─────────────────────────────────────────────────
   if (task.toLowerCase().startsWith('project ')) {
     const projectTask = task.slice(8).trim();
     const deps = { loadAgent, loadMemory, config: loadConfig(), runEngine, adapter: loadEngineAdapter(), logExecution };
@@ -89,11 +42,13 @@ async function run() {
     return;
   }
 
+  // ── Load system config ───────────────────────────────────────────────────
   const config = loadConfig();
   const adapter = loadEngineAdapter();
 
   logExecution(`TASK RECEIVED: ${task}`);
 
+  // ── Capability check ─────────────────────────────────────────────────────
   if (config.capability_check_enabled) {
     const capable = await checkCapability(task);
     if (!capable) {
@@ -102,6 +57,7 @@ async function run() {
     }
   }
 
+  // ── Negotiation check ────────────────────────────────────────────────────
   if (config.negotiation_enabled) {
     const negotiated = await checkNegotiation(task);
     if (negotiated === null) {
@@ -123,40 +79,33 @@ async function run() {
       logExecution(`SKILL MATCHED: ${matchedSkill.id}`);
     }
     skillContext = await runSelfResearch(task, config, adapter);
-    if (skillContext) {
-      logExecution(`SKILL CONTEXT INJECTED`);
-    }
+    if (skillContext) logExecution(`SKILL CONTEXT INJECTED`);
   }
 
-  const agentName = selectAgent(task);
-  console.log(`\n🤖 Agent: ${agentName}`);
-  logExecution(`AGENT SELECTED: ${agentName}`);
-
-  const rawMemory = loadMemory(config);
-  const memory = skillContext
-    ? rawMemory + "\n\n[SKILL CONTEXT — Self Research]\n" + skillContext
-    : rawMemory;
-
-  const agent = loadAgent(agentName);
-  const phase = loadPhase(config.default_phase);
-
-  const prompt = buildPrompt(
-    phase.promptTemplate,
-    phase.contract,
-    agent,
-    memory,
-    task
-  );
-
+  // ── Chain selection and execution ────────────────────────────────────────
+  const chain = selectChain(task);
   console.log("⚙  Running SDD...\n");
 
   try {
-    const result = await runEngine(prompt, adapter);
+    const { result, complexity } = await runChain(task, chain, config, adapter, skillContext);
 
-    console.log("=== RESULT ===\n");
-    console.log(result);
+    // ── Self-critique (optional) ─────────────────────────────────────────
+    let finalResult = result;
+    if (config.self_critique_enabled && complexity === "complex" && chain.agents.length > 1) {
+      console.log("\n🔎 Running self-critique...");
+      const critique = await runSelfCritique(task, result, adapter);
+      if (critique && critique !== "PASS") {
+        finalResult = result + "\n\n[SELF-CRITIQUE]\n" + critique;
+        logExecution(`SELF-CRITIQUE APPENDED`);
+      } else {
+        logExecution(`SELF-CRITIQUE: PASS`);
+      }
+    }
 
-    saveMemory(config, `\nUser: ${task}\nAssistant: ${result}`);
+    console.log("\n=== RESULT ===\n");
+    console.log(finalResult);
+
+    saveMemory(config, `\nUser: ${task}\nAssistant: ${finalResult}`);
     logExecution(`TASK COMPLETED: ${task}`);
 
   } catch (err) {

@@ -5,3 +5,9 @@
 5. When reviewing code, identify bugs, edge cases, and maintainability issues.
 6. When debugging, isolate the cause before proposing a fix.
 7. Respect the runtime environment: Node.js on Android/Termux with free tools only.
+
+--- TRI-STRUCTURE MANDATE ---
+Always structure output in three sections:
+[INTERNAL REASONING] — break down the task, state constraints, define approach
+[ARTIFACT] — the final deliverable, complete and production-ready
+[VERIFICATION] — 3 specific criteria proving the output is correct

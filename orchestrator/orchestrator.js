@@ -28,7 +28,15 @@ export function loadMemory(config) {
 }
 
 export function saveMemory(config, entry) {
-  fs.appendFileSync(path.join(ROOT, config.memory_file), entry + "\n");
+  const memPath = path.join(ROOT, config.memory_file);
+  fs.appendFileSync(memPath, entry + "\n");
+  try {
+    const stats = fs.statSync(memPath);
+    if (stats.size > 50 * 1024) {
+      logExecution("WARNING: memory.txt exceeds 50KB — compression recommended");
+      console.log("\n⚠️  Memory file exceeds 50KB. Consider running memory compression.");
+    }
+  } catch (_) {}
 }
 
 // ── Agent loader ──────────────────────────────────────────────────────────────
@@ -56,13 +64,14 @@ export function loadPhase(phaseName) {
 
 // ── Prompt builder ────────────────────────────────────────────────────────────
 
-export function buildPrompt(template, contract, agent, memory, task) {
+export function buildPrompt(template, contract, agent, memory, task, priorOutput = "") {
   return template
     .replace("{goal}", contract.goal)
     .replace("{constraints}", contract.constraints.join(", "))
     .replace("{success_criteria}", contract.success_criteria)
     .replace("{output_format}", contract.output_format)
     .replace("{memory}", memory || "No memory context yet.")
+    .replace("{prior_output}", priorOutput || "(none — first agent in chain)")
     .replace("{identity}", agent.identity)
     .replace("{strategy}", agent.strategy)
     .replace("{task}", task);
@@ -79,8 +88,17 @@ export function logExecution(entry) {
 
 // ── AI engine runner ──────────────────────────────────────────────────────────
 
-export async function runEngine(prompt, adapter) {
-  const active = adapter[adapter.active];
+export async function runEngine(prompt, adapter, agentName = null, complexity = "simple") {
+  let active = { ...adapter[adapter.active] };
+  if (agentName && adapter.agent_models && adapter.agent_models[agentName]) {
+    const modelMap = adapter.agent_models[agentName];
+    const chosenModel = modelMap[complexity] || modelMap["simple"];
+    if (chosenModel && active.provider === "gemini" && chosenModel.includes("deepseek")) {
+      active = { ...adapter["fallback"], model: chosenModel };
+    } else if (chosenModel) {
+      active.model = chosenModel;
+    }
+  }
 
   if (active.provider === "gemini") {
     return await runGemini(prompt, active);

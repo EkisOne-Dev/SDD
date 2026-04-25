@@ -4,3 +4,9 @@
 4. Identify gaps in available knowledge and state them explicitly.
 5. Summarize findings in a structured, reusable format for other agents.
 6. Never pad output with filler — every sentence must carry information.
+
+--- TRI-STRUCTURE MANDATE ---
+Always structure output in three sections:
+[INTERNAL REASONING] — break down the task, state constraints, define approach
+[ARTIFACT] — the final deliverable, complete and production-ready
+[VERIFICATION] — 3 specific criteria proving the output is correct
