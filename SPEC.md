@@ -9,8 +9,8 @@
 
 | Field | Value |
 |---|---|
-| Document Version | 1.8.0 |
-| System Version | MVP → Phase 5 Designed + Pre-build Hardening |
+| Document Version | 1.9.0 |
+| System Version | MVP → Phase 5 Complete |
 | Last Updated | 2026-04-25 |
 | Status | Active Development |
 | Platform | Android / Termux |
@@ -78,7 +78,7 @@
 │       ├── capability-check.js    ← ✅ Active — Phase 1
 │       ├── negotiator.js          ← ✅ Active — Phase 1
 │       ├── self-research.js       ← ✅ Active — Phase 4
-│       ├── self-critique.js      ← Phase 5 — optional quality pass after chain
+│       ├── self-critique.js      ← ✅ Active — Phase 5
 │       └── image-gen.js           ← Phase 11
 ├── memory/
 │   ├── core/
@@ -160,7 +160,7 @@
 
 ### MULTI-AGENT CHAINS
 **File:** `orchestrator/chains.js`
-**Status:** 🔲 Phase 5
+**Status:** ✅ Active — Phase 5
 
 **Purpose:** For single-shot tasks (`sdd "task"`), selects the right agent sequence based on task classification. Each agent in the chain receives the original task + the previous agent's full output. The pipeline (`sdd project`) is unaffected.
 
@@ -340,7 +340,7 @@ Negative constraints / Reference style
 
 ### SELF-CRITIQUE SKILL
 **File:** `skills/tools/self-critique.js`
-**Status:** 🔲 Phase 5
+**Status:** ✅ Active — Phase 5
 **Activation:** `self_critique_enabled: true` in `config/system.json` AND task classified as complex
 
 **Purpose:** After the final agent in a multi-agent chain produces output, runs a focused second pass asking the model to identify gaps, errors, or missed requirements against the original task. Costs one extra API call. Off by default.
@@ -577,7 +577,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 2 | Full agent roster (architect, developer, researcher, reviewer) + negotiator prompt injection | ✅ Complete |
 | 3 | Real phase system (propose→spec→design→tasks→apply→verify→archive) | ✅ Complete |
 | 4 | Skills execution layer (router + self-research) | ✅ Complete |
-| 5 | Multi-agent chains + per-agent model routing + Mentorship System | 🔲 Next |
+| 5 | Multi-agent chains + per-agent model routing + Mentorship System | ✅ Complete |
 | 6 | Scoring system (clarity, usefulness, efficiency, redundancy) | 🔲 Planned |
 | 7 | Meta system + Controlled self-improvement proposal system | 🔲 Planned |
 | 8 | Postmortem system | 🔲 Planned |
@@ -590,13 +590,13 @@ cd ~/sdd && npm install @google/generative-ai
 
 ## KNOWN LIMITATIONS (Current)
 
-- Multi-agent chains designed but not yet implemented (Phase 5)
+- Mentorship system (sdd learn) not yet implemented (Phase 6)
 - No scoring, meta learning, or improvement proposals
 - Self-research local mode only surfaces what already exists in memory/projects
 - No versioning UI (git only)
 - Limited error handling (API safety filter rejections show generic error)
-- capability-check.js has two known bugs (multi-domain tasks, missing resource-log.json) — fixed in Phase 5
-- prompt.txt has no chain awareness or TRI-STRUCTURE mandate — fixed in Phase 5
+- DeepSeek-R1 endpoint temporarily unavailable on OpenRouter — falls back to gemini-2.5-flash for complex agents
+
 - Memory is a single flat file — no semantic retrieval
 - Multimedia: structured output only until Phase 11
 - Video and audio: structured output only — no local processing on mobile
@@ -682,5 +682,14 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-25 | 1.8.0 | prompt.txt chain awareness added — prior_output placeholder defined | Prior agent output was buried in memory with no explicit signal |
 | 2026-04-25 | 1.8.0 | Memory compression warning trigger added to saveMemory spec | Enforces 50KB limit defined in SPEC but never implemented |
 | 2026-04-25 | 1.8.0 | Design principles 16 and 17 added | Multi-domain capability and self-critique behavioral rules |
+| 2026-04-25 | 1.9.0 | Phase 5 complete — multi-agent chains live and verified | REST API design test passed all three agents in sequence |
+| 2026-04-25 | 1.9.0 | orchestrator/chains.js — chain selector, complexity classifier, context compressor | Keyword routing, simple/complex signal, 6000 char compression |
+| 2026-04-25 | 1.9.0 | skills/tools/self-critique.js — optional post-chain quality pass | Off by default, activated by self_critique_enabled in system.json |
+| 2026-04-25 | 1.9.0 | TRI-STRUCTURE mandate added to all specialist agent strategy files | Forces reasoning-first output across all specialist agents |
+| 2026-04-25 | 1.9.0 | max_tokens raised to 8192 — architect truncation bug resolved | 2048 limit was cutting complex responses mid-output |
+| 2026-04-25 | 1.9.0 | capability-check.js — multi-domain lowest-confidence fix applied | First-match-wins bug silently skipped low-confidence domains |
+| 2026-04-25 | 1.9.0 | capability-check.js — resource-log.json safe fallback applied | Crash on missing file resolved with structured fallback |
+| 2026-04-25 | 1.9.0 | memory compression 50KB warning active in saveMemory | Warning fires correctly when memory.txt exceeds threshold |
+| 2026-04-25 | 1.9.0 | learning/ directory scaffolded — roadmaps, progress, sessions | Ready for Phase 6 mentorship implementation |
 
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
