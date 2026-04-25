@@ -9,8 +9,8 @@
 
 | Field | Value |
 |---|---|
-| Document Version | 1.6.0 |
-| System Version | MVP → Phase 4 Complete |
+| Document Version | 1.7.0 |
+| System Version | MVP → Phase 5 Designed |
 | Last Updated | 2026-04-24 |
 | Status | Active Development |
 | Platform | Android / Termux |
@@ -48,6 +48,7 @@
 │   └── YYYY-MM-DD.log
 ├── orchestrator/
 │   ├── main.js                    ← Core entry logic
+│   ├── chains.js                  ← Phase 5 — multi-agent chain runner
 │   └── orchestrator.js            ← All system functions
 ├── agents/
 │   ├── basic/                     ← MVP fallback agent ✅
@@ -100,6 +101,10 @@
 ├── capability/
 │   ├── knowledge-map.json         ← ✅ Active — domain competence index
 │   └── resource-log.json          ← ✅ Active — logs external resource fetches
+├── learning/
+│   ├── roadmaps/              ← User-provided field roadmaps (JSON)
+│   ├── progress/              ← Per-roadmap learner state and position
+│   └── sessions/              ← Session logs with topic, response, assessment
 ├── versions/
 ├── engine/
 │   └── adapter.json               ← ✅ Active — Gemini / OpenRouter / Ollama
@@ -146,6 +151,34 @@
 
 ---
 
+
+---
+
+### MULTI-AGENT CHAINS
+**File:** `orchestrator/chains.js`
+**Status:** 🔲 Phase 5
+
+**Purpose:** For single-shot tasks (`sdd "task"`), selects the right agent sequence based on task classification. Each agent in the chain receives the original task + the previous agent's full output. The pipeline (`sdd project`) is unaffected.
+
+**Default chains:**
+
+| Task type | Chain | Trigger keywords |
+|---|---|---|
+| Research | researcher → reviewer | research, find, explain, what is, how does, summarize |
+| Development | developer → reviewer | code, build, fix, implement, debug, script |
+| Architecture | researcher → architect → reviewer | design, architecture, system, plan, structure |
+| Analysis | researcher → analyst | analyze, data, compare, report, insights |
+| Review | reviewer | review, check, critique, audit, evaluate |
+| Simple | basic | (no keyword match) |
+
+**Per-agent model routing:**
+Each agent role maps to a model in `engine/adapter.json`. Heavy-reasoning agents (architect, developer) use the most capable available model. Fast agents (researcher, reviewer, basic) use the lightest model. This is the primary token efficiency mechanism — model power is matched to task complexity.
+
+**RULE:** Reviewer always runs last in any multi-agent chain. It never runs in isolation as a chain-closer if the chain has only one agent.
+**RULE:** Chain selection is keyword-based by default. No extra API call is made to plan the chain.
+**RULE:** `sdd project` bypasses chains entirely — pipeline.js handles its own agent assignment.
+
+
 ### AGENTS
 **Path:** `agents/<agent-name>/`
 **Structure (always use folder, even when empty):**
@@ -166,7 +199,7 @@ agents/<n>/
 | `analyst` | Data analysis, reports, insights, structured data | Phase 2 |
 | `researcher` | Knowledge gathering, source validation, fact-checking | Phase 2 |
 | `reviewer` | Quality control and critique across all output types | Phase 2 |
-| `mentor` | Teaching, structured learning, guidance, explanations | Phase 3 |
+| `mentor` | Socratic teaching, adaptive pacing, assessment, job-readiness coaching | Phase 5 (mentorship) |
 | `creator` | Multimedia content, exhaustive structured prompts | Phase 3 |
 | `strategist` | Planning, roadmaps, prioritization, decision frameworks | Phase 3 |
 
@@ -277,6 +310,69 @@ Negative constraints / Reference style
 ```
 
 **RULE:** Structured brief is always the primary deliverable regardless of API availability.
+
+---
+
+### MENTORSHIP SYSTEM
+**Path:** `learning/` + `agents/mentor/` + `skills/tools/mentor-router.js`
+**Status:** 🔲 Phase 5 (mentorship)
+**Entry point:** `sdd learn "topic"` or `sdd learn` (auto-advances to next topic)
+
+**What makes it exceptional:**
+
+**1. Roadmap-driven curriculum**
+User provides a `roadmap.json` defining a field of study with topics, subtopics, prerequisites, and job-readiness criteria. The system tracks exact position and never repeats mastered material.
+
+**2. Adaptive pacing**
+After each explanation, the mentor asks a verification question. Based on the response, it either advances, re-explains with a different approach, or flags the topic for review. Pacing adjusts to demonstrated comprehension, not a fixed schedule.
+
+**3. Socratic identity**
+The mentor agent never just lectures. It asks, challenges, and guides. It uses analogies matched to the user's existing knowledge base (stored in memory). It teaches how to think, not just what to know.
+
+**4. Persistent progress state**
+`learning/progress/<roadmap-name>.json` tracks: current topic, completed topics, weak spots, session count, and estimated job-readiness score (0-100).
+
+**5. Assessment and job-readiness**
+At defined milestones, the mentor runs a structured assessment: concept questions, a practical challenge, and a mock interview question for that domain. Score is logged. Job-readiness is declared when all milestones pass at threshold.
+
+**6. Session memory**
+Every session is logged to `learning/sessions/` with topic, explanation given, question asked, and user response. The mentor reads recent sessions before each new session to maintain continuity.
+
+**Roadmap format (`learning/roadmaps/<name>.json`):**
+```json
+{
+  "name": "backend-engineering",
+  "field": "Backend Engineering",
+  "job_readiness_criteria": ["REST APIs", "databases", "auth", "deployment"],
+  "milestones": [3, 6, 9],
+  "topics": [
+    {
+      "id": 1,
+      "title": "How the web works",
+      "subtopics": ["HTTP", "DNS", "request-response cycle"],
+      "prerequisites": [],
+      "assessment_question": "Explain what happens when you type a URL and hit enter"
+    }
+  ]
+}
+```
+
+**Progress state (`learning/progress/<name>.json`):**
+```json
+{
+  "roadmap": "backend-engineering",
+  "current_topic_id": 4,
+  "completed": [1, 2, 3],
+  "weak_spots": [2],
+  "session_count": 7,
+  "job_readiness_score": 31,
+  "last_session": "2026-04-24"
+}
+```
+
+**RULE:** The mentor never skips assessment. Advancement requires a correct or sufficiently complete response.
+**RULE:** Weak spots are revisited before milestone assessments.
+**RULE:** Job-readiness is never declared by the user — only earned through milestone completion.
 
 ---
 
@@ -416,6 +512,8 @@ cd ~/sdd && npm install @google/generative-ai
 11. **The negotiator never overrides the user.** It proposes — the user decides — then executes without further comment.
 12. **Free-only constraint is active** until explicitly lifted by the user.
 13. **The `creator` agent always produces a structured brief** regardless of API availability.
+14. **Model power is matched to task complexity.** Heavy agents use capable models. Fast agents use light models. Per-agent routing is always config-driven via `engine/adapter.json`.
+15. **Mentorship advancement is earned, never assumed.** The system never marks a topic complete without a verified correct response from the learner.
 
 ---
 
@@ -428,13 +526,13 @@ cd ~/sdd && npm install @google/generative-ai
 | 2 | Full agent roster (architect, developer, researcher, reviewer) + negotiator prompt injection | ✅ Complete |
 | 3 | Real phase system (propose→spec→design→tasks→apply→verify→archive) | ✅ Complete |
 | 4 | Skills execution layer (router + self-research) | ✅ Complete |
-| 5 | Multi-agent orchestration | 🔲 Planned |
+| 5 | Multi-agent chains + per-agent model routing + Mentorship System | 🔲 Next |
 | 6 | Scoring system (clarity, usefulness, efficiency, redundancy) | 🔲 Planned |
 | 7 | Meta system + Controlled self-improvement proposal system | 🔲 Planned |
 | 8 | Postmortem system | 🔲 Planned |
 | 9 | Drift control (baseline comparison) | 🔲 Planned |
 | 10 | Cost awareness (token + API call tracking) | 🔲 Planned |
-| 11 | Full agent roster expansion (mentor, creator, strategist) + image-gen skill | 🔲 Planned |
+| 11 | creator + strategist agents + image-gen skill (mentor already built in Phase 5) | 🔲 Planned |
 | 12 | CLI navigation layer | 🔲 Future |
 
 ---
@@ -507,11 +605,17 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-24 | 1.5.0 | pipeline.js — new stage runner with auto-advance, pause, resume, abort | stateful project execution with artifact chaining |
 | 2026-04-24 | 1.5.0 | sdd project \ "idea\" and sdd resume <name> commands added to main.js | backward compatible — single-shot mode unchanged |
 | 2026-04-06 | 1.4.0 | Negotiator prompt injection implemented | Choosing B now rewrites the task before execution — known limitation resolved |
-
 | 2026-04-24 | 1.6.0 | Phase 4 complete — skills router, registry, and self-research tool live | Task-to-skill matching with context injection into prompt |
 | 2026-04-24 | 1.6.0 | skills/registry.json — skill manifest with trigger keywords | Extensible registry for future skills |
 | 2026-04-24 | 1.6.0 | skills/router.js — keyword-based skill matcher | Routes tasks to skills before agent execution |
 | 2026-04-24 | 1.6.0 | skills/tools/self-research.js — local + optional AI synthesis mode | Scans memory, knowledge map, projects for relevant context |
 | 2026-04-24 | 1.6.0 | self_research_enabled and self_research_mode added to system.json | Config-controlled skill activation |
+| 2026-04-24 | 1.7.0 | Phase 5 designed — multi-agent chains + per-agent model routing | Dynamic chain selection replaces single-agent routing for single-shot tasks |
+| 2026-04-24 | 1.7.0 | orchestrator/chains.js defined — keyword-based chain selector | No extra API call — rule-based by default, reviewer always closes multi-agent chains |
+| 2026-04-24 | 1.7.0 | Per-agent model routing added to engine/adapter.json spec | Match model capability to agent role — primary token efficiency mechanism |
+| 2026-04-24 | 1.7.0 | Mentorship System defined as first-class goal in Phase 5 | Roadmap-driven, adaptive pacing, Socratic teaching, assessment, job-readiness scoring |
+| 2026-04-24 | 1.7.0 | learning/ directory added to canonical structure | Stores roadmaps, progress state, and session logs |
+| 2026-04-24 | 1.7.0 | mentor agent elevated from Phase 11 to Phase 5 with full Socratic identity | Exceptional mentorship requires dedicated architecture, not a simple agent swap |
+| 2026-04-24 | 1.7.0 | Design principles 14 and 15 added | Codify per-agent model routing and mentorship advancement rules |
 
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
