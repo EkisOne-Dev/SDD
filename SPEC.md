@@ -9,9 +9,9 @@
 
 | Field | Value |
 |---|---|
-| Document Version | 1.7.0 |
-| System Version | MVP → Phase 5 Designed |
-| Last Updated | 2026-04-24 |
+| Document Version | 1.8.0 |
+| System Version | MVP → Phase 5 Designed + Pre-build Hardening |
+| Last Updated | 2026-04-25 |
 | Status | Active Development |
 | Platform | Android / Termux |
 | Runtime | Node.js |
@@ -34,6 +34,9 @@
 - Capability-aware execution (validates competence before acting)
 - Interactive negotiation layer (proposes better alternatives to user)
 - Skills execution layer (routes tasks to skills, injects context into prompt)
+- Task complexity classifier (signals simple vs complex to control model selection and optional steps)
+- Self-critique layer (optional focused quality pass after chain completion)
+- Context compression (caps inter-agent context at 500 tokens for efficiency)
 
 ---
 
@@ -75,6 +78,7 @@
 │       ├── capability-check.js    ← ✅ Active — Phase 1
 │       ├── negotiator.js          ← ✅ Active — Phase 1
 │       ├── self-research.js       ← ✅ Active — Phase 4
+│       ├── self-critique.js      ← Phase 5 — optional quality pass after chain
 │       └── image-gen.js           ← Phase 11
 ├── memory/
 │   ├── core/
@@ -177,6 +181,14 @@ Each agent role maps to a model in `engine/adapter.json`. Heavy-reasoning agents
 **RULE:** Reviewer always runs last in any multi-agent chain. It never runs in isolation as a chain-closer if the chain has only one agent.
 **RULE:** Chain selection is keyword-based by default. No extra API call is made to plan the chain.
 **RULE:** `sdd project` bypasses chains entirely — pipeline.js handles its own agent assignment.
+**RULE:** Prior agent output passed to the next agent is always compressed to 500 tokens max.
+**RULE:** Task complexity is classified before chain selection — complex tasks may activate heavier models and self-critique.
+
+**Task complexity classifier:**
+A simple function in `chains.js` evaluates task length, chain length, and keyword density to assign `simple` or `complex`. No API call. Complex tasks activate per-agent model upgrades (DeepSeek-R1 for architect/developer/mentor) and make self-critique eligible.
+
+**Context compression:**
+Before passing output from agent N to agent N+1, the system truncates to 500 tokens with a summary header. This keeps prompt size predictable regardless of how verbose prior agents are.
 
 
 ### AGENTS
@@ -211,6 +223,19 @@ agents/<n>/
 
 ### PHASES
 **Path:** `phases/<phase-name>/`
+
+**Prompt template placeholders:**
+- `{goal}`, `{constraints}`, `{success_criteria}`, `{output_format}` — from contract.json
+- `{memory}` — persistent memory context
+- `{identity}`, `{strategy}` — from agent files
+- `{task}` — the user task
+- `{prior_output}` — previous agent output in a chain (empty on first agent)
+
+**TRI-STRUCTURE output mandate (all specialist agents):**
+All non-basic agents are required to structure output as:
+1. [INTERNAL REASONING] — break down task, identify constraints, list dependencies
+2. [ARTIFACT] — the actual deliverable (code, analysis, design, explanation)
+3. [VERIFICATION] — 3 specific criteria proving the output is correct
 
 **MVP Phase (`phases/basic/`) — ✅ Active:**
 ```json
@@ -313,6 +338,30 @@ Negative constraints / Reference style
 
 ---
 
+### SELF-CRITIQUE SKILL
+**File:** `skills/tools/self-critique.js`
+**Status:** 🔲 Phase 5
+**Activation:** `self_critique_enabled: true` in `config/system.json` AND task classified as complex
+
+**Purpose:** After the final agent in a multi-agent chain produces output, runs a focused second pass asking the model to identify gaps, errors, or missed requirements against the original task. Costs one extra API call. Off by default.
+
+**Prompt structure:**
+```
+Original task: {task}
+Output produced: {output}
+Identify any gaps, errors, or missed requirements in 3 bullet points.
+If the output fully satisfies the task, respond only with: PASS
+```
+
+**Behavior:**
+- Response is PASS → output delivered as-is
+- Response contains critique → critique appended to output as [SELF-CRITIQUE] block
+- User sees both the output and the critique — never hidden
+
+**RULE:** Self-critique never rewrites the output. It surfaces issues — the user decides what to do.
+**RULE:** Self-critique only runs on complex tasks. Simple single-agent tasks skip it entirely.
+
+---
 ### MENTORSHIP SYSTEM
 **Path:** `learning/` + `agents/mentor/` + `skills/tools/mentor-router.js`
 **Status:** 🔲 Phase 5 (mentorship)
@@ -514,6 +563,8 @@ cd ~/sdd && npm install @google/generative-ai
 13. **The `creator` agent always produces a structured brief** regardless of API availability.
 14. **Model power is matched to task complexity.** Heavy agents use capable models. Fast agents use light models. Per-agent routing is always config-driven via `engine/adapter.json`.
 15. **Mentorship advancement is earned, never assumed.** The system never marks a topic complete without a verified correct response from the learner.
+16. **Multi-domain tasks use the lowest confidence level found.** The capability check never ignores a weak domain because another domain matched first.
+17. **Self-critique surfaces issues — it never rewrites.** The user always sees both the output and the critique and decides what to do next.
 
 ---
 
@@ -539,11 +590,13 @@ cd ~/sdd && npm install @google/generative-ai
 
 ## KNOWN LIMITATIONS (Current)
 
-- Single-agent execution only (no multi-agent coordination yet)
+- Multi-agent chains designed but not yet implemented (Phase 5)
 - No scoring, meta learning, or improvement proposals
 - Self-research local mode only surfaces what already exists in memory/projects
 - No versioning UI (git only)
 - Limited error handling (API safety filter rejections show generic error)
+- capability-check.js has two known bugs (multi-domain tasks, missing resource-log.json) — fixed in Phase 5
+- prompt.txt has no chain awareness or TRI-STRUCTURE mandate — fixed in Phase 5
 - Memory is a single flat file — no semantic retrieval
 - Multimedia: structured output only until Phase 11
 - Video and audio: structured output only — no local processing on mobile
@@ -556,6 +609,7 @@ cd ~/sdd && npm install @google/generative-ai
 | Tool | Purpose | Access | Limit | Notes |
 |---|---|---|---|---|
 | Gemini 2.5 Flash Lite | LLM engine (primary) | GEMINI_API_KEY | Quota-based | Active |
+| DeepSeek-R1 (via OpenRouter) | Heavy reasoning — architect, developer, mentor | OPENROUTER_API_KEY | Free tier | Phase 5 — per-agent routing |
 | OpenRouter / Llama 4 Scout | LLM engine (fallback) | OPENROUTER_API_KEY | Free tier | Active in adapter |
 | Ollama / TinyLlama | LLM engine (local) | `pkg install ollama` | Unlimited | Install when needed |
 | Hugging Face Inference API | Image generation | Free account + HF_TOKEN | Rate limited | Phase 11 |
@@ -617,5 +671,16 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-24 | 1.7.0 | learning/ directory added to canonical structure | Stores roadmaps, progress state, and session logs |
 | 2026-04-24 | 1.7.0 | mentor agent elevated from Phase 11 to Phase 5 with full Socratic identity | Exceptional mentorship requires dedicated architecture, not a simple agent swap |
 | 2026-04-24 | 1.7.0 | Design principles 14 and 15 added | Codify per-agent model routing and mentorship advancement rules |
+| 2026-04-25 | 1.8.0 | Pre-build hardening — 9 improvements identified before Phase 5 code | Analysis of current system + Gemini recommendations |
+| 2026-04-25 | 1.8.0 | DeepSeek-R1 added to per-agent model routing for architect, developer, mentor | Native chain-of-thought reasoning on heavy tasks at zero cost |
+| 2026-04-25 | 1.8.0 | TRI-STRUCTURE output mandate added to all specialist agent strategies | Forces reasoning before delivery — highest leverage prompt change |
+| 2026-04-25 | 1.8.0 | Context compression (500 token cap) defined for inter-agent passing | Keeps prompt size predictable regardless of prior agent verbosity |
+| 2026-04-25 | 1.8.0 | Self-critique skill defined — optional post-chain quality pass | Off by default, on for complex tasks when self_critique_enabled |
+| 2026-04-25 | 1.8.0 | Task complexity classifier defined in chains.js | Controls model selection and optional steps without extra API calls |
+| 2026-04-25 | 1.8.0 | capability-check.js bug: multi-domain tasks now use lowest confidence | First-match-wins was silently skipping low-confidence domains |
+| 2026-04-25 | 1.8.0 | capability-check.js bug: resource-log.json missing now handled safely | Previously crashed if file absent or malformed |
+| 2026-04-25 | 1.8.0 | prompt.txt chain awareness added — prior_output placeholder defined | Prior agent output was buried in memory with no explicit signal |
+| 2026-04-25 | 1.8.0 | Memory compression warning trigger added to saveMemory spec | Enforces 50KB limit defined in SPEC but never implemented |
+| 2026-04-25 | 1.8.0 | Design principles 16 and 17 added | Multi-domain capability and self-critique behavioral rules |
 
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
