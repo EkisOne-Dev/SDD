@@ -716,4 +716,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-26 | 2.3.0 | Self-improvement confirmed working end-to-end | Observer detected efficiency drift, proposal fired, Y applied anti-filler to all 7 agents, auto-committed ebad777 |
 | 2026-04-26 | 2.3.0 | meta/logs/self-improvements.jsonl live | Every auto-applied improvement logged with timestamp, proposal ID, and commit hash |
 
+| 2026-04-26 | 2.3.1 | GitHub remote configured — EkisOne-Dev/SDD | Full commit history pushed, git push syncs future changes, git clone restores on new device |
+| 2026-04-26 | 2.3.1 | Proposal manager N/S/D options verified | S snoozed efficiency proposal to 2026-05-01, D dismissed test clarity proposal permanently |
+
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
