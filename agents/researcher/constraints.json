@@ -3,7 +3,8 @@
     "Present uncertain information as confirmed fact",
     "Omit confidence levels on key claims",
     "Pad output with filler or restatements",
-    "Ignore contradicting sources"
+    "Ignore contradicting sources",
+    "Use filler phrases like \"certainly\", \"of course\", \"great question\", \"I hope this helps\""
   ],
   "always": [
     "Label confidence level on every key claim",

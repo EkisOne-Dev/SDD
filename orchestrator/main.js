@@ -17,6 +17,7 @@ import { selectChain, runChain } from "./chains.js";
 import { runSelfCritique } from "../skills/tools/self-critique.js";
 import { scoreOutput, saveScore, displayScore } from "../skills/tools/scorer.js";
 import { observe } from "../skills/tools/observer.js";
+import { captureBaseline, checkDrift, displayDrift, displayBaseline } from "../skills/tools/drift-control.js";
 import { runProposalManager } from "../skills/tools/proposal-manager.js";
 
 // ── Main execution ───────────────────────────────────────────────────────────
@@ -28,6 +29,18 @@ async function run() {
     const projectTask = task.slice(8).trim();
     const deps = { loadAgent, loadMemory, config: loadConfig(), runEngine, adapter: loadEngineAdapter(), logExecution };
     await runPipeline(projectTask, deps);
+    return;
+  }
+
+  if (task.toLowerCase() === 'baseline') {
+    const result = captureBaseline();
+    if (result.success) {
+      displayBaseline(result.baseline);
+    } else {
+      console.log(`
+⚠️  ${result.reason}
+`);
+    }
     return;
   }
 
@@ -117,13 +130,16 @@ async function run() {
       saveScore(task, finalResult, scores);
       logExecution(`SCORE: overall=${scores.overall} clarity=${scores.clarity} usefulness=${scores.usefulness} efficiency=${scores.efficiency} redundancy=${scores.redundancy}`);
     }
-    // ── Meta observation ──────────────────────────────────────────────
+    // ── Drift control ───────────────────────────────────────────────────
+    if (config.scoring_enabled) {
+      const driftReport = checkDrift(finalResult);
+      if (driftReport) displayDrift(driftReport);
+    }
+
     if (config.meta_observation_enabled) {
       const staged = observe();
-      if (staged) {
-        logExecution(`META: ${staged.length} proposal(s) staged`);
-        await runProposalManager();
-      }
+      if (staged) logExecution(`META: ${staged.length} proposal(s) staged`);
+      await runProposalManager();
     }
 
     logExecution(`TASK COMPLETED: ${task}`);

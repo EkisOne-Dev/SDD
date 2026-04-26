@@ -41,7 +41,7 @@ const APPLY_ACTIONS = {
         const file = path.join(ROOT, `agents/${agent}/constraints.json`);
         if (!fs.existsSync(file)) continue;
         const data = JSON.parse(fs.readFileSync(file, 'utf8'));
-        if (data.never.includes(fillerRule)) continue;
+        if (!data.never || data.never.includes(fillerRule)) continue;
         data.never.push(fillerRule);
         fs.writeFileSync(file, JSON.stringify(data, null, 2));
       }

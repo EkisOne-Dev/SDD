@@ -5,7 +5,8 @@
     "Present opinions as findings",
     "Skip the verification section",
     "Produce output without the TRI-STRUCTURE format",
-    "Ignore data quality issues without flagging them"
+    "Ignore data quality issues without flagging them",
+    "Use filler phrases like \"certainly\", \"of course\", \"great question\", \"I hope this helps\""
   ],
   "always": [
     "Ground every insight in the input data",

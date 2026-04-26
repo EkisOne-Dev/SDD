@@ -1,0 +1,11 @@
+{
+  "id": "efficiency-1777224694467",
+  "dimension": "efficiency",
+  "status": "pending",
+  "created": "2026-04-26T17:31:34.467Z",
+  "observed": "efficiency scored below 60 in 5 of the last 5 runs (avg: 55)",
+  "issue": "Output contains filler phrases or is poorly sized relative to task complexity.",
+  "suggestion": "Add anti-filler constraints to all agent strategy files and the basic phase contract.",
+  "snoozed_until": null,
+  "resolved": null
+}

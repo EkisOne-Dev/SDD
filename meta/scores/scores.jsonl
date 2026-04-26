@@ -1,2 +1,10 @@
 {"timestamp":"2026-04-26T03:47:46.566Z","task":"explain what a REST API is","scores":{"clarity":90,"usefulness":73,"efficiency":55,"redundancy":0,"overall":55}}
 {"timestamp":"2026-04-26T04:13:16.007Z","task":"explain what a REST API is","scores":{"clarity":90,"usefulness":100,"efficiency":55,"redundancy":80,"overall":81}}
+{"timestamp":"2026-04-26T13:22:45.124Z","task":"what is a binary search tree","scores":{"clarity":90,"usefulness":60,"efficiency":55,"redundancy":0,"overall":51}}
+{"timestamp":"2026-04-26T13:23:21.493Z","task":"explain the difference between TCP and UDP","scores":{"clarity":90,"usefulness":100,"efficiency":55,"redundancy":80,"overall":81}}
+{"timestamp":"2026-04-26T17:31:34.464Z","task":"what is a hash table and how does it work","scores":{"clarity":90,"usefulness":100,"efficiency":55,"redundancy":77,"overall":81}}
+{"timestamp":"2026-04-26T17:46:49.069Z","task":"what is recursion in programming","scores":{"clarity":90,"usefulness":73,"efficiency":55,"redundancy":77,"overall":74}}
+{"timestamp":"2026-04-26T17:51:24.078Z","task":"what is recursion in programming","scores":{"clarity":90,"usefulness":100,"efficiency":55,"redundancy":80,"overall":81}}
+{"timestamp":"2026-04-26T17:53:23.788Z","task":"explain what a linked list is","scores":{"clarity":90,"usefulness":100,"efficiency":55,"redundancy":74,"overall":80}}
+{"timestamp":"2026-04-26T17:56:35.049Z","task":"what is a stack data structure","scores":{"clarity":90,"usefulness":100,"efficiency":55,"redundancy":0,"overall":61}}
+{"timestamp":"2026-04-26T18:00:47.248Z","task":"what is a queue data structure","scores":{"clarity":90,"usefulness":100,"efficiency":55,"redundancy":35,"overall":70}}
