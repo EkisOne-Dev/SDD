@@ -578,7 +578,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 3 | Real phase system (propose→spec→design→tasks→apply→verify→archive) | ✅ Complete |
 | 4 | Skills execution layer (router + self-research) | ✅ Complete |
 | 5 | Multi-agent chains + per-agent model routing + Mentorship System | ✅ Complete |
-| 6 | Scoring system (clarity, usefulness, efficiency, redundancy) | 🔲 Planned |
+| 6 | Scoring system (clarity, usefulness, efficiency, redundancy) | ✅ Complete |
 | 7 | Meta system + Controlled self-improvement proposal system | 🔲 Planned |
 | 8 | Postmortem system | 🔲 Planned |
 | 9 | Drift control (baseline comparison) | 🔲 Planned |
@@ -691,5 +691,10 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-25 | 1.9.0 | capability-check.js — resource-log.json safe fallback applied | Crash on missing file resolved with structured fallback |
 | 2026-04-25 | 1.9.0 | memory compression 50KB warning active in saveMemory | Warning fires correctly when memory.txt exceeds threshold |
 | 2026-04-25 | 1.9.0 | learning/ directory scaffolded — roadmaps, progress, sessions | Ready for Phase 6 mentorship implementation |
+
+| 2026-04-25 | 2.0.0 | Phase 6 complete — scoring system live | Post-execution quality signal for all single-shot tasks |
+| 2026-04-25 | 2.0.0 | skills/tools/scorer.js — rule-based scorer, no API call | Scores clarity, usefulness, efficiency, redundancy — overall out of 100 |
+| 2026-04-25 | 2.0.0 | meta/scores/scores.jsonl — append-only score log | Feeds Phase 7 meta observation system |
+| 2026-04-25 | 2.0.0 | scoring_enabled flag added to system.json | Config-controlled — off by default disables panel and logging |
 
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
