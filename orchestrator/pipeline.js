@@ -3,6 +3,7 @@ import path from 'path';
 import readline from 'readline';
 
 import { fileURLToPath } from 'url';
+import { generatePostmortem } from '../skills/tools/postmortem.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const SDD_ROOT = path.resolve(__dirname, '..');
@@ -225,6 +226,10 @@ async function runPipeline(task, deps) {
         state.status = 'complete';
         saveState(state);
         logPipeline(state.project_name, 'Pipeline complete — all stages done');
+        const pm = generatePostmortem(state.original_task, state.stages_completed);
+        console.log(`
+📋 Postmortem saved: ${pm.filepath}`);
+        logPipeline(state.project_name, `Postmortem generated: ${pm.filepath}`);
         console.log(`\n🎉 Project "${state.project_name}" is complete.`);
         console.log(`   All artifacts in: projects/${state.project_name}/outputs/`);
         break;
@@ -297,6 +302,10 @@ async function resumePipeline(projectName, deps) {
       saveState(state);
 
       if (stage === 'archive') {
+        const pm2 = generatePostmortem(state.original_task, state.stages_completed);
+        console.log(`
+📋 Postmortem saved: ${pm2.filepath}`);
+        logPipeline(state.project_name, `Postmortem generated: ${pm2.filepath}`);
         state.status = 'complete';
         saveState(state);
         logPipeline(state.project_name, 'Pipeline complete — resumed and finished');
