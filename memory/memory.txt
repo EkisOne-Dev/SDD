@@ -968,3 +968,446 @@ All API endpoints are prefixed with `/api/v1/`.
 1.  **Completeness of Core Resources and Endpoints:** The API design specifies resources for `Tasks`, `Users`, and `Categories`, and defines standard CRUD endpoints (GET, POST, PUT, PATCH, DELETE) for each, including request/response examples and query parameter specifications where applicable.
 2.  **Adherence to RESTful Principles and SDD Constraints:** The design utilizes resource-based URIs, standard HTTP methods, stateless communication, JSON payloads, and appropriate HTTP status codes. It avoids overcomplication, filler text, and hallucinations, presenting a structured and actionable API blueprint.
 3.  **Actionability and Clarity:** The data models are clearly defined with explicit field types and constraints. Endpoint descriptions, request/response examples, and error handling strategies are provided, making the design clear and actionable for a developer to begin implementation.
+
+User: explain what a REST API is
+Assistant: [INTERNAL REASONING]
+**1. Break down the task into first principles:**
+The user has requested a REST API design for a task manager. This requires defining:
+    *   Core resources (e.g., Tasks, Users, Categories).
+    *   Data models for each resource.
+    *   API endpoints (URIs, HTTP methods, request/response structures).
+    *   Common HTTP status codes for operations.
+    *   Global considerations like authentication, error handling, and versioning.
+    *   Design decisions and tradeoffs.
+    *   Boundaries of the API.
+The design must adhere to RESTful principles and the SDD constraints.
+
+**2. Identify constraints and dependencies:**
+*   **SDD Basic Execution Phase:** Output must be clear, efficient, accurate, structured, actionable, avoid overcomplication, and have no hallucination or filler text.
+*   **Architect Agent Constraints:** Focus on system design, technical structure, modularity, component definition, boundaries, dependencies, and tradeoffs. All design decisions must have a clear rationale ("why").
+*   **TRI-STRUCTURE MANDATE:** The output must strictly follow the `[INTERNAL REASONING]`, `[ARTIFACT]`, `[VERIFICATION]` structure.
+*   **Dependencies:** Assumes standard JSON for request/response payloads and common REST API patterns. UUIDs are used for identifiers.
+
+**3. State your approach before executing:**
+My approach will be to systematically define the components of a REST API for a task manager:
+*   **Define Core Resources:** Identify `Tasks`, `Users`, and `Categories` as the central entities.
+*   **Data Models:** Create detailed JSON schemas for each resource, specifying fields, types, required status, and enumerations.
+*   **API Endpoints:** For each resource, define the base URI, supported HTTP methods (GET, POST, PUT, PATCH, DELETE), specific paths, example request/response bodies, and relevant HTTP status codes for success and errors. Include query parameters for filtering, sorting, and pagination.
+*   **Relationships:** Show how resources are linked (e.g., `assignedTo`, `categoryId`, `ownerId`).
+*   **Global API Considerations:** Outline standard practices for authentication, error handling, versioning, and rate limiting.
+*   **Design Decisions & Tradeoffs:** Justify key choices made during the design process.
+*   **Boundaries:** Clearly define the scope of the API design.
+*   **Structure:** Present the information logically and hierarchically.
+
+[ARTIFACT]
+
+**REST API Design for a Task Manager**
+
+**1. System Overview**
+
+This document outlines a RESTful API for a task management application. It enables clients to manage tasks, users, and categories through standard HTTP operations. The design emphasizes resource identification, stateless communication, and a uniform interface.
+
+**2. Core Resources & Data Models**
+
+*   **Resource: `Task`**
+    *   Represents an individual item to be completed.
+    *   **Data Model (`Task` Object):**
+        ```json
+        {
+            "id": "string (UUID)",           // Unique identifier for the task.
+            "title": "string",               // Required. Concise summary of the task. Max length: 255.
+            "description": "string",         // Optional. Detailed explanation of the task.
+            "status": "string (enum)",       // Required. Current state of the task. Allowed values: "pending", "in_progress", "completed", "cancelled". Default: "pending".
+            "dueDate": "string (ISO 8601)",  // Optional. Timestamp indicating when the task is due (UTC).
+            "priority": "string (enum)",     // Optional. Importance level of the task. Allowed values: "low", "medium", "high". Default: "medium".
+            "assignedTo": "string (UUID)",   // Optional. ID of the user assigned to this task. References User resource.
+            "categoryId": "string (UUID)",   // Optional. ID of the category this task belongs to. References Category resource.
+            "createdAt": "string (ISO 8601)",// Read-only. Timestamp when the task was created (UTC).
+            "updatedAt": "string (ISO 8601)" // Read-only. Timestamp when the task was last updated (UTC).
+        }
+        ```
+
+*   **Resource: `User`**
+    *   Represents a system user.
+    *   **Data Model (`User` Object):**
+        ```json
+        {
+            "id": "string (UUID)",           // Unique identifier for the user.
+            "username": "string",            // Required. Unique login name. Max length: 100.
+            "email": "string",               // Required. Unique email address. Max length: 255.
+            "firstName": "string",           // Optional. User's first name. Max length: 100.
+            "lastName": "string",            // Optional. User's last name. Max length: 100.
+            "createdAt": "string (ISO 8601)",// Read-only. Timestamp when the user was created (UTC).
+            "updatedAt": "string (ISO 8601)" // Read-only. Timestamp when the user was last updated (UTC).
+        }
+        ```
+
+*   **Resource: `Category`**
+    *   Represents a logical grouping or project for tasks.
+    *   **Data Model (`Category` Object):**
+        ```json
+        {
+            "id": "string (UUID)",           // Unique identifier for the category.
+            "name": "string",                // Required. Name of the category (e.g., "Work", "Personal", "Project Alpha"). Max length: 100.
+            "description": "string",         // Optional. Detailed description of the category.
+            "ownerId": "string (UUID)",      // Required. ID of the user who created/owns this category. References User resource.
+            "createdAt": "string (ISO 8601)",// Read-only. Timestamp when the category was created (UTC).
+            "updatedAt": "string (ISO 8601)" // Read-only. Timestamp when the category was last updated (UTC).
+        }
+        ```
+
+**3. API Endpoints**
+
+All API endpoints are prefixed with `/api/v1/`.
+
+---
+
+**3.1. `Tasks` Resource (`/tasks`)**
+
+*   **`GET /tasks`**
+    *   **Description:** Retrieve a list of tasks. Supports filtering, sorting, and pagination.
+    *   **Query Parameters:**
+        *   `status`: (string, enum) Filter tasks by status (`pending`, `in_progress`, `completed`, `cancelled`).
+        *   `assignedTo`: (string, UUID) Filter tasks assigned to a specific user ID.
+        *   `categoryId`: (string, UUID) Filter tasks belonging to a specific category ID.
+        *   `priority`: (string, enum) Filter tasks by priority (`low`, `medium`, `high`).
+        *   `dueDateBefore`: (string, ISO 8601) Filter tasks due before this timestamp.
+        *   `dueDateAfter`: (string, ISO 8601) Filter tasks due after this timestamp.
+        *   `sortBy`: (string) Field to sort by (e.g., "createdAt", "dueDate", "priority"). Default: "createdAt".
+        *   `sortOrder`: (string, enum: "asc", "desc") Order of sorting. Default: "desc".
+        *   `limit`: (integer) Maximum number of results per page. Default: 20. Max: 100.
+        *   `offset`: (integer) Number of results to skip for pagination. Default: 0.
+    *   **Success Response (`200 OK`):**
+        ```json
+        {
+            "data": [
+                // Array of Task Objects
+                {
+                    "id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+                    "title": "Complete API Design",
+                    "description": "Finalize REST API for the task manager.",
+                    "status": "in_progress",
+                    "dueDate": "2024-07-26T17:00:00Z",
+                    "priority": "high",
+                    "assignedTo": "uuid-of-developer-1",
+                    "categoryId": "uuid-of-project-api",
+                    "createdAt": "2024-07-25T10:00:00Z",
+                    "updatedAt": "2024-07-25T11:00:00Z"
+                }
+                // ... more tasks
+            ],
+            "pagination": {
+                "total": 150,
+                "limit": 20,
+                "offset": 0,
+                "hasNext": true // Indicates if there are more pages
+            }
+        }
+        ```
+    *   **Error Responses:** `400 Bad Request` (invalid query parameters), `401 Unauthorized`, `500 Internal Server Error`.
+
+*   **`POST /tasks`**
+    *   **Description:** Create a new task.
+    *   **Request Body:**
+        ```json
+        {
+            "title": "string",               // Required
+            "description": "string",         // Optional
+            "status": "string (enum)",       // Optional. Defaults to "pending" if not provided.
+            "dueDate": "string (ISO 8601)",  // Optional
+            "priority": "string (enum)",     // Optional. Defaults to "medium" if not provided.
+            "assignedTo": "string (UUID)",   // Optional. User ID must exist.
+            "categoryId": "string (UUID)"    // Optional. Category ID must exist.
+        }
+        ```
+    *   **Success Response (`201 Created`):**
+        *   Headers: `Location: /api/v1/tasks/{new_task_id}`
+        *   Body: The newly created `Task` Object.
+    *   **Error Responses:** `400 Bad Request` (validation errors, missing required fields), `401 Unauthorized`, `404 Not Found` (if `assignedTo` or `categoryId` references a non-existent resource), `500 Internal Server Error`.
+
+*   **`GET /tasks/{id}`**
+    *   **Description:** Retrieve a specific task by its ID.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the task to retrieve.
+    *   **Success Response (`200 OK`):**
+        *   Body: The requested `Task` Object.
+    *   **Error Responses:** `400 Bad Request` (invalid ID format), `401 Unauthorized`, `404 Not Found` (task not found), `500 Internal Server Error`.
+
+*   **`PUT /tasks/{id}`**
+    *   **Description:** Update an existing task entirely. Replaces the entire resource with the provided payload. Fields not included will be cleared or reset to default.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the task to update.
+    *   **Request Body:** A complete `Task` Object (excluding `id`, `createdAt`, `updatedAt`). Required fields (`title`, `status`) must be present.
+        ```json
+        {
+            "title": "string",               // Required
+            "description": "string",         // Optional
+            "status": "string (enum)",       // Required
+            "dueDate": "string (ISO 8601)",  // Optional
+            "priority": "string (enum)",     // Optional
+            "assignedTo": "string (UUID)",   // Optional
+            "categoryId": "string (UUID)"    // Optional
+        }
+        ```
+    *   **Success Response (`200 OK`):**
+        *   Body: The updated `Task` Object.
+    *   **Error Responses:** `400 Bad Request` (validation errors, missing required fields), `401 Unauthorized`, `404 Not Found` (task or related resource not found), `500 Internal Server Error`.
+
+*   **`PATCH /tasks/{id}`**
+    *   **Description:** Partially update an existing task. Only fields provided in the payload are updated.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the task to update.
+    *   **Request Body:** A partial `Task` Object containing only the fields to be updated.
+        ```json
+        {
+            "status": "completed",
+            "description": "Task completed successfully."
+        }
+        ```
+    *   **Success Response (`200 OK`):**
+        *   Body: The updated `Task` Object.
+    *   **Error Responses:** `400 Bad Request` (validation errors), `401 Unauthorized`, `404 Not Found` (task or related resource not found), `500 Internal Server Error`.
+
+*   **`DELETE /tasks/{id}`**
+    *   **Description:** Delete a specific task.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the task to delete.
+    *   **Success Response (`204 No Content`):** No response body.
+    *   **Error Responses:** `400 Bad Request` (invalid ID format), `401 Unauthorized`, `404 Not Found` (task not found), `500 Internal Server Error`.
+
+---
+
+**3.2. `Users` Resource (`/users`)**
+
+*   **`GET /users`**
+    *   **Description:** Retrieve a list of all users. Supports filtering and pagination.
+    *   **Query Parameters:**
+        *   `username`: (string) Filter by username (partial match).
+        *   `email`: (string) Filter by email (partial match).
+        *   `limit`: (integer) Max results per page. Default: 20. Max: 100.
+        *   `offset`: (integer) Number of results to skip. Default: 0.
+    *   **Success Response (`200 OK`):**
+        ```json
+        {
+            "data": [
+                // Array of User Objects (excluding password)
+                {
+                    "id": "uuid-of-developer-1",
+                    "username": "dev1",
+                    "email": "dev1@example.com",
+                    "firstName": "Alice",
+                    "lastName": "Smith",
+                    "createdAt": "2024-07-20T09:00:00Z",
+                    "updatedAt": "2024-07-20T09:00:00Z"
+                }
+                // ... more users
+            ],
+            "pagination": {
+                "total": 5,
+                "limit": 20,
+                "offset": 0,
+                "hasNext": false
+            }
+        }
+        ```
+    *   **Error Responses:** `400 Bad Request`, `401 Unauthorized`, `500 Internal Server Error`.
+
+*   **`POST /users`**
+    *   **Description:** Create a new user.
+    *   **Request Body:**
+        ```json
+        {
+            "username": "string",     // Required. Unique. Max length: 100.
+            "email": "string",        // Required. Unique. Max length: 255.
+            "firstName": "string",    // Optional. Max length: 100.
+            "lastName": "string",     // Optional. Max length: 100.
+            "password": "string"      // Required. Client must hash securely before sending.
+        }
+        ```
+    *   **Success Response (`201 Created`):**
+        *   Headers: `Location: /api/v1/users/{new_user_id}`
+        *   Body: The newly created `User` Object (excluding password).
+    *   **Error Responses:** `400 Bad Request` (validation errors, missing required fields, username/email not unique), `401 Unauthorized`, `500 Internal Server Error`.
+
+*   **`GET /users/{id}`**
+    *   **Description:** Retrieve a specific user by ID.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the user to retrieve.
+    *   **Success Response (`200 OK`):**
+        *   Body: The requested `User` Object (excluding password).
+    *   **Error Responses:** `400 Bad Request` (invalid ID format), `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.
+
+*   **`PUT /users/{id}`**
+    *   **Description:** Update an existing user entirely. Replaces the entire resource with the provided payload.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the user to update.
+    *   **Request Body:** A complete `User` Object (excluding `id`, `createdAt`, `updatedAt`, and password). Required fields (`username`, `email`) must be present and remain unique.
+        ```json
+        {
+            "username": "string",     // Required. Unique if changed.
+            "email": "string",        // Required. Unique if changed.
+            "firstName": "string",    // Optional
+            "lastName": "string"      // Optional
+        }
+        ```
+    *   **Success Response (`200 OK`):**
+        *   Body: The updated `User` Object (excluding password).
+    *   **Error Responses:** `400 Bad Request` (validation errors, missing required fields, username/email not unique), `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.
+
+*   **`PATCH /users/{id}`**
+    *   **Description:** Partially update an existing user.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the user to update.
+    *   **Request Body:** Partial `User` Object with fields to update. Username and email must remain unique if provided.
+        ```json
+        {
+            "firstName": "Alicia",
+            "lastName": "Johnson"
+        }
+        ```
+    *   **Success Response (`200 OK`):**
+        *   Body: The updated `User` Object (excluding password).
+    *   **Error Responses:** `400 Bad Request` (validation errors, username/email not unique), `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.
+
+*   **`DELETE /users/{id}`**
+    *   **Description:** Delete a specific user. This operation should handle related data (e.g., unassign tasks, remove ownership of categories, or prevent deletion if the user has active tasks/categories depending on business rules).
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the user to delete.
+    *   **Success Response (`204 No Content`):** No response body.
+    *   **Error Responses:** `400 Bad Request`, `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.
+
+---
+
+**3.3. `Categories` Resource (`/categories`)**
+
+*   **`GET /categories`**
+    *   **Description:** Retrieve a list of all categories. Supports filtering and pagination.
+    *   **Query Parameters:**
+        *   `ownerId`: (string, UUID) Filter categories owned by a specific user ID.
+        *   `name`: (string) Filter by category name (partial match).
+        *   `limit`: (integer) Max results per page. Default: 20. Max: 100.
+        *   `offset`: (integer) Number of results to skip. Default: 0.
+    *   **Success Response (`200 OK`):**
+        ```json
+        {
+            "data": [
+                // Array of Category Objects
+                {
+                    "id": "uuid-of-project-api",
+                    "name": "API Development",
+                    "description": "Tasks related to API design and implementation.",
+                    "ownerId": "uuid-of-developer-1",
+                    "createdAt": "2024-07-20T09:00:00Z",
+                    "updatedAt": "2024-07-20T09:00:00Z"
+                }
+                // ... more categories
+            ],
+            "pagination": {
+                "total": 3,
+                "limit": 20,
+                "offset": 0,
+                "hasNext": false
+            }
+        }
+        ```
+    *   **Error Responses:** `400 Bad Request`, `401 Unauthorized`, `500 Internal Server Error`.
+
+*   **`POST /categories`**
+    *   **Description:** Create a new category.
+    *   **Request Body:**
+        ```json
+        {
+            "name": "string",                // Required. Max length: 100.
+            "description": "string",         // Optional.
+            "ownerId": "string (UUID)"       // Required. ID of the user creating the category. User must exist.
+        }
+        ```
+    *   **Success Response (`201 Created`):**
+        *   Headers: `Location: /api/v1/categories/{new_category_id}`
+        *   Body: The newly created `Category` Object.
+    *   **Error Responses:** `400 Bad Request` (validation errors, missing required fields), `401 Unauthorized`, `404 Not Found` (if `ownerId` does not exist), `500 Internal Server Error`.
+
+*   **`GET /categories/{id}`**
+    *   **Description:** Retrieve a specific category by ID.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the category to retrieve.
+    *   **Success Response (`200 OK`):**
+        *   Body: The requested `Category` Object.
+    *   **Error Responses:** `400 Bad Request` (invalid ID format), `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.
+
+*   **`PUT /categories/{id}`**
+    *   **Description:** Update an existing category entirely.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the category to update.
+    *   **Request Body:** A complete `Category` Object (excluding `id`, `ownerId`, `createdAt`, `updatedAt`). Required field (`name`) must be present.
+        ```json
+        {
+            "name": "string",                // Required. Max length: 100.
+            "description": "string"          // Optional.
+        }
+        ```
+    *   **Success Response (`200 OK`):**
+        *   Body: The updated `Category` Object.
+    *   **Error Responses:** `400 Bad Request` (validation errors), `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.
+
+*   **`PATCH /categories/{id}`**
+    *   **Description:** Partially update an existing category.
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the category to update.
+    *   **Request Body:** Partial `Category` Object with fields to update.
+        ```json
+        {
+            "description": "Updated description for the API project."
+        }
+        ```
+    *   **Success Response (`200 OK`):**
+        *   Body: The updated `Category` Object.
+    *   **Error Responses:** `400 Bad Request` (validation errors), `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.
+
+*   **`DELETE /categories/{id}`**
+    *   **Description:** Delete a specific category. Business logic must define how tasks within this category are handled (e.g., set their `categoryId` to null, reassign to a default category, or cascade delete tasks).
+    *   **Path Parameters:**
+        *   `id`: (string, UUID) The ID of the category to delete.
+    *   **Success Response (`204 No Content`):** No response body.
+    *   **Error Responses:** `400 Bad Request`, `401 Unauthorized`, `404 Not Found`, `500 Internal Server Error`.
+
+---
+
+**4. Global API Considerations**
+
+*   **Authentication & Authorization:**
+    *   Requests requiring authentication must include an `Authorization` header (e.g., `Bearer <JWT_TOKEN>`).
+    *   Authorization checks must be performed to ensure users can only access and modify resources they own or are explicitly permitted to interact with.
+*   **Error Handling:** All error responses will follow a consistent JSON structure:
+    ```json
+    {
+        "error": {
+            "code": "string (e.g., 'validation_error', 'resource_not_found', 'unauthorized')",
+            "message": "string (human-readable description of the error)",
+            "details": {} // Optional: object for specific error details, e.g., { "field": "title", "reason": "cannot be empty" }
+        }
+    }
+    ```
+*   **API Versioning:** Implemented via URL prefix (e.g., `/api/v1/`).
+*   **Rate Limiting:** APIs should implement rate limiting to prevent abuse. Exceeding limits should result in a `429 Too Many Requests` response.
+*   **Data Formats:** All request and response bodies use `application/json`. `Content-Type` and `Accept` headers should be used accordingly.
+
+**5. Design Decisions & Tradeoffs**
+
+*   **Resource Naming:** Plural nouns are used for collections (`/tasks`, `/users`, `/categories`), consistent with RESTful best practices.
+*   **UUIDs for Identifiers:** Chosen for their globality and security benefits over sequential IDs.
+*   **PUT vs. PATCH:** Both methods are provided. `PUT` is for full replacement, while `PATCH` is for partial updates, offering flexibility and efficiency for clients. `PATCH` is often preferred for updates.
+*   **Enum Definitions:** Explicitly defined enumerations for `status` and `priority` fields improve clarity, enforce data integrity, and simplify client-side validation.
+*   **Password Handling:** The `POST /users` endpoint includes a `password` field, with a strong recommendation for secure client-side hashing or server-side secure storage and handling. This API design assumes the server will securely manage password storage after receipt.
+*   **Cascading Operations:** For `DELETE` operations on `users` and `categories`, the handling of dependent data (tasks) is noted as a business logic decision, not strictly defined by the API itself, allowing for flexible implementation.
+*   **Field Lengths:** Max lengths are suggested for string fields to aid database schema design and prevent overly long inputs.
+
+**6. Boundaries**
+
+*   **In Scope:** Definition of RESTful API resources, data models, endpoints, HTTP methods, common status codes, query parameter patterns, and global considerations for a task management system.
+*   **Out of Scope:** Specific implementation details of the backend logic (database schema, persistence layer, authentication/authorization implementation logic), real-time features (e.g., WebSockets), UI design, or client-side SDKs.
+
+[VERIFICATION]
+1.  **Completeness of Core Resources and Endpoints:** The API design fully defines `Tasks`, `Users`, and `Categories` resources with comprehensive data models, standard CRUD operations (GET, POST, PUT, PATCH, DELETE), example request/response bodies, query parameters for collections, and appropriate HTTP status codes for success and errors.
+2.  **Adherence to RESTful Principles and SDD Constraints:** The design strictly follows RESTful principles (resource-based URIs, uniform interface, statelessness, standard HTTP methods) and SDD constraints (clear, efficient, accurate, structured, actionable, no overcomplication, no hallucination, no filler).
+3.  **Actionable and Structured Output:** The artifact is well-structured with clear sections. Data models are explicit, endpoints are detailed with parameters and examples, and global considerations are outlined, making the API design actionable for development.

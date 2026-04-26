@@ -15,6 +15,7 @@ import { routeSkill } from "../skills/router.js";
 import { runSelfResearch } from "../skills/tools/self-research.js";
 import { selectChain, runChain } from "./chains.js";
 import { runSelfCritique } from "../skills/tools/self-critique.js";
+import { scoreOutput, saveScore, displayScore } from "../skills/tools/scorer.js";
 
 // ── Main execution ───────────────────────────────────────────────────────────
 async function run() {
@@ -106,6 +107,14 @@ async function run() {
     console.log(finalResult);
 
     saveMemory(config, `\nUser: ${task}\nAssistant: ${finalResult}`);
+
+    // ── Scoring ──────────────────────────────────────────────────────────
+    if (config.scoring_enabled) {
+      const scores = scoreOutput(task, finalResult);
+      displayScore(scores);
+      saveScore(task, finalResult, scores);
+      logExecution(`SCORE: overall=${scores.overall} clarity=${scores.clarity} usefulness=${scores.usefulness} efficiency=${scores.efficiency} redundancy=${scores.redundancy}`);
+    }
     logExecution(`TASK COMPLETED: ${task}`);
 
   } catch (err) {

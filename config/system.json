@@ -11,5 +11,6 @@
   "auto_improvement": false,
   "self_research_enabled": true,
   "self_research_mode": "local",
-  "self_critique_enabled": false
+  "self_critique_enabled": false,
+  "scoring_enabled": true
 }
