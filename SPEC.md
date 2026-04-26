@@ -580,7 +580,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 5 | Multi-agent chains + per-agent model routing + Mentorship System | ✅ Complete |
 | 6 | Scoring system (clarity, usefulness, efficiency, redundancy) | ✅ Complete |
 | 7 | Meta system + Controlled self-improvement proposal system | ✅ Complete |
-| 8 | Postmortem system | 🔲 Planned |
+| 8 | Postmortem system | ✅ Complete |
 | 9 | Drift control (baseline comparison) | 🔲 Planned |
 | 10 | Cost awareness (token + API call tracking) | 🔲 Planned |
 | 11 | creator + strategist agents + image-gen skill (mentor already built in Phase 5) | 🔲 Planned |
@@ -706,5 +706,9 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-26 | 2.1.1 | Phase 7 upgrade — auto-apply on Y, self-commits with git | applier.js applies concrete file edits per dimension on user approval |
 | 2026-04-26 | 2.1.1 | skills/tools/applier.js created | Edits agent files, commits with git, logs to meta/logs/self-improvements.jsonl |
 | 2026-04-26 | 2.1.1 | proposal-manager.js updated — calls applier on Y | Prints what changed and commit hash after every self-improvement |
+
+| 2026-04-26 | 2.2.0 | Phase 8 complete — postmortem system live | Auto-generates structured postmortem after every pipeline archive stage |
+| 2026-04-26 | 2.2.0 | skills/tools/postmortem.js created | Reads project artifacts, generates markdown report to meta/postmortems/ |
+| 2026-04-26 | 2.2.0 | pipeline.js patched — calls generatePostmortem after archive in both runPipeline and resumePipeline | Postmortem filepath printed and logged on completion |
 
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
