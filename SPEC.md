@@ -703,4 +703,8 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-26 | 2.1.0 | meta_observation_enabled flag added to system.json | Config-controlled — disable to silence observer entirely |
 | 2026-04-26 | 2.1.0 | Pre-Phase 7 audit — analyst and mentor agents created, missing dirs scaffolded | Gaps found vs SPEC: analyst/mentor had no files, learning/ and meta/ dirs absent |
 
+| 2026-04-26 | 2.1.1 | Phase 7 upgrade — auto-apply on Y, self-commits with git | applier.js applies concrete file edits per dimension on user approval |
+| 2026-04-26 | 2.1.1 | skills/tools/applier.js created | Edits agent files, commits with git, logs to meta/logs/self-improvements.jsonl |
+| 2026-04-26 | 2.1.1 | proposal-manager.js updated — calls applier on Y | Prints what changed and commit hash after every self-improvement |
+
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
