@@ -18,6 +18,7 @@ import { runSelfCritique } from "../skills/tools/self-critique.js";
 import { scoreOutput, saveScore, displayScore } from "../skills/tools/scorer.js";
 import { observe } from "../skills/tools/observer.js";
 import { captureBaseline, checkDrift, displayDrift, displayBaseline } from "../skills/tools/drift-control.js";
+import { logCost, displayCost, showTotals, estimateTokens } from "../skills/tools/cost-tracker.js";
 import { runProposalManager } from "../skills/tools/proposal-manager.js";
 
 // ── Main execution ───────────────────────────────────────────────────────────
@@ -29,6 +30,11 @@ async function run() {
     const projectTask = task.slice(8).trim();
     const deps = { loadAgent, loadMemory, config: loadConfig(), runEngine, adapter: loadEngineAdapter(), logExecution };
     await runPipeline(projectTask, deps);
+    return;
+  }
+
+  if (task.toLowerCase() === 'costs') {
+    showTotals();
     return;
   }
 
@@ -142,6 +148,12 @@ async function run() {
       await runProposalManager();
     }
 
+    // ── Cost tracking ──────────────────────────────────────────────────
+    if (config.cost_tracking_enabled) {
+      const costEntry = logCost(task, task, finalResult, chain.agents.length);
+      displayCost(costEntry);
+      logExecution(`COST: calls=${costEntry.api_calls} tokens=${costEntry.total_tokens}`);
+    }
     logExecution(`TASK COMPLETED: ${task}`);
 
   } catch (err) {

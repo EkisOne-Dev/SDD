@@ -1,0 +1,11 @@
+{
+  "id": "clarity-test-001",
+  "dimension": "clarity",
+  "status": "pending",
+  "created": "2026-04-26T00:00:00.000Z",
+  "observed": "clarity scored below 60 in 3 of the last 5 runs (avg: 55)",
+  "issue": "TEST PROPOSAL — verifying S option",
+  "suggestion": "This is a test. Choose S to verify snooze works.",
+  "snoozed_until": null,
+  "resolved": null
+}

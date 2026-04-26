@@ -13,5 +13,6 @@
   "self_research_mode": "local",
   "self_critique_enabled": false,
   "scoring_enabled": true,
-  "meta_observation_enabled": true
+  "meta_observation_enabled": true,
+  "cost_tracking_enabled": true
 }

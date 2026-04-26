@@ -8,3 +8,5 @@
 {"timestamp":"2026-04-26T17:53:23.788Z","task":"explain what a linked list is","scores":{"clarity":90,"usefulness":100,"efficiency":55,"redundancy":74,"overall":80}}
 {"timestamp":"2026-04-26T17:56:35.049Z","task":"what is a stack data structure","scores":{"clarity":90,"usefulness":100,"efficiency":55,"redundancy":0,"overall":61}}
 {"timestamp":"2026-04-26T18:00:47.248Z","task":"what is a queue data structure","scores":{"clarity":90,"usefulness":100,"efficiency":55,"redundancy":35,"overall":70}}
+{"timestamp":"2026-04-26T19:01:32.894Z","task":"what is an array","scores":{"clarity":90,"usefulness":100,"efficiency":55,"redundancy":80,"overall":81}}
+{"timestamp":"2026-04-26T21:35:09.073Z","task":"what is a binary tree","scores":{"clarity":90,"usefulness":100,"efficiency":55,"redundancy":65,"overall":78}}
