@@ -1411,3 +1411,68 @@ All API endpoints are prefixed with `/api/v1/`.
 1.  **Completeness of Core Resources and Endpoints:** The API design fully defines `Tasks`, `Users`, and `Categories` resources with comprehensive data models, standard CRUD operations (GET, POST, PUT, PATCH, DELETE), example request/response bodies, query parameters for collections, and appropriate HTTP status codes for success and errors.
 2.  **Adherence to RESTful Principles and SDD Constraints:** The design strictly follows RESTful principles (resource-based URIs, uniform interface, statelessness, standard HTTP methods) and SDD constraints (clear, efficient, accurate, structured, actionable, no overcomplication, no hallucination, no filler).
 3.  **Actionable and Structured Output:** The artifact is well-structured with clear sections. Data models are explicit, endpoints are detailed with parameters and examples, and global considerations are outlined, making the API design actionable for development.
+
+User: explain what a REST API is
+Assistant: [INTERNAL REASONING]
+**1. Break down the task into first principles:**
+The user has requested a definition of "what a REST API is." This requires explaining the underlying architectural style (REST - Representational State Transfer) and how it's applied to create an Application Programming Interface (API). Key concepts to cover include:
+    *   REST principles (statelessness, client-server, uniform interface, etc.).
+    *   The role of an API.
+    *   How REST principles translate into practical API design (resources, HTTP methods, representations, URIs).
+    *   Common characteristics and benefits.
+
+**2. Identify constraints and dependencies:**
+*   **SDD Basic Execution Phase:** Output must be clear, efficient, accurate, structured, actionable, avoid overcomplication, and have no hallucination or filler.
+*   **Developer Agent Identity:** My role is to provide clear, technically accurate explanations. The explanation should be detailed enough to be useful for understanding API concepts but not so complex as to be overwhelming for a general query.
+*   **TRI-STRUCTURE MANDATE:** The output must strictly follow the `[INTERNAL REASONING]`, `[ARTIFACT]`, `[VERIFICATION]` structure.
+
+**3. State your approach before executing:**
+My approach will be to first define REST as an architectural style, then explain what an API built using this style entails. I will cover the core principles of REST and how they are implemented in a REST API, using standard HTTP mechanisms and common data formats.
+
+*   **Define REST:** Explain its meaning and purpose as an architectural style.
+*   **Explain Core REST Principles:** Detail the fundamental constraints that define REST.
+*   **Define REST API:** Describe how these principles are applied in practice.
+*   **Key Characteristics:** Summarize the essential features of REST APIs.
+*   **Illustrative Example:** Provide a simple, practical example.
+
+[ARTIFACT]
+
+**What is a REST API?**
+
+A **REST API** (Representational State Transfer Application Programming Interface) is a way for different software applications to communicate with each other over a network, typically the internet. It's built upon the principles of **REST**, which is an architectural style, not a specific protocol or standard. REST defines a set of constraints for designing networked applications, primarily focused on how resources are accessed and manipulated.
+
+**Core Principles of REST:**
+
+1.  **Client-Server:** A clear separation exists between the client (requesting data or actions) and the server (providing data or performing actions). They can evolve independently.
+2.  **Statelessness:** Each request from a client to the server must contain all the information necessary for the server to understand and fulfill the request. The server does not store any client context between requests. This improves scalability and reliability.
+3.  **Cacheability:** Responses from the server should indicate whether they can be cached by clients or intermediaries. This improves performance by allowing clients to reuse previously fetched data.
+4.  **Uniform Interface:** This is a key constraint that simplifies and decouples the architecture. It has several sub-constraints:
+    *   **Resource Identification:** Resources (e.g., a user profile, a list of tasks) are identified by URIs (Uniform Resource Identifiers).
+    *   **Resource Manipulation Through Representations:** Clients interact with resources by exchanging representations of those resources (commonly in JSON or XML format).
+    *   **Self-Descriptive Messages:** Each message contains enough information to understand how to process it, including the method (GET, POST, PUT, DELETE) and the media type.
+    *   **HATEOAS (Hypermedia as the Engine of Application State):** Resources should include links to related actions or resources, guiding the client through the application's state. (Often partially implemented).
+5.  **Layered System:** A client cannot tell whether it's connected directly to the end server or to an intermediary (like a load balancer or proxy). This allows for flexibility in system architecture.
+
+**How a REST API Works in Practice:**
+
+A REST API uses standard HTTP methods to perform actions on resources identified by URIs.
+
+*   **Resources:** Everything is a resource (e.g., a specific user ` /users/123 ` or a collection of tasks ` /tasks `).
+*   **HTTP Methods (Verbs):** These are used to define the action to be performed on a resource:
+    *   `GET`: Retrieve a resource or collection.
+    *   `POST`: Create a new resource.
+    *   `PUT`: Update/replace a resource entirely.
+    *   `PATCH`: Partially update a resource.
+    *   `DELETE`: Remove a resource.
+*   **Representations:** Data is exchanged in a representation format, most commonly **JSON**.
+*   **Stateless Communication:** The server treats each request independently. If state is needed (like user authentication), it's sent with every request (e.g., via tokens in headers).
+*   **Status Codes:** Servers respond with HTTP status codes (e.g., `200 OK`, `201 Created`, `404 Not Found`, `500 Internal Server Error`) to indicate the result of the request.
+
+**Example:**
+
+To get a list of all tasks, a client might send a `GET` request to the URI ` /api/tasks `. The server would respond with a `200 OK` status and a JSON representation of the tasks. To create a new task, a client might send a `POST` request to ` /api/tasks ` with a JSON body describing the new task.
+
+[VERIFICATION]
+1.  **Completeness of Core Concepts:** The explanation accurately defines REST as an architectural style and a REST API as its implementation, covering key principles like client-server, statelessness, uniform interface, and the use of resources, URIs, HTTP methods, and representations.
+2.  **Adherence to SDD Constraints:** The explanation is clear, efficient, accurate, and structured. It avoids overcomplication, filler text, and hallucination, presenting the information in a concise and actionable manner.
+3.  **Clarity of Practical Application:** The artifact clearly illustrates how REST principles translate into practical API design by detailing the role of resources, HTTP methods, stateless communication, and status codes, supported by a simple example.

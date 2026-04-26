@@ -16,6 +16,8 @@ import { runSelfResearch } from "../skills/tools/self-research.js";
 import { selectChain, runChain } from "./chains.js";
 import { runSelfCritique } from "../skills/tools/self-critique.js";
 import { scoreOutput, saveScore, displayScore } from "../skills/tools/scorer.js";
+import { observe } from "../skills/tools/observer.js";
+import { runProposalManager } from "../skills/tools/proposal-manager.js";
 
 // ── Main execution ───────────────────────────────────────────────────────────
 async function run() {
@@ -115,6 +117,15 @@ async function run() {
       saveScore(task, finalResult, scores);
       logExecution(`SCORE: overall=${scores.overall} clarity=${scores.clarity} usefulness=${scores.usefulness} efficiency=${scores.efficiency} redundancy=${scores.redundancy}`);
     }
+    // ── Meta observation ──────────────────────────────────────────────
+    if (config.meta_observation_enabled) {
+      const staged = observe();
+      if (staged) {
+        logExecution(`META: ${staged.length} proposal(s) staged`);
+        await runProposalManager();
+      }
+    }
+
     logExecution(`TASK COMPLETED: ${task}`);
 
   } catch (err) {
