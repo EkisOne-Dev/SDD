@@ -11,22 +11,8 @@ import {
 
 const CHAINS = [
   {
-    type: "creative",
-    triggers: ["write", "generate", "draft", "content", "blog",
-               "post", "script", "story", "caption", "copy", "email",
-               "newsletter", "creative"],
-    agents: ["creator", "reviewer"]
-  },
-  {
-    type: "strategy",
-    triggers: ["strategy", "strategize", "roadmap", "prioritize", "plan", "decision",
-               "tradeoff", "framework", "goals", "okr", "vision", "mission",
-               "business", "growth", "launch", "market", "positioning"],
-    agents: ["strategist", "reviewer"]
-  },
-  {
     type: "architecture",
-    triggers: ["design", "architecture", "structure", "system", "diagram",
+    triggers: ["design", "architecture", "structure", "system", "plan", "diagram",
                "component", "module", "schema", "blueprint", "scaffold", "layout",
                "hierarchy", "dependency"],
     agents: ["researcher", "architect", "reviewer"]
@@ -52,6 +38,20 @@ const CHAINS = [
     agents: ["researcher", "analyst"]
   },
   {
+  {
+    type: "strategy",
+    triggers: ["strategy", "strategize", "roadmap", "prioritize", "plan", "decision",
+               "tradeoff", "framework", "goals", "okr", "vision", "mission",
+               "business", "growth", "launch", "market", "positioning"],
+    agents: ["strategist", "reviewer"]
+  },
+  {
+    type: "creative",
+    triggers: ["write", "create", "generate", "draft", "content", "blog",
+               "post", "script", "story", "prompt", "image prompt", "caption",
+               "copy", "ad", "email", "newsletter", "creative"],
+    agents: ["creator", "reviewer"]
+  },
     type: "review",
     triggers: ["review", "check", "critique", "audit", "validate", "proofread",
                "rate", "score", "feedback", "quality"],
