@@ -579,7 +579,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 4 | Skills execution layer (router + self-research) | ✅ Complete |
 | 5 | Multi-agent chains + per-agent model routing + Mentorship System | ✅ Complete |
 | 6 | Scoring system (clarity, usefulness, efficiency, redundancy) | ✅ Complete |
-| 7 | Meta system + Controlled self-improvement proposal system | 🔲 Planned |
+| 7 | Meta system + Controlled self-improvement proposal system | ✅ Complete |
 | 8 | Postmortem system | 🔲 Planned |
 | 9 | Drift control (baseline comparison) | 🔲 Planned |
 | 10 | Cost awareness (token + API call tracking) | 🔲 Planned |
@@ -696,5 +696,11 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-25 | 2.0.0 | skills/tools/scorer.js — rule-based scorer, no API call | Scores clarity, usefulness, efficiency, redundancy — overall out of 100 |
 | 2026-04-25 | 2.0.0 | meta/scores/scores.jsonl — append-only score log | Feeds Phase 7 meta observation system |
 | 2026-04-25 | 2.0.0 | scoring_enabled flag added to system.json | Config-controlled — off by default disables panel and logging |
+
+| 2026-04-26 | 2.1.0 | Phase 7 complete — meta observer and proposal manager live | Pattern detection across score log, staged proposals with Y/N/S/D user gate |
+| 2026-04-26 | 2.1.0 | skills/tools/observer.js — detects weak dimensions across last 5 runs | Stages proposals to meta/proposals/ when 3+ of 5 runs fall below threshold |
+| 2026-04-26 | 2.1.0 | skills/tools/proposal-manager.js — surfaces proposals after each run | Y=accept, N=dismiss, S=snooze, D=dismiss permanently — user always decides |
+| 2026-04-26 | 2.1.0 | meta_observation_enabled flag added to system.json | Config-controlled — disable to silence observer entirely |
+| 2026-04-26 | 2.1.0 | Pre-Phase 7 audit — analyst and mentor agents created, missing dirs scaffolded | Gaps found vs SPEC: analyst/mentor had no files, learning/ and meta/ dirs absent |
 
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
