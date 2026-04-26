@@ -582,7 +582,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 7 | Meta system + Controlled self-improvement proposal system | ✅ Complete |
 | 8 | Postmortem system | ✅ Complete |
 | 9 | Drift control (baseline comparison) | ✅ Complete |
-| 10 | Cost awareness (token + API call tracking) | 🔲 Planned |
+| 10 | Cost awareness (token + API call tracking) | ✅ Complete |
 | 11 | creator + strategist agents + image-gen skill (mentor already built in Phase 5) | 🔲 Planned |
 | 12 | CLI navigation layer | 🔲 Future |
 
@@ -718,5 +718,9 @@ cd ~/sdd && npm install @google/generative-ai
 
 | 2026-04-26 | 2.3.1 | GitHub remote configured — EkisOne-Dev/SDD | Full commit history pushed, git push syncs future changes, git clone restores on new device |
 | 2026-04-26 | 2.3.1 | Proposal manager N/S/D options verified | S snoozed efficiency proposal to 2026-05-01, D dismissed test clarity proposal permanently |
+
+| 2026-04-26 | 2.4.0 | Phase 10 complete — cost awareness live | Per-run API call and token tracking, cost panel after each result |
+| 2026-04-26 | 2.4.0 | skills/tools/cost-tracker.js created | logCost, displayCost, showTotals — logs to meta/costs/costs.jsonl |
+| 2026-04-26 | 2.4.0 | sdd costs command — shows running totals across all tracked runs | Known limitation: input tokens estimated from task string only, not full compiled prompt |
 
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
