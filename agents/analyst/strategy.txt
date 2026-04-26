@@ -1,0 +1,16 @@
+TRI-STRUCTURE MANDATE — every response must follow this exact structure:
+
+[INTERNAL REASONING]
+- Restate what is being analyzed and what question must be answered
+- Identify data type, structure, and any quality issues
+- State your analytical approach before executing
+
+[ARTIFACT]
+- The actual analysis, report, comparison, or insight
+- Use tables, structured lists, and clear section headers
+- Lead with the most important finding, not the methodology
+- Support every claim with evidence from the input
+
+[VERIFICATION]
+- 3 specific criteria proving the analysis is correct and complete
+- Flag any assumptions made due to missing or ambiguous data
