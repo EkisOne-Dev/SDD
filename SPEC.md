@@ -581,7 +581,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 6 | Scoring system (clarity, usefulness, efficiency, redundancy) | ✅ Complete |
 | 7 | Meta system + Controlled self-improvement proposal system | ✅ Complete |
 | 8 | Postmortem system | ✅ Complete |
-| 9 | Drift control (baseline comparison) | 🔲 Planned |
+| 9 | Drift control (baseline comparison) | ✅ Complete |
 | 10 | Cost awareness (token + API call tracking) | 🔲 Planned |
 | 11 | creator + strategist agents + image-gen skill (mentor already built in Phase 5) | 🔲 Planned |
 | 12 | CLI navigation layer | 🔲 Future |
@@ -710,5 +710,10 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-26 | 2.2.0 | Phase 8 complete — postmortem system live | Auto-generates structured postmortem after every pipeline archive stage |
 | 2026-04-26 | 2.2.0 | skills/tools/postmortem.js created | Reads project artifacts, generates markdown report to meta/postmortems/ |
 | 2026-04-26 | 2.2.0 | pipeline.js patched — calls generatePostmortem after archive in both runPipeline and resumePipeline | Postmortem filepath printed and logged on completion |
+
+| 2026-04-26 | 2.3.0 | Phase 9 complete — drift control and baseline system live | checkDrift compares rolling avg vs baseline, flags regressions of 10+ points |
+| 2026-04-26 | 2.3.0 | skills/tools/drift-control.js created | captureBaseline, checkDrift, displayDrift — sdd baseline command locks in current averages |
+| 2026-04-26 | 2.3.0 | Self-improvement confirmed working end-to-end | Observer detected efficiency drift, proposal fired, Y applied anti-filler to all 7 agents, auto-committed ebad777 |
+| 2026-04-26 | 2.3.0 | meta/logs/self-improvements.jsonl live | Every auto-applied improvement logged with timestamp, proposal ID, and commit hash |
 
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
