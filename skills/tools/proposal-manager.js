@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
 import { fileURLToPath } from 'url';
+import { applyProposal } from './applier.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROPOSALS_DIR = path.join(__dirname, '../../meta/proposals');
@@ -46,30 +47,33 @@ async function runProposalManager() {
     console.log(`\n📊 Observed:    ${proposal.observed}`);
     console.log(`⚠️  Issue:       ${proposal.issue}`);
     console.log(`🔧 Suggestion:  ${proposal.suggestion}`);
-    console.log('\n  Y = Apply suggestion (manual — I will make the change)');
-    console.log('  N = Reject this proposal permanently');
-    console.log('  S = Snooze for 5 runs');
+    console.log('\n  Y = Apply this improvement automatically');
+    console.log('  N = Reject permanently');
+    console.log('  S = Snooze for ~5 days');
     console.log('  D = Dismiss permanently\n');
 
     const answer = await prompt('Your decision [Y/N/S/D]: ');
 
     if (answer === 'Y') {
-      proposal.status = 'accepted';
-      proposal.resolved = new Date().toISOString();
-      saveProposal(proposal);
-      console.log('✅ Accepted. Apply the suggestion manually when ready.\n');
+      console.log('\n⚙️  Applying improvement...');
+      const result = applyProposal(proposal);
+      if (result.success) {
+        proposal.status = 'accepted';
+        proposal.resolved = new Date().toISOString();
+        proposal.commit = result.commit;
+        saveProposal(proposal);
+        console.log(`✅ Applied: ${result.description}`);
+        console.log(`📦 Committed as: ${result.commit}`);
+        console.log('💾 Logged to meta/logs/self-improvements.jsonl\n');
+      } else {
+        console.log(`❌ Apply failed: ${result.message}\n`);
+      }
     } else if (answer === 'N' || answer === 'D') {
       proposal.status = 'dismissed';
       proposal.resolved = new Date().toISOString();
       saveProposal(proposal);
       console.log('🚫 Dismissed.\n');
     } else if (answer === 'S') {
-      const scores = JSON.parse(
-        fs.readFileSync(path.join(__dirname, '../../meta/scores/scores.jsonl')
-          .replace('scores.jsonl', 'scores.jsonl'), 'utf8')
-          .trim().split('\n').filter(Boolean).slice(-1)[0]
-      );
-      // Snooze: mark with current run count + 5
       proposal.snoozed_until = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString();
       saveProposal(proposal);
       console.log('⏸️  Snoozed for ~5 days.\n');
