@@ -56,49 +56,65 @@ export async function runLearnCommand(topic, adapter) {
     return;
   }
 
-  const mentorContext = buildMentorContext(topic, roadmap, progress, lastSession);
-  const agent = loadAgent('mentor');
-  const mentorPrompt = `${agent.identity}\n\n${agent.strategy}\n\nCONSTRAINTS: ${JSON.stringify(agent.constraints)}\n\n${mentorContext}`;
-
   console.log(`\n🎓 SDD Mentor — ${topic}`);
-  console.log(`   Topic ${progress.current_topic_index + 1}/${roadmap.topics.length}: ${roadmap.topics[progress.current_topic_index]}\n`);
+  console.log(`   Type "next" to advance topic, "quit" to exit.\n`);
 
-  let response;
-  try {
-    response = await runEngine(mentorPrompt, adapter);
-  } catch (e) {
-    if (e.status === 429 || (e.message && e.message.includes('429'))) {
-      console.log('\n⚠️  API quota reached. Try again later or switch adapter to fallback.\n');
-      console.log('  To switch: edit engine/adapter.json and set "active": "fallback"\n');
-    } else {
-      console.log('\n❌ Engine error:', e.message, '| status:', e.status, '| full:', JSON.stringify(e).slice(0,300));
+  let currentSession = lastSession;
+
+  while (progress.current_topic_index < roadmap.topics.length) {
+    console.log(`\n📖 Topic ${progress.current_topic_index + 1}/${roadmap.topics.length}: ${roadmap.topics[progress.current_topic_index]}\n`);
+
+    const mentorContext = buildMentorContext(topic, roadmap, progress, currentSession);
+    const agent = loadAgent('mentor');
+    const mentorPrompt = `${agent.identity}\n\n${agent.strategy}\n\nCONSTRAINTS: ${JSON.stringify(agent.constraints)}\n\n${mentorContext}`;
+
+    let response;
+    try {
+      response = await runEngine(mentorPrompt, adapter);
+    } catch (e) {
+      if (e.status === 429 || (e.message && e.message.includes('429'))) {
+        console.log('\n⚠️  API quota reached. Progress saved. Resume with: sdd learn "' + topic + '"\n');
+      } else {
+        console.log('\n❌ Engine error:', e.message);
+      }
+      break;
     }
-    return;
-  }
-  const artifact = response.includes('[ARTIFACT]')
-    ? response.split('[ARTIFACT]')[1].split('[VERIFICATION]')[0].trim()
-    : response;
 
-  console.log('\n' + artifact + '\n');
+    const artifact = response.includes('[ARTIFACT]')
+      ? response.split('[ARTIFACT]')[1].split('[VERIFICATION]')[0].trim()
+      : response;
 
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-  const answer = await prompt(rl, 'Your response (or "next" to advance, "quit" to exit): ');
-  rl.close();
+    console.log('\n' + artifact + '\n');
 
-  const session = {
-    timestamp: new Date().toISOString(),
-    topic: roadmap.topics[progress.current_topic_index],
-    last_question: artifact.split('\n').filter(Boolean).pop(),
-    learner_response: answer.trim()
-  };
-  saveSession(slug, session);
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    const answer = await prompt(rl, 'You: ');
+    rl.close();
 
-  if (answer.trim().toLowerCase() === 'next') {
-    progress.completed.push(roadmap.topics[progress.current_topic_index]);
-    progress.current_topic_index++;
-    saveProgress(slug, progress);
-    console.log(`\n✅ Topic marked complete. Moving to: ${roadmap.topics[progress.current_topic_index] ?? 'Final review'}\n`);
-  } else if (answer.trim().toLowerCase() !== 'quit') {
-    console.log('\n📝 Response saved. Run sdd learn "' + topic + '" to continue.\n');
+    const cmd = answer.trim().toLowerCase();
+
+    if (cmd === 'quit') {
+      console.log('\n👋 Session saved. Resume anytime with: sdd learn "' + topic + '"\n');
+      break;
+    }
+
+    const sessionEntry = {
+      timestamp: new Date().toISOString(),
+      topic: roadmap.topics[progress.current_topic_index],
+      last_question: artifact.split('\n').filter(Boolean).pop(),
+      learner_response: answer.trim()
+    };
+    saveSession(slug, sessionEntry);
+    currentSession = sessionEntry;
+
+    if (cmd === 'next') {
+      progress.completed.push(roadmap.topics[progress.current_topic_index]);
+      progress.current_topic_index++;
+      saveProgress(slug, progress);
+      if (progress.current_topic_index >= roadmap.topics.length) {
+        console.log(`\n🎓 All topics complete! You have finished "${topic}".\n`);
+        break;
+      }
+      console.log(`\n✅ Topic complete. Advancing...\n`);
+    }
   }
 }

@@ -85,5 +85,6 @@ Known weak spots: ${weak}
 ${last}
 
 Teach the current topic using the Socratic method. End with a verification question.
+If the learner's answer is incorrect or off-target: say so directly before re-explaining. Do not diplomatically acknowledge and move on. Say something like "Not quite — that is not what I was looking for." then correct the misconception explicitly before asking the next question.
 `.trim();
 }
