@@ -584,7 +584,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 9 | Drift control (baseline comparison) | ✅ Complete |
 | 10 | Cost awareness (token + API call tracking) | ✅ Complete |
 | 11 | creator + strategist agents + image-gen skill (mentor already built in Phase 5) | ✅ Complete |
-| 12 | CLI navigation layer | 🔲 Future |
+| 12 | CLI navigation layer | ✅ Complete |
 
 ---
 
@@ -729,3 +729,6 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-26 | 2.5.0 | Chain order: creative first, then strategy, architecture, development, research, analysis, review | Order matters for keyword priority |
 
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
+| 2026-04-27 | 2.6.0 | Phase 12 complete — CLI navigation layer live | sdd with no args shows interactive menu, sdd help shows command reference, sdd status shows system snapshot |
+| 2026-04-27 | 2.6.0 | orchestrator/menu.js created — showHelp, showStatus, runMenu | readline-based, no new deps, menu passes control back to run() |
+| 2026-04-27 | 2.6.0 | run() refactored to accept injectedTask param | menu can call run() directly with user input |
