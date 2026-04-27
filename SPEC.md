@@ -52,7 +52,9 @@
 ├── orchestrator/
 │   ├── main.js                    ← Core entry logic
 │   ├── chains.js                  ← Phase 5 — multi-agent chain runner
-│   └── orchestrator.js            ← All system functions
+│   ├── orchestrator.js            ← All system functions
+│   ├── pipeline.js                ← Phase 3 — 7-stage pipeline runner
+│   └── menu.js                    ← Phase 12 — CLI navigation (help, status, interactive menu)
 ├── agents/
 │   ├── basic/                     ← MVP fallback agent ✅
 │   │   ├── identity.txt
@@ -78,8 +80,17 @@
 │       ├── capability-check.js    ← ✅ Active — Phase 1
 │       ├── negotiator.js          ← ✅ Active — Phase 1
 │       ├── self-research.js       ← ✅ Active — Phase 4
-│       ├── self-critique.js      ← ✅ Active — Phase 5
-│       └── image-gen.js           ← Phase 11
+│       ├── self-critique.js       ← ✅ Active — Phase 5
+│       ├── scorer.js              ← ✅ Active — Phase 6
+│       ├── observer.js             ← ✅ Active — Phase 7
+│       ├── proposal-manager.js     ← ✅ Active — Phase 7
+│       ├── applier.js              ← ✅ Active — Phase 7
+│       ├── postmortem.js           ← ✅ Active — Phase 8
+│       ├── drift-control.js        ← ✅ Active — Phase 9
+│       ├── cost-tracker.js         ← ✅ Active — Phase 10
+│       ├── image-gen.js            ← ✅ Active — Phase 11
+│       ├── learner.js              ← ✅ Active — Phase 12 (mentorship)
+│       └── learn-command.js        ← ✅ Active — Phase 12 (mentorship)
 ├── memory/
 │   ├── core/
 │   ├── patterns/
@@ -732,10 +743,11 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-27 | 2.6.0 | orchestrator/menu.js created — showHelp, showStatus, runMenu | readline-based, no new deps, menu passes control back to run() |
 | 2026-04-27 | 2.6.0 | run() refactored to accept injectedTask param | menu can call run() directly with user input |
 
-*End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
 | 2026-04-27 | 2.7.0 | sdd learn command live — mentorship system wired | Roadmap gen via Gemini, Socratic mentor sessions, progress + session persistence, 429 graceful handling |
 | 2026-04-27 | 2.7.0 | skills/tools/learner.js — roadmap, progress, session, context builder | All learning state management in one module |
 | 2026-04-27 | 2.7.0 | skills/tools/learn-command.js — full learn command handler | Generates roadmap if absent, loads mentor, saves session, advances on "next" |
 | 2026-04-27 | 2.7.0 | OpenRouter fallback model updated to llama-3.3-70b-instruct:free | llama-4-scout and llama-3.1-8b removed from free tier |
 | 2026-04-27 | 2.7.0 | Score display fixed — reads scores.overall correctly in sdd status | Was reading last.overall, corrected to last.scores.overall |
 | 2026-04-27 | 2.7.0 | Image gen live — Pollinations.ai wired, sdd image command added, menu option 8 | URL generated and confirmed loading in browser |
+
+*End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
