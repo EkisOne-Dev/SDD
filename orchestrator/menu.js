@@ -37,7 +37,7 @@ export function showStatus() {
     if (lines.length) {
       try {
         const last = JSON.parse(lines[lines.length - 1]);
-        console.log(`  Last score:   ${last.overall ?? '—'}/100  (${(last.task ?? '').slice(0, 40)})`);
+        console.log(`  Last score:   ${last.scores?.overall ?? '—'}/100  (${(last.task ?? '').slice(0, 40)})`);
       } catch { console.log('  Last score:   —'); }
     }
   } else {
