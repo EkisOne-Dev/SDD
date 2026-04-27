@@ -23,6 +23,7 @@ export function showHelp() {
   sdd costs               Show API cost totals
   sdd baseline            Lock current score averages
   sdd status              System snapshot
+  sdd image "description"  Generate an image via Pollinations.ai
   sdd help                Show this reference
   sdd                     Interactive menu
 `);
@@ -87,6 +88,7 @@ export async function runMenu(runTask) {
   5. View costs
   6. Help
   7. Exit
+  8. Generate an image
 `);
 
   const choice = (await prompt(rl, 'Select: ')).trim();
@@ -117,6 +119,13 @@ export async function runMenu(runTask) {
     case '4': showStatus(); break;
     case '5': await runTask('costs'); break;
     case '6': showHelp(); break;
+    case '8': {
+      const rl2 = readline.createInterface({ input: process.stdin, output: process.stdout });
+      const desc = await prompt(rl2, 'Image description: ');
+      rl2.close();
+      if (desc.trim()) await runTask('image ' + desc.trim());
+      break;
+    }
     case '7':
     default:
       console.log('\nGoodbye.\n');

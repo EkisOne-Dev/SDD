@@ -20,6 +20,7 @@ import { observe } from "../skills/tools/observer.js";
 import { captureBaseline, checkDrift, displayDrift, displayBaseline } from "../skills/tools/drift-control.js";
 import { logCost, displayCost, showTotals, estimateTokens } from "../skills/tools/cost-tracker.js";
 import { showHelp, showStatus, runMenu } from './menu.js';
+import { generateImage } from '../skills/tools/image-gen.js';
 import { runProposalManager } from "../skills/tools/proposal-manager.js";
 
 // ── Main execution ───────────────────────────────────────────────────────────
@@ -65,6 +66,17 @@ async function run(injectedTask = null) {
     const projectName = task.slice(7).trim();
     const deps = { loadAgent, loadMemory, config: loadConfig(), runEngine, adapter: loadEngineAdapter(), logExecution };
     await resumePipeline(projectName, deps);
+    return;
+  }
+
+  if (task.toLowerCase().startsWith('image ')) {
+    const description = task.slice(6).trim();
+    if (!description) { console.log('Usage: sdd image "description"'); return; }
+    const result = await generateImage(description);
+    console.log(`\n🎨 Image Generation\n`);
+    console.log(`  Prompt:  ${result.prompt}`);
+    console.log(`  URL:     ${result.url}`);
+    console.log(`\n  Open the URL in any browser to view/download the image.\n`);
     return;
   }
 
