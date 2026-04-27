@@ -902,7 +902,7 @@ cat ~/sdd/learning/roadmaps/javascript-for-beginners.json
 Expected: JSON with `topic` and `topics` array of 8 progressive learning topics.
 
 **Known limitations:**
-- Session is currently single-exchange: one mentor message → one user response → session saves → process exits. Continuous multi-turn session loop is planned (Phase 13).
+- Session runs as a continuous loop — stays open until user types "quit" or "next" advances all topics. (Phase 13 complete)
 - Gemini free tier (20 req/day) can be exhausted before a session completes.
 - OpenRouter free tier models change without notice — fallback may fail if model is removed.
 
