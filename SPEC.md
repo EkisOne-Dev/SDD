@@ -751,3 +751,6 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-27 | 2.7.0 | Image gen live — Pollinations.ai wired, sdd image command added, menu option 8 | URL generated and confirmed loading in browser |
 
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
+| 2026-04-27 | 2.8.0 | Phase 13 complete — sdd learn session loop live | Session stays open across multiple exchanges until user types "quit" — no re-run required |
+| 2026-04-27 | 2.8.0 | quit command fix — no longer saved as learner response | quit/next checked before session save |
+| 2026-04-27 | 2.8.0 | Mentor correction directive added to learner.js context | Mentor now calls out wrong answers directly instead of diplomatically accepting them |
