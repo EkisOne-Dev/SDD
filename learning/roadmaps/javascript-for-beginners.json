@@ -1,0 +1,13 @@
+{
+  "topic": "JavaScript for beginners",
+  "topics": [
+    "Introduction to JavaScript and its role in web development",
+    "Basic Syntax, Variables, and Data Types",
+    "Operators and Expressions",
+    "Control Flow: Conditionals (if/else, switch)",
+    "Control Flow: Loops (for, while)",
+    "Functions: Declaration, Invocation, and Parameters",
+    "Arrays: Creation, Accessing Elements, and Basic Methods",
+    "Objects: Creation, Properties, and Methods"
+  ]
+}
