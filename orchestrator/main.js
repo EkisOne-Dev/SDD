@@ -19,17 +19,28 @@ import { scoreOutput, saveScore, displayScore } from "../skills/tools/scorer.js"
 import { observe } from "../skills/tools/observer.js";
 import { captureBaseline, checkDrift, displayDrift, displayBaseline } from "../skills/tools/drift-control.js";
 import { logCost, displayCost, showTotals, estimateTokens } from "../skills/tools/cost-tracker.js";
+import { showHelp, showStatus, runMenu } from './menu.js';
 import { runProposalManager } from "../skills/tools/proposal-manager.js";
 
 // ── Main execution ───────────────────────────────────────────────────────────
-async function run() {
-  let task = process.argv.slice(2).join(' ');
+async function run(injectedTask = null) {
+  let task = injectedTask || process.argv.slice(2).join(' ');
 
   // ── Pipeline mode branch ─────────────────────────────────────────────────
   if (task.toLowerCase().startsWith('project ')) {
     const projectTask = task.slice(8).trim();
     const deps = { loadAgent, loadMemory, config: loadConfig(), runEngine, adapter: loadEngineAdapter(), logExecution };
     await runPipeline(projectTask, deps);
+    return;
+  }
+
+  if (task.toLowerCase() === 'help') {
+    showHelp();
+    return;
+  }
+
+  if (task.toLowerCase() === 'status') {
+    showStatus();
     return;
   }
 
@@ -58,9 +69,7 @@ async function run() {
   }
 
   if (!task) {
-    console.log("Usage:  sdd \"your task here\"");
-    console.log("        sdd project \"your idea\"");
-    console.log("        sdd resume <project-name>");
+    await runMenu(run);
     return;
   }
 
