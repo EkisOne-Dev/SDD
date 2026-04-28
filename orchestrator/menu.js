@@ -23,6 +23,8 @@ export function showHelp() {
   sdd costs               Show API cost totals
   sdd baseline            Lock current score averages
   sdd status              System snapshot
+  sdd projects             List all pipeline projects and their status
+  sdd postmortems          Show completed project postmortems
   sdd image "description"  Generate an image via Pollinations.ai
   sdd help                Show this reference
   sdd                     Interactive menu
@@ -73,6 +75,43 @@ export function showStatus() {
   console.log();
 }
 
+
+export function showProjects() {
+  const projectsDir = path.join(ROOT, 'projects');
+  if (!existsSync(projectsDir)) { console.log('\n📁 No projects found.\n'); return; }
+  const projects = readdirSync(projectsDir).filter(f => {
+    try { return existsSync(path.join(projectsDir, f, 'state.json')); } catch { return false; }
+  });
+  if (!projects.length) { console.log('\n📁 No projects found.\n'); return; }
+  console.log('\n📁 SDD Projects\n');
+  projects.forEach(p => {
+    try {
+      const state = JSON.parse(readFileSync(path.join(projectsDir, p, 'state.json'), 'utf-8'));
+      const status = state.status === 'complete' ? '✅' : state.status === 'paused' ? '⏸ ' : '▶ ';
+      const stage = state.current_stage ?? '—';
+      const done = (state.stages_completed ?? []).length;
+      console.log(`  ${status}  ${(state.original_task ?? p).slice(0, 45).padEnd(45)}  stage: ${stage.padEnd(10)}  (${done}/7 stages)`);
+    } catch { console.log(`  ?  ${p}`); }
+  });
+  console.log('\n  Resume with: sdd resume <project-name>\n');
+}
+
+export function showPostmortems() {
+  const pmDir = path.join(ROOT, 'meta/postmortems');
+  if (!existsSync(pmDir)) { console.log('\n📋 No postmortems found.\n'); return; }
+  const files = readdirSync(pmDir).filter(f => f.endsWith('.md')).sort();
+  if (!files.length) { console.log('\n📋 No postmortems yet. Complete a pipeline project to generate one.\n'); return; }
+  console.log('\n📋 SDD Postmortems\n');
+  files.forEach((f, i) => console.log(`  ${i + 1}. ${f}`));
+  console.log();
+  const latest = files[files.length - 1];
+  console.log(`--- Latest: ${latest} ---\n`);
+  try {
+    const content = readFileSync(path.join(pmDir, latest), 'utf-8');
+    console.log(content);
+  } catch { console.log('Could not read postmortem file.'); }
+  console.log();
+}
 export async function runMenu(runTask) {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
@@ -89,6 +128,8 @@ export async function runMenu(runTask) {
   6. Help
   7. Exit
   8. Generate an image
+  9. List projects
+  10. View postmortems
 `);
 
   const choice = (await prompt(rl, 'Select: ')).trim();
@@ -126,6 +167,8 @@ export async function runMenu(runTask) {
       if (desc.trim()) await runTask('image ' + desc.trim());
       break;
     }
+    case '9': showProjects(); break;
+    case '10': showPostmortems(); break;
     case '7':
     default:
       console.log('\nGoodbye.\n');
