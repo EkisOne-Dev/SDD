@@ -765,3 +765,5 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-27 | 3.0.0 | skills/tools/engine-check.js created | Per-provider check functions for Gemini, OpenRouter, Ollama |
 | 2026-04-27 | 3.0.0 | OpenRouter fallback corrected to llama-3.3-70b-instruct:free | Was left on llama-3.2-3b from troubleshooting session |
 | 2026-04-27 | 3.1.0 | Phase 16 complete — TRI-STRUCTURE suppressed on simple tasks | Complexity classifier injects plain-response directive for simple tasks on specialist agents |
+| 2026-04-27 | 3.2.0 | Phase 17 complete — score drift ASCII chart live | 10-run rolling bar chart printed after every scored task, per dimension with average |
+| 2026-04-27 | 3.2.0 | displayChart() added to drift-control.js | Pure ASCII, no deps, reads last 10 scores.jsonl entries |
