@@ -764,3 +764,4 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-27 | 3.0.0 | Phase 15 complete — sdd check-engines live | Pings all three providers, reports status, latency, and active provider |
 | 2026-04-27 | 3.0.0 | skills/tools/engine-check.js created | Per-provider check functions for Gemini, OpenRouter, Ollama |
 | 2026-04-27 | 3.0.0 | OpenRouter fallback corrected to llama-3.3-70b-instruct:free | Was left on llama-3.2-3b from troubleshooting session |
+| 2026-04-27 | 3.1.0 | Phase 16 complete — TRI-STRUCTURE suppressed on simple tasks | Complexity classifier injects plain-response directive for simple tasks on specialist agents |
