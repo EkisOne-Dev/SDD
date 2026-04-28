@@ -759,3 +759,5 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-27 | 2.8.0 | Mentor correction directive added to learner.js context | Mentor now calls out wrong answers directly instead of diplomatically accepting them |
 | 2026-04-27 | 2.9.0 | Phase 14 complete — sdd projects and sdd postmortems live | Projects listed with stage and completion count, postmortems display latest report |
 | 2026-04-27 | 2.9.0 | showProjects and showPostmortems added to menu.js | Menu options 9 and 10 added, help text updated |
+| 2026-04-27 | 2.9.0 | Phase 14 complete — sdd projects and sdd postmortems live | Projects listed with stage and completion count, postmortems display latest report |
+| 2026-04-27 | 2.9.0 | showProjects and showPostmortems added to menu.js | Menu options 9 and 10 added, help text updated |
