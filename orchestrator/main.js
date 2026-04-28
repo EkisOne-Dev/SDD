@@ -20,6 +20,7 @@ import { observe } from "../skills/tools/observer.js";
 import { captureBaseline, checkDrift, displayDrift, displayBaseline } from "../skills/tools/drift-control.js";
 import { logCost, displayCost, showTotals, estimateTokens } from "../skills/tools/cost-tracker.js";
 import { showHelp, showStatus, showProjects, showPostmortems, runMenu } from './menu.js';
+import { runEngineCheck } from '../skills/tools/engine-check.js';
 import { runLearnCommand } from '../skills/tools/learn-command.js';
 import { generateImage } from '../skills/tools/image-gen.js';
 import { runProposalManager } from "../skills/tools/proposal-manager.js";
@@ -67,6 +68,11 @@ async function run(injectedTask = null) {
     const projectName = task.slice(7).trim();
     const deps = { loadAgent, loadMemory, config: loadConfig(), runEngine, adapter: loadEngineAdapter(), logExecution };
     await resumePipeline(projectName, deps);
+    return;
+  }
+
+  if (task.toLowerCase() === 'check-engines') {
+    await runEngineCheck();
     return;
   }
 

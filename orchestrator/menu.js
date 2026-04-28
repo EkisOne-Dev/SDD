@@ -23,6 +23,7 @@ export function showHelp() {
   sdd costs               Show API cost totals
   sdd baseline            Lock current score averages
   sdd status              System snapshot
+  sdd check-engines         Test all configured AI providers and report status
   sdd projects             List all pipeline projects and their status
   sdd postmortems          Show completed project postmortems
   sdd image "description"  Generate an image via Pollinations.ai
