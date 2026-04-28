@@ -101,4 +101,37 @@ function displayBaseline(baseline) {
   console.log('─────────────────────────\n');
 }
 
-export { captureBaseline, checkDrift, displayDrift, displayBaseline };
+
+
+function displayChart() {
+  const scores = readScores();
+  if (scores.length < 2) return;
+  const recent = scores.slice(-10);
+  const dims = ['clarity', 'usefulness', 'efficiency', 'redundancy'];
+  const labels = { clarity: 'Clarity   ', usefulness: 'Useful    ', efficiency: 'Efficiency', redundancy: 'Redundancy' };
+  const BAR = '█';
+  const EMPTY = '░';
+  const WIDTH = 10;
+
+  console.log('\n─────────────────────────────────────────');
+  console.log(`📈 SCORE TREND  (last ${recent.length} runs)`);
+  console.log('─────────────────────────────────────────');
+
+  for (const dim of dims) {
+    const vals = recent.map(s => s.scores?.[dim] ?? 0);
+    const bars = vals.map(v => {
+      const filled = Math.round((v / 100) * WIDTH);
+      return BAR.repeat(filled) + EMPTY.repeat(WIDTH - filled);
+    }).join(' ');
+    const avg = Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
+    console.log(`  ${labels[dim]}  ${bars}  avg:${String(avg).padStart(3)}`);
+  }
+
+  const overalls = recent.map(s => s.scores?.overall ?? 0);
+  const overallAvg = Math.round(overalls.reduce((a, b) => a + b, 0) / overalls.length);
+  console.log('─────────────────────────────────────────');
+  console.log(`  Overall trend avg: ${overallAvg}/100`);
+  console.log('─────────────────────────────────────────\n');
+}
+
+export { captureBaseline, checkDrift, displayDrift, displayBaseline, displayChart };

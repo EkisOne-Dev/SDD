@@ -17,7 +17,7 @@ import { selectChain, runChain } from "./chains.js";
 import { runSelfCritique } from "../skills/tools/self-critique.js";
 import { scoreOutput, saveScore, displayScore } from "../skills/tools/scorer.js";
 import { observe } from "../skills/tools/observer.js";
-import { captureBaseline, checkDrift, displayDrift, displayBaseline } from "../skills/tools/drift-control.js";
+import { captureBaseline, checkDrift, displayDrift, displayBaseline, displayChart } from "../skills/tools/drift-control.js";
 import { logCost, displayCost, showTotals, estimateTokens } from "../skills/tools/cost-tracker.js";
 import { showHelp, showStatus, showProjects, showPostmortems, runMenu } from './menu.js';
 import { runEngineCheck } from '../skills/tools/engine-check.js';
@@ -191,6 +191,7 @@ async function run(injectedTask = null) {
     if (config.scoring_enabled) {
       const driftReport = checkDrift(finalResult);
       if (driftReport) displayDrift(driftReport);
+      displayChart();
     }
 
     if (config.meta_observation_enabled) {

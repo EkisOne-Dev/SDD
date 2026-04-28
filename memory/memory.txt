@@ -383,3 +383,12 @@ Think of it like a labeled box:
 *   The **contents** of the box is the variable's value (e.g., `25`, `100`, `"apple"`).
 
 When you create a variable, you give it a name and assign it an initial value. You can then refer to this data using the variable's name and, in most cases, update its value later in the program.
+
+User: what is a function in programming
+Assistant: In programming, a **function** is a named block of code designed to perform a specific task.
+
+Key characteristics:
+*   **Reusability:** Functions allow you to write a piece of code once and then use it multiple times throughout your program without rewriting it.
+*   **Modularity:** They help break down complex problems into smaller, manageable, and independent pieces.
+*   **Input/Output:** Functions can take inputs (called *arguments* or *parameters*), process them, and optionally return a result (an *output*).
+*   **Organization:** They make code more organized, readable, and easier to maintain and debug.
