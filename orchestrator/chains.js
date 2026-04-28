@@ -145,7 +145,11 @@ export async function runChain(task, chain, config, adapter, skillContext) {
       compressedPrior || ""
     );
 
-    const result = await runEngine(prompt, adapter, agentName, complexity);
+    const finalPrompt = (complexity === 'simple' && agentName !== 'basic')
+      ? prompt + '\n\nNOTE: This is a simple task. Respond directly and concisely. Do NOT use [INTERNAL REASONING], [ARTIFACT], or [VERIFICATION] sections. Plain response only.'
+      : prompt;
+
+    const result = await runEngine(finalPrompt, adapter, agentName, complexity);
 
     previousOutput = result;
     finalResult = result;
