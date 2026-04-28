@@ -761,3 +761,6 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-27 | 2.9.0 | showProjects and showPostmortems added to menu.js | Menu options 9 and 10 added, help text updated |
 | 2026-04-27 | 2.9.0 | Phase 14 complete — sdd projects and sdd postmortems live | Projects listed with stage and completion count, postmortems display latest report |
 | 2026-04-27 | 2.9.0 | showProjects and showPostmortems added to menu.js | Menu options 9 and 10 added, help text updated |
+| 2026-04-27 | 3.0.0 | Phase 15 complete — sdd check-engines live | Pings all three providers, reports status, latency, and active provider |
+| 2026-04-27 | 3.0.0 | skills/tools/engine-check.js created | Per-provider check functions for Gemini, OpenRouter, Ollama |
+| 2026-04-27 | 3.0.0 | OpenRouter fallback corrected to llama-3.3-70b-instruct:free | Was left on llama-3.2-3b from troubleshooting session |
