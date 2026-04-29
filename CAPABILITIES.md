@@ -394,7 +394,7 @@ Expected: Fast execution, basic agent, no multi-step chain reasoning blocks.
 
 **Known limitations:**
 - Classification is heuristic — task length and keyword count, not semantic understanding.
-- TRI-STRUCTURE suppression for simple tasks is not yet implemented (planned Phase 16).
+- TRI-STRUCTURE suppression active — simple tasks route to basic agent, output stripped post-chain. (Phase 16 complete)
 
 ---
 
@@ -451,9 +451,9 @@ cat ~/sdd/projects/$(ls ~/sdd/projects/ | head -1)/state.json
 Expected: JSON with `stage`, `status`, and `completed_stages` fields.
 
 **Known limitations:**
-- No `sdd projects` command to list all projects (planned Phase 14).
+- `sdd projects` live — lists all projects with stage and completion count. (Phase 14 complete)
 - Project name is auto-generated from task string — can be long and hard to type for resume.
-- Postmortem generated at archive stage requires `sdd postmortems` to view (planned Phase 14).
+- `sdd postmortems` live — lists and displays latest postmortem from CLI. (Phase 14 complete)
 
 ---
 
@@ -544,7 +544,7 @@ All specialist agents (architect, developer, analyst, researcher, reviewer, ment
 **Files responsible:**
 - `agents/<name>/strategy.txt` — TRI-STRUCTURE mandate for each specialist
 
-**Config flag:** None — currently unconditional for all specialist agents. Suppression for simple tasks is planned (Phase 16).
+**Config flag:** None. Simple tasks automatically suppressed via complexity classifier. (Phase 16 complete)
 
 **Verification test:**
 ```bash
@@ -553,7 +553,7 @@ sdd "design a database schema for a blog"
 Expected: Response contains `[INTERNAL REASONING]`, `[ARTIFACT]`, and `[VERIFICATION]` sections in that order.
 
 **Known limitations:**
-- Fires on simple tasks where it is not needed, adding noise to short answers. Suppression for simple tasks planned Phase 16.
+- Simple tasks suppressed — basic agent used directly, TRI-STRUCTURE stripped from output. (Phase 16 complete)
 
 ---
 
@@ -688,7 +688,7 @@ ls ~/sdd/meta/postmortems/
 Expected: One `.md` file per completed pipeline project.
 
 **Known limitations:**
-- No `sdd postmortems` command to view reports from CLI (planned Phase 14).
+- `sdd postmortems` live — prints latest postmortem directly in terminal. (Phase 14 complete)
 - Reports require manual `cat` to read.
 
 ---
@@ -719,7 +719,7 @@ cat ~/sdd/meta/baselines/baseline.json
 Expected: JSON with `clarity`, `usefulness`, `efficiency`, `redundancy` average values and `captured_at` timestamp.
 
 **Known limitations:**
-- Drift display is a single warning line — no visual trend chart (planned Phase 17).
+- Rolling 10-run ASCII chart displayed after every scored task across all 4 dimensions. (Phase 17 complete)
 - Baseline must be manually recaptured after deliberate system improvements.
 
 ---
@@ -936,12 +936,12 @@ These rules apply across all capabilities. Any capability that violates one of t
 
 | Phase | Capability | Description |
 |---|---|---|
-| 13 | Learn session loop | `sdd learn` stays open across multiple exchanges in a single invocation |
-| 14 | `sdd projects` + `sdd postmortems` | List all projects with stage; view postmortem reports from CLI |
-| 15 | `sdd check-engines` | Live provider status check — latency and availability for all configured engines |
-| 16 | TRI-STRUCTURE suppression on simple tasks | Complexity classifier suppresses reasoning blocks on simple tasks |
-| 17 | Score drift ASCII chart | Rolling 10-run chart printed after every scored task |
-| 18 | Memory summarization | Auto-compress `memory.txt` below 20KB when it exceeds 40KB |
+| 13 | Learn session loop | ✅ Complete — session stays open until "quit" typed |
+| 14 | `sdd projects` + `sdd postmortems` | ✅ Complete — both commands live |
+| 15 | `sdd check-engines` | ✅ Complete — pings all providers with latency |
+| 16 | TRI-STRUCTURE suppression on simple tasks | ✅ Complete — basic agent routing + post-chain strip |
+| 17 | Score drift ASCII chart | ✅ Complete — 10-run rolling chart after every scored task |
+| 18 | Memory summarization | ✅ Complete — triggers at 40KB, compresses to ~6KB |
 
 ---
 
