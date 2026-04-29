@@ -767,3 +767,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-27 | 3.1.0 | Phase 16 complete — TRI-STRUCTURE suppressed on simple tasks | Complexity classifier injects plain-response directive for simple tasks on specialist agents |
 | 2026-04-27 | 3.2.0 | Phase 17 complete — score drift ASCII chart live | 10-run rolling bar chart printed after every scored task, per dimension with average |
 | 2026-04-27 | 3.2.0 | displayChart() added to drift-control.js | Pure ASCII, no deps, reads last 10 scores.jsonl entries |
+| 2026-04-27 | 3.3.0 | Phase 18 — memory-summarizer.js created | Compresses memory.txt at 40KB threshold, keeps last 5 exchanges verbatim, groups older by topic |
+| 2026-04-27 | 3.3.0 | Simple tasks now route to basic agent directly | Avoids TRI-STRUCTURE bleed from specialist agents on simple queries |
+| 2026-04-27 | 3.3.0 | TRI-STRUCTURE injection moved to prompt template | buildPrompt() receives complexity and injects correct block via {tri_structure} placeholder |
+| 2026-04-27 | 3.3.0 | Reviewer skipped for simple tasks | effectiveAgents collapses to basic for simple complexity |
