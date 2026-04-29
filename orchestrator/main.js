@@ -163,8 +163,22 @@ async function run(injectedTask = null) {
   try {
     const { result, complexity } = await runChain(task, chain, config, adapter, skillContext);
 
-    // ── Self-critique (optional) ─────────────────────────────────────────
+    // ── Strip TRI-STRUCTURE on simple tasks ──────────────────────────────
     let finalResult = result;
+    if (complexity === 'simple' && result.includes('[INTERNAL REASONING]')) {
+      const lines = result.split('\n');
+      const startIdx = lines.findIndex(line => {
+        const t = line.trim();
+        return t.length > 20 &&
+          !t.startsWith('[') &&
+          !t.startsWith('*') &&
+          !t.startsWith('-') &&
+          !t.match(/^\d+\./);
+      });
+      if (startIdx >= 0) finalResult = lines.slice(startIdx).join('\n').trim();
+    }
+
+    // ── Self-critique (optional) ─────────────────────────────────────────
     if (config.self_critique_enabled && complexity === "complex" && chain.agents.length > 1) {
       console.log("\n🔎 Running self-critique...");
       const critique = await runSelfCritique(task, result, adapter);
@@ -181,9 +195,7 @@ async function run(injectedTask = null) {
 
     saveMemory(config, `\nUser: ${task}\nAssistant: ${finalResult}`);
     const memAbsPath = process.env.HOME + '/sdd/' + config.memory_file;
-    await summarizeMemoryIfNeeded(
-      runEngine, adapter
-    );
+    await summarizeMemoryIfNeeded(memAbsPath, runEngine, adapter);
 
     // ── Scoring ──────────────────────────────────────────────────────────
     if (config.scoring_enabled) {

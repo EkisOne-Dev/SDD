@@ -10,3 +10,9 @@
 {"timestamp":"2026-04-28T12:24:22.010Z","task":"what is a loop in programming","api_calls":2,"input_tokens":8,"output_tokens":392,"total_tokens":400}
 {"timestamp":"2026-04-28T17:42:53.551Z","task":"what is a loop in programming","api_calls":2,"input_tokens":8,"output_tokens":449,"total_tokens":457}
 {"timestamp":"2026-04-29T00:08:42.899Z","task":"what is a loop in programming","api_calls":2,"input_tokens":8,"output_tokens":82,"total_tokens":90}
+{"timestamp":"2026-04-29T00:11:52.002Z","task":"what is an object in programming","api_calls":2,"input_tokens":8,"output_tokens":354,"total_tokens":362}
+{"timestamp":"2026-04-29T00:16:00.866Z","task":"what is inheritance in programming","api_calls":2,"input_tokens":9,"output_tokens":363,"total_tokens":372}
+{"timestamp":"2026-04-29T00:23:59.345Z","task":"what is polymorphism in programming","api_calls":2,"input_tokens":9,"output_tokens":391,"total_tokens":400}
+{"timestamp":"2026-04-29T00:25:50.536Z","task":"what is encapsulation in programming","api_calls":2,"input_tokens":9,"output_tokens":384,"total_tokens":393}
+{"timestamp":"2026-04-29T00:27:55.041Z","task":"what is abstraction in programming","api_calls":2,"input_tokens":9,"output_tokens":152,"total_tokens":161}
+{"timestamp":"2026-04-29T00:30:09.784Z","task":"what is a class in programming","api_calls":2,"input_tokens":8,"output_tokens":87,"total_tokens":95}
