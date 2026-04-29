@@ -918,7 +918,7 @@ These rules apply across all capabilities. Any capability that violates one of t
 4. Config drives all behavior. No feature flag is hardcoded.
 5. Logs exist from day one and write to `logs/YYYY-MM-DD.log`.
 6. Git is the versioning system. Every completed phase produces a commit.
-7. Memory compression is mandatory before `memory.txt` exceeds 50KB.
+7. Memory compression is automated — triggers at 40KB, compresses to ~6KB, keeps last 5 exchanges verbatim. Backup saved automatically.
 8. SPEC.md and CAPABILITIES.md are updated after every structural decision.
 9. Capability is checked before every execution. The system never proceeds blindly.
 10. The system never applies improvements automatically. All changes require explicit user approval.
@@ -932,7 +932,7 @@ These rules apply across all capabilities. Any capability that violates one of t
 
 ---
 
-## PLANNED CAPABILITIES (Not Yet Active)
+## IMPLEMENTED PHASES 13–18
 
 | Phase | Capability | Description |
 |---|---|---|

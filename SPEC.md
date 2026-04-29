@@ -9,8 +9,8 @@
 
 | Field | Value |
 |---|---|
-| Document Version | 2.6.0 |
-| System Version | MVP → Phase 12 Complete |
+| Document Version | 3.3.0 |
+| System Version | MVP → Phase 18 Complete |
 | Last Updated | 2026-04-27 |
 | Status | Active Development |
 | Platform | Android / Termux |
@@ -45,6 +45,7 @@
 ```
 ~/sdd/
 ├── SPEC.md                        ← THIS FILE — living spec anchor
+├── CAPABILITIES.md                ← Full feature registry with verification tests
 ├── README.md                      ← Human-readable system state summary
 ├── start.sh                       ← SOLE entry point (do not call internals directly)
 ├── logs/                          ← System-level execution logs (root debug layer)
@@ -596,22 +597,27 @@ cd ~/sdd && npm install @google/generative-ai
 | 10 | Cost awareness (token + API call tracking) | ✅ Complete |
 | 11 | creator + strategist agents + image-gen skill (mentor already built in Phase 5) | ✅ Complete |
 | 12 | CLI navigation layer | ✅ Complete |
+| 13 | sdd learn session loop — continuous multi-turn mentor sessions | ✅ Complete |
+| 14 | sdd projects + sdd postmortems — pipeline visibility commands | ✅ Complete |
+| 15 | sdd check-engines — live provider status and latency check | ✅ Complete |
+| 16 | TRI-STRUCTURE suppression on simple tasks — basic agent routing + post-chain strip | ✅ Complete |
+| 17 | Score drift ASCII chart — rolling 10-run trend after every scored task | ✅ Complete |
+| 18 | Memory summarization — auto-compress at 40KB, keep last 5 exchanges verbatim | ✅ Complete |
 
 ---
 
 ## KNOWN LIMITATIONS (Current)
 
-- Mentorship system (sdd learn) not yet implemented (Phase 6)
-- No scoring, meta learning, or improvement proposals
-- Self-research local mode only surfaces what already exists in memory/projects
-- No versioning UI (git only)
-- Limited error handling (API safety filter rejections show generic error)
-- DeepSeek-R1 endpoint temporarily unavailable on OpenRouter — falls back to gemini-2.5-flash for complex agents
-
-- Memory is a single flat file — no semantic retrieval
-- Multimedia: structured output only until Phase 11
+- Heuristic scorer (rule-based, not semantic) — short precise answers may score lower than verbose ones
+- OpenRouter free tier models change without notice — run `sdd check-engines` to verify before use
+- Gemini free tier hard limit: 20 requests/day on gemini-2.5-flash-lite
+- Self-research local mode only — no web search or external knowledge retrieval
+- Memory has no semantic retrieval — flat file injected in full into every prompt
+- TRI-STRUCTURE stripping on simple tasks is line-based heuristic — edge cases may include stray bullet lines
+- Cost tracker underestimates input tokens — counts task string only, not full compiled prompt
 - Video and audio: structured output only — no local processing on mobile
 - Log date reflects device timezone (expected behavior)
+- Ollama local fallback requires separate installation (`pkg install ollama`)
 
 ---
 
@@ -620,10 +626,10 @@ cd ~/sdd && npm install @google/generative-ai
 | Tool | Purpose | Access | Limit | Notes |
 |---|---|---|---|---|
 | Gemini 2.5 Flash Lite | LLM engine (primary) | GEMINI_API_KEY | Quota-based | Active |
-| DeepSeek-R1 (via OpenRouter) | Heavy reasoning — architect, developer, mentor | OPENROUTER_API_KEY | Free tier | Phase 5 — per-agent routing |
-| OpenRouter / Llama 4 Scout | LLM engine (fallback) | OPENROUTER_API_KEY | Free tier | Active in adapter |
+| OpenRouter Llama 3.3 70B | LLM engine (fallback) | OPENROUTER_API_KEY | Free tier | Active — replaces Llama 4 Scout (removed) |
+
 | Ollama / TinyLlama | LLM engine (local) | `pkg install ollama` | Unlimited | Install when needed |
-| Hugging Face Inference API | Image generation | Free account + HF_TOKEN | Rate limited | Phase 11 |
+| Pollinations.ai | Image generation | No key required | Free | Active — sdd image command |
 | Gemini (consumer app) | Image generation | Google account | 20/day | Manual — no API |
 | Bing Image Creator | Image generation | Microsoft account | Generous | Watermarked |
 | Ideogram | Image + text-in-image | Free daily credits | Daily limit | Best for text in images |
@@ -754,12 +760,10 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-27 | 2.8.0 | Phase 13 complete — sdd learn session loop live | Session stays open across multiple exchanges until user types "quit" — no re-run required |
 | 2026-04-27 | 2.8.0 | quit command fix — no longer saved as learner response | quit/next checked before session save |
 | 2026-04-27 | 2.8.0 | Mentor correction directive added to learner.js context | Mentor now calls out wrong answers directly instead of diplomatically accepting them |
-| 2026-04-27 | 2.8.0 | Phase 13 complete — sdd learn session loop live | Session stays open across multiple exchanges until user types "quit" — no re-run required |
 | 2026-04-27 | 2.8.0 | quit command fix — no longer saved as learner response | quit/next checked before session save |
 | 2026-04-27 | 2.8.0 | Mentor correction directive added to learner.js context | Mentor now calls out wrong answers directly instead of diplomatically accepting them |
 | 2026-04-27 | 2.9.0 | Phase 14 complete — sdd projects and sdd postmortems live | Projects listed with stage and completion count, postmortems display latest report |
 | 2026-04-27 | 2.9.0 | showProjects and showPostmortems added to menu.js | Menu options 9 and 10 added, help text updated |
-| 2026-04-27 | 2.9.0 | Phase 14 complete — sdd projects and sdd postmortems live | Projects listed with stage and completion count, postmortems display latest report |
 | 2026-04-27 | 2.9.0 | showProjects and showPostmortems added to menu.js | Menu options 9 and 10 added, help text updated |
 | 2026-04-27 | 3.0.0 | Phase 15 complete — sdd check-engines live | Pings all three providers, reports status, latency, and active provider |
 | 2026-04-27 | 3.0.0 | skills/tools/engine-check.js created | Per-provider check functions for Gemini, OpenRouter, Ollama |
@@ -774,3 +778,5 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-27 | 3.3.0 | Phase 18 complete — memory summarization live | Triggers at 40KB, compresses to ~6KB, keeps last 5 exchanges verbatim, backup saved |
 | 2026-04-27 | 3.3.0 | TRI-STRUCTURE stripped post-chain for simple tasks | main.js extracts clean answer from model output when reasoning sections present |
 | 2026-04-27 | 3.3.0 | Memory summarizer path and call fixed | memAbsPath passed correctly, existsSync guard added |
+
+*End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
