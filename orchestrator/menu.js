@@ -26,6 +26,8 @@ export function showHelp() {
   sdd check-engines         Test all configured AI providers and report status
   sdd projects             List all pipeline projects and their status
   sdd postmortems          Show completed project postmortems
+  sdd learn "topic"         Start or continue a Socratic learning session
+  sdd learn                 List active roadmaps and progress
   sdd image "description"  Generate an image via Pollinations.ai
   sdd help                Show this reference
   sdd                     Interactive menu

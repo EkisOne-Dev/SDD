@@ -110,3 +110,6 @@ In programming, **abstraction** is the process of simplifying complex systems by
 
 User: what is a class in programming
 Assistant: In programming, a **class** is a blueprint or a template for creating objects. It defines a set of attributes (data members or properties) and methods (functions or behaviors) that the objects created from it will have. Classes are a core concept in object-oriented programming (OOP) and are used to model real-world entities or abstract concepts.
+
+User: what is a variable in programming
+Assistant: In programming, a **variable** is a symbolic name given to a memory location that stores a value. This value can be of a specific data type (like a number, text, or boolean) and can be changed or "varied" during the execution of a program. Variables are used to hold and manipulate data.
