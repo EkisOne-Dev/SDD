@@ -107,10 +107,10 @@ export function logExecution(entry) {
 
 export async function runEngine(prompt, adapter, agentName = null, complexity = "simple") {
   let active = { ...adapter[adapter.active] };
-  if (agentName && adapter.agent_models && adapter.agent_models[agentName]) {
+  if (agentName && adapter.agent_models && adapter.agent_models[agentName] && active.provider === "gemini") {
     const modelMap = adapter.agent_models[agentName];
     const chosenModel = modelMap[complexity] || modelMap["simple"];
-    if (chosenModel && active.provider === "gemini" && chosenModel.includes("deepseek")) {
+    if (chosenModel && chosenModel.includes("deepseek")) {
       active = { ...adapter["fallback"], model: chosenModel };
     } else if (chosenModel) {
       active.model = chosenModel;
