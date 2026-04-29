@@ -771,3 +771,6 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-27 | 3.3.0 | Simple tasks now route to basic agent directly | Avoids TRI-STRUCTURE bleed from specialist agents on simple queries |
 | 2026-04-27 | 3.3.0 | TRI-STRUCTURE injection moved to prompt template | buildPrompt() receives complexity and injects correct block via {tri_structure} placeholder |
 | 2026-04-27 | 3.3.0 | Reviewer skipped for simple tasks | effectiveAgents collapses to basic for simple complexity |
+| 2026-04-27 | 3.3.0 | Phase 18 complete — memory summarization live | Triggers at 40KB, compresses to ~6KB, keeps last 5 exchanges verbatim, backup saved |
+| 2026-04-27 | 3.3.0 | TRI-STRUCTURE stripped post-chain for simple tasks | main.js extracts clean answer from model output when reasoning sections present |
+| 2026-04-27 | 3.3.0 | Memory summarizer path and call fixed | memAbsPath passed correctly, existsSync guard added |
