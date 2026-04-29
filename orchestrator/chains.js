@@ -112,7 +112,13 @@ export async function runChain(task, chain, config, adapter, skillContext) {
   let previousOutput = null;
   let finalResult = null;
 
-  for (let i = 0; i < agents.length; i++) {
+  // For simple tasks, use basic agent directly — avoids TRI-STRUCTURE from specialists
+  const effectiveAgents = (complexity === 'simple' && type !== 'simple')
+    ? ['basic']
+    : agents;
+
+  for (let i = 0; i < effectiveAgents.length; i++) {
+    const agents = effectiveAgents;
     const agentName = agents[i];
     const isLast = i === agents.length - 1;
 
@@ -142,12 +148,11 @@ export async function runChain(task, chain, config, adapter, skillContext) {
       agent,
       memory,
       task,
-      compressedPrior || ""
+      compressedPrior || "",
+      complexity
     );
 
-    const finalPrompt = (complexity === 'simple' && agentName !== 'basic')
-      ? prompt + '\n\nNOTE: This is a simple task. Respond directly and concisely. Do NOT use [INTERNAL REASONING], [ARTIFACT], or [VERIFICATION] sections. Plain response only.'
-      : prompt;
+    const finalPrompt = prompt;
 
     const result = await runEngine(finalPrompt, adapter, agentName, complexity);
 

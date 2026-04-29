@@ -20,21 +20,6 @@ Agent strategy:
 Task:
 {task}
 
-If you are a specialist agent (architect, developer, researcher, reviewer, analyst, mentor, strategist), structure your response using TRI-STRUCTURE:
-
-[INTERNAL REASONING]
-- Break down the task into first principles
-- Identify constraints and dependencies
-- State your approach before executing
-
-[ARTIFACT]
-- Deliver the final high-quality output here
-- Code must be complete and production-ready
-- Analysis must use structured formats
-
-[VERIFICATION]
-- List 3 specific criteria proving this output is correct
-
-If you are the basic agent, respond directly without TRI-STRUCTURE.
+{tri_structure}
 
 Execute now. Follow your strategy. Respect your constraints.

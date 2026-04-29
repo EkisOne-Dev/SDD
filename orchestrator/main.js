@@ -20,6 +20,7 @@ import { observe } from "../skills/tools/observer.js";
 import { captureBaseline, checkDrift, displayDrift, displayBaseline, displayChart } from "../skills/tools/drift-control.js";
 import { logCost, displayCost, showTotals, estimateTokens } from "../skills/tools/cost-tracker.js";
 import { showHelp, showStatus, showProjects, showPostmortems, runMenu } from './menu.js';
+import { summarizeMemoryIfNeeded } from '../skills/tools/memory-summarizer.js';
 import { runEngineCheck } from '../skills/tools/engine-check.js';
 import { runLearnCommand } from '../skills/tools/learn-command.js';
 import { generateImage } from '../skills/tools/image-gen.js';
@@ -179,6 +180,10 @@ async function run(injectedTask = null) {
     console.log(finalResult);
 
     saveMemory(config, `\nUser: ${task}\nAssistant: ${finalResult}`);
+    const memAbsPath = process.env.HOME + '/sdd/' + config.memory_file;
+    await summarizeMemoryIfNeeded(
+      runEngine, adapter
+    );
 
     // ── Scoring ──────────────────────────────────────────────────────────
     if (config.scoring_enabled) {

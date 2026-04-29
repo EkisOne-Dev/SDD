@@ -1,11 +1,11 @@
 {
-  "captured_at": "2026-04-26T17:37:44.772Z",
-  "sample_size": 5,
+  "captured_at": "2026-04-29T00:10:49.599Z",
+  "sample_size": 20,
   "averages": {
-    "clarity": 90,
-    "usefulness": 87,
-    "efficiency": 55,
-    "redundancy": 47,
-    "overall": 70
+    "clarity": 86,
+    "usefulness": 96,
+    "efficiency": 60,
+    "redundancy": 64,
+    "overall": 76
   }
 }

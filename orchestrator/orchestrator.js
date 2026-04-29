@@ -64,7 +64,23 @@ export function loadPhase(phaseName) {
 
 // ── Prompt builder ────────────────────────────────────────────────────────────
 
-export function buildPrompt(template, contract, agent, memory, task, priorOutput = "") {
+export function buildPrompt(template, contract, agent, memory, task, priorOutput = "", complexity = "complex") {
+  const triBlock = complexity === "simple" ? `Respond directly and concisely. Do NOT use [INTERNAL REASONING], [ARTIFACT], or [VERIFICATION] sections. No section headers. Start immediately with the answer.` : `If you are a specialist agent (architect, developer, researcher, reviewer, analyst, mentor, strategist), structure your response using TRI-STRUCTURE:
+
+[INTERNAL REASONING]
+- Break down the task into first principles
+- Identify constraints and dependencies
+- State your approach before executing
+
+[ARTIFACT]
+- Deliver the final high-quality output here
+- Code must be complete and production-ready
+- Analysis must use structured formats
+
+[VERIFICATION]
+- List 3 specific criteria proving this output is correct
+
+If you are the basic agent, respond directly without TRI-STRUCTURE.`;
   return template
     .replace("{goal}", contract.goal)
     .replace("{constraints}", contract.constraints.join(", "))
@@ -74,6 +90,7 @@ export function buildPrompt(template, contract, agent, memory, task, priorOutput
     .replace("{prior_output}", priorOutput || "(none — first agent in chain)")
     .replace("{identity}", agent.identity)
     .replace("{strategy}", agent.strategy)
+    .replace("{tri_structure}", triBlock)
     .replace("{task}", task);
 }
 
