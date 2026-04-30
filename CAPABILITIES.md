@@ -199,7 +199,7 @@ Expected: `"active": "primary"` (or whichever provider is currently selected).
 - Free tier Gemini has a 20 requests/day hard limit on gemini-2.5-flash-lite.
 - OpenRouter free models change without notice — a model may disappear between sessions.
 - No automatic fallback on quota exhaustion — manual `adapter.json` edit required.
-- Ollama requires separate installation; not pre-installed on Termux.
+- Ollama installed via `pkg install ollama`. Run `ollama serve` before switching to local_fallback. tinyllama model pulled and ready.
 
 ---
 

@@ -617,7 +617,7 @@ cd ~/sdd && npm install @google/generative-ai
 - Cost tracker underestimates input tokens — counts task string only, not full compiled prompt
 - Video and audio: structured output only — no local processing on mobile
 - Log date reflects device timezone (expected behavior)
-- Ollama local fallback requires separate installation (`pkg install ollama`)
+- Ollama installed and active — tinyllama pulled. Run `ollama serve` before switching to local_fallback
 
 ---
 
@@ -628,7 +628,7 @@ cd ~/sdd && npm install @google/generative-ai
 | Gemini 2.5 Flash Lite | LLM engine (primary) | GEMINI_API_KEY | Quota-based | Active |
 | OpenRouter Llama 3.3 70B | LLM engine (fallback) | OPENROUTER_API_KEY | Free tier | Active — replaces Llama 4 Scout (removed) |
 
-| Ollama / TinyLlama | LLM engine (local) | `pkg install ollama` | Unlimited | Install when needed |
+| Ollama / TinyLlama | LLM engine (local) | Pre-installed | Unlimited | ✅ Active — tinyllama pulled |
 | Pollinations.ai | Image generation | No key required | Free | Active — sdd image command |
 | Gemini (consumer app) | Image generation | Google account | 20/day | Manual — no API |
 | Bing Image Creator | Image generation | Microsoft account | Generous | Watermarked |
