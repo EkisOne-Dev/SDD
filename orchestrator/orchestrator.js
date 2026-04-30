@@ -120,7 +120,7 @@ export async function runEngine(prompt, adapter, agentName = null, complexity = 
   // Cascade fallback chain on failure
   const providerChain = [
     adapter.active,
-    ...(adapter.fallback2 ? ['fallback', 'fallback2', 'local_fallback'] : ['fallback', 'local_fallback'])
+    ...['fallback', 'fallback2', 'fallback3', 'fallback4', 'local_fallback'].filter(k => adapter[k])
   ];
 
   async function tryWithFallback(providers, idx = 0) {
@@ -145,6 +145,14 @@ export async function runEngine(prompt, adapter, agentName = null, complexity = 
 
 async function executeEngine(prompt, active) {
 
+  if (active.provider === "groq") {
+    return await runOpenAICompatible(prompt, active);
+  }
+
+  if (active.provider === "cerebras") {
+    return await runOpenAICompatible(prompt, active);
+  }
+
   if (active.provider === "gemini") {
     return await runGemini(prompt, active);
   }
@@ -158,6 +166,32 @@ async function executeEngine(prompt, active) {
   }
 
   throw new Error(`Unknown provider: ${active.provider}`);
+}
+
+async function runOpenAICompatible(prompt, config) {
+  const apiKey = process.env[config.api_key_env];
+  if (!apiKey) throw new Error(`Missing env variable: ${config.api_key_env}`);
+  const response = await fetch(`${config.base_url}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: config.model,
+      max_tokens: config.max_tokens ?? 4096,
+      messages: [{ role: "user", content: prompt }]
+    }),
+    signal: AbortSignal.timeout(config.timeout_ms ?? 15000)
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    const e = new Error(`${config.provider} error: ${err?.message ?? response.statusText}`);
+    e.status = response.status;
+    throw e;
+  }
+  const data = await response.json();
+  return data.choices?.[0]?.message?.content ?? '';
 }
 
 async function runGemini(prompt, config) {

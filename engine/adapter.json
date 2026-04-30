@@ -69,5 +69,21 @@
     "base_url": "https://openrouter.ai/api/v1",
     "max_tokens": 8192,
     "timeout_ms": 15000
+  },
+  "fallback3": {
+    "provider": "groq",
+    "model": "llama-3.3-70b-versatile",
+    "api_key_env": "GROQ_API_KEY",
+    "base_url": "https://api.groq.com/openai/v1",
+    "max_tokens": 8192,
+    "timeout_ms": 15000
+  },
+  "fallback4": {
+    "provider": "cerebras",
+    "model": "qwen-3-235b-a22b-instruct-2507",
+    "api_key_env": "CEREBRAS_API_KEY",
+    "base_url": "https://api.cerebras.ai/v1",
+    "max_tokens": 8192,
+    "timeout_ms": 15000
   }
 }

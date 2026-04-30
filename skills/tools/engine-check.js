@@ -90,6 +90,31 @@ async function checkOllama(config) {
   }
 }
 
+async function checkOpenAICompatible(config) {
+  const key = process.env[config.api_key_env];
+  if (!key) return { ok: false, reason: 'API key not set', latency: null };
+  const start = Date.now();
+  try {
+    const res = await fetch(`${config.base_url}/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+      body: JSON.stringify({ model: config.model, max_tokens: 5, messages: [{ role: 'user', content: 'reply with one word: ok' }] }),
+      signal: AbortSignal.timeout(10000)
+    });
+    const latency = Date.now() - start;
+    if (res.status === 429) return { ok: false, reason: 'Quota exceeded (429)', latency };
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      return { ok: false, reason: err?.message?.slice(0, 50) ?? `HTTP ${res.status}`, latency };
+    }
+    const data = await res.json();
+    const reply = data?.choices?.[0]?.message?.content ?? '?';
+    return { ok: true, reason: reply.trim().slice(0, 30), latency };
+  } catch (e) {
+    return { ok: false, reason: e.message.slice(0, 50), latency: Date.now() - start };
+  }
+}
+
 export async function runEngineCheck() {
   const adapter = loadAdapter();
   const active = adapter.active;
@@ -100,6 +125,8 @@ export async function runEngineCheck() {
     { role: 'primary',        label: 'Gemini',      config: adapter.primary,        fn: checkGemini },
     { role: 'fallback',       label: 'Fallback 1',  config: adapter.fallback,       fn: checkOpenRouter },
     { role: 'fallback2',      label: 'Fallback 2',  config: adapter.fallback2,      fn: checkOpenRouter },
+    { role: 'fallback3',      label: 'Groq',         config: adapter.fallback3,      fn: checkOpenAICompatible },
+    { role: 'fallback4',      label: 'Cerebras',     config: adapter.fallback4,      fn: checkOpenAICompatible },
     { role: 'local_fallback', label: 'Ollama',       config: adapter.local_fallback, fn: checkOllama }
   ].filter(c => c.config);
 
