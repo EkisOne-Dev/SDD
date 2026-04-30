@@ -784,3 +784,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-29 | 3.3.1 | Ollama local fallback fully operational | tinyllama installed, serve auto-starts via .bashrc, model name match fixed |
 | 2026-04-29 | 3.3.1 | Ollama model override bug fixed | per-agent routing only applies when provider is Gemini |
 | 2026-04-29 | 3.3.1 | sdd check-engines Ollama URL and model match fixed | double /api path corrected, tinyllama:latest suffix handled |
+| 2026-04-29 | 3.3.1 | Gemma 4 31B added as primary fallback | google/gemma-4-31b-it:free — 256K context, fast instruction following |
+| 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
+| 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
+| 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
