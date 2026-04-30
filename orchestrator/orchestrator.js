@@ -117,6 +117,34 @@ export async function runEngine(prompt, adapter, agentName = null, complexity = 
     }
   }
 
+  // Cascade fallback chain on failure
+  const providerChain = [
+    adapter.active,
+    ...(adapter.fallback2 ? ['fallback', 'fallback2', 'local_fallback'] : ['fallback', 'local_fallback'])
+  ];
+
+  async function tryWithFallback(providers, idx = 0) {
+    if (idx >= providers.length) throw new Error('All providers exhausted');
+    const providerKey = providers[idx];
+    const providerConfig = providerKey === adapter.active ? active : { ...adapter[providerKey] };
+    try {
+      return await executeEngine(prompt, providerConfig);
+    } catch (e) {
+      const isRetryable = e.status === 429 || e.status === 503 || (e.message && (e.message.includes('429') || e.message.includes('503') || e.message.includes('quota')));
+      if (isRetryable && idx + 1 < providers.length) {
+        const nextConfig = providers[idx + 1] === adapter.active ? active : adapter[providers[idx + 1]];
+        console.log(`\n⚡ ${providerConfig.model} unavailable — switching to ${nextConfig?.model ?? providers[idx + 1]}...`);
+        return tryWithFallback(providers, idx + 1);
+      }
+      throw e;
+    }
+  }
+
+  return tryWithFallback(providerChain);
+}
+
+async function executeEngine(prompt, active) {
+
   if (active.provider === "gemini") {
     return await runGemini(prompt, active);
   }

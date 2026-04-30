@@ -1,0 +1,11 @@
+{
+  "id": "clarity-1777549831644",
+  "dimension": "clarity",
+  "status": "pending",
+  "created": "2026-04-30T11:50:31.644Z",
+  "observed": "clarity scored below 60 in 3 of the last 5 runs (avg: 65)",
+  "issue": "Output lacks structure — missing headers, lists, or has dense unbroken text.",
+  "suggestion": "Add explicit formatting instructions to agent strategy files: require headers and bullet points for multi-part answers.",
+  "snoozed_until": "2026-05-05T11:51:57.380Z",
+  "resolved": null
+}

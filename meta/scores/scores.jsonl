@@ -30,3 +30,6 @@
 {"timestamp":"2026-04-29T19:05:51.229Z","task":"what is a variable in programming","scores":{"clarity":70,"usefulness":87,"efficiency":70,"redundancy":80,"overall":77}}
 {"timestamp":"2026-04-29T19:19:43.618Z","task":"what is a constant in programming","scores":{"clarity":70,"usefulness":87,"efficiency":70,"redundancy":80,"overall":77}}
 {"timestamp":"2026-04-29T19:38:02.742Z","task":"what is a function","scores":{"clarity":55,"usefulness":80,"efficiency":70,"redundancy":35,"overall":60}}
+{"timestamp":"2026-04-30T11:25:34.822Z","task":"explain what an API is in simple terms","scores":{"clarity":90,"usefulness":100,"efficiency":55,"redundancy":80,"overall":81}}
+{"timestamp":"2026-04-30T11:47:26.874Z","task":"what is recursion in programming","scores":{"clarity":55,"usefulness":87,"efficiency":70,"redundancy":80,"overall":73}}
+{"timestamp":"2026-04-30T11:50:31.639Z","task":"what is a boolean in programming","scores":{"clarity":55,"usefulness":87,"efficiency":70,"redundancy":80,"overall":73}}

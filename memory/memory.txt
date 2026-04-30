@@ -123,3 +123,36 @@ Assistant: 1. A variable is an object that contains a unique value, and can be a
 3. A loop is a series of statements that repeat until a particular condition is met. Loops are commonly used to iterate through data or perform calculations on each element in a sequence. For example, loops can be used to generate a random array or calculate the average value of an array.
 4. In programming, constants refer to fixed values that do not change during program execution. Constants can include numbers, booleans, strings, and arrays.
 5. A loop is a series of statements that repeat until a particular condition is met. Loops are commonly used to iterate through data or perform calculations on each element in a sequence. For example, loops can be used to generate a random array or calculate the average value of an array.
+
+User: explain what an API is in simple terms
+Assistant: **[INTERNAL REASONING]**  
+- **Task decomposition:**  
+  1. Define “API” in plain language.  
+  2. Explain the core idea of a contract that lets two software components talk to each other.  
+  3. Provide an everyday analogy to aid comprehension.  
+  4. Mention a concrete, familiar example.  
+  5. Keep the explanation brief, jargon‑free, and focused on the “simple terms” requirement.  
+- **Constraints:**  
+  * Must be understandable to a beginner with no technical background.  
+  * No code or technical depth beyond the analogy and basic example.  
+  * Output must follow the TRI‑STRUCTURE format (Reviewer agent).  
+- **Approach:**  
+  Write a concise paragraph defining the term, follow with a relatable analogy (restaurant menu), and finish with a simple real‑world example (weather app).  
+
+**[ARTIFACT]**  
+**What is an API? (Simple Explanation)**  
+
+An **API** (Application Programming Interface) is like a menu in a restaurant. The menu lists the dishes you can order and tells you what you need to ask for, but you don’t see the kitchen or how the food is actually prepared. Similarly, an API lists the actions a program can request from another program (or service) and the information it needs to provide. You send a request using the API, the other program does the work behind the scenes, and then returns the result to you.  
+
+*Everyday example:* A weather‑app on your phone uses a weather‑service API. The app asks the API, “What’s the forecast for New York?” The API fetches the data from its servers and sends the forecast back to the app, which then shows it to you. You never see the complex data‑gathering process; you just get the weather information you asked for.  
+
+**[VERIFICATION]**  
+1. **Clarity:** The definition uses a familiar restaurant‑menu analogy and avoids technical jargon, meeting the “simple terms” requirement.  
+2. **Completeness:** It explains the three essential pieces—what an API is, how it works (request → response), and why the internal workings are hidden.  
+3. **Concrete example:** Provides a specific, relatable scenario (weather app) that illustrates the concept in everyday life.
+
+User: what is recursion in programming
+Assistant: In programming, **recursion** is a technique where a function calls itself directly or indirectly to solve a problem by breaking it into smaller, similar sub‑problems, typically with a base case that stops the repeated calls.
+
+User: what is a boolean in programming
+Assistant: In programming, a **boolean** is a data type that can have only one of two possible values: `true` or `false`. Booleans are fundamental for decision-making in programs, used in conditional statements (like `if` statements) and loops to control the flow of execution based on whether a condition evaluates to true or false.

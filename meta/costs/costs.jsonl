@@ -19,3 +19,6 @@
 {"timestamp":"2026-04-29T19:05:51.237Z","task":"what is a variable in programming","api_calls":2,"input_tokens":9,"output_tokens":72,"total_tokens":81}
 {"timestamp":"2026-04-29T19:19:43.622Z","task":"what is a constant in programming","api_calls":2,"input_tokens":9,"output_tokens":100,"total_tokens":109}
 {"timestamp":"2026-04-29T19:38:02.748Z","task":"what is a function","api_calls":2,"input_tokens":5,"output_tokens":297,"total_tokens":302}
+{"timestamp":"2026-04-30T11:25:34.832Z","task":"explain what an API is in simple terms","api_calls":2,"input_tokens":10,"output_tokens":534,"total_tokens":544}
+{"timestamp":"2026-04-30T11:47:26.886Z","task":"what is recursion in programming","api_calls":2,"input_tokens":8,"output_tokens":57,"total_tokens":65}
+{"timestamp":"2026-04-30T11:51:57.382Z","task":"what is a boolean in programming","api_calls":2,"input_tokens":8,"output_tokens":81,"total_tokens":89}
