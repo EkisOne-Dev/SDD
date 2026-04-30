@@ -98,9 +98,10 @@ export async function runEngineCheck() {
 
   const checks = [
     { role: 'primary',        label: 'Gemini',      config: adapter.primary,        fn: checkGemini },
-    { role: 'fallback',       label: 'OpenRouter',   config: adapter.fallback,       fn: checkOpenRouter },
+    { role: 'fallback',       label: 'Fallback 1',  config: adapter.fallback,       fn: checkOpenRouter },
+    { role: 'fallback2',      label: 'Fallback 2',  config: adapter.fallback2,      fn: checkOpenRouter },
     { role: 'local_fallback', label: 'Ollama',       config: adapter.local_fallback, fn: checkOllama }
-  ];
+  ].filter(c => c.config);
 
   for (const { role, label, config, fn } of checks) {
     process.stdout.write(`  Checking ${label} (${config.model})...`);
