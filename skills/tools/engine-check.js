@@ -69,14 +69,17 @@ async function checkOpenRouter(config) {
 async function checkOllama(config) {
   const start = Date.now();
   try {
-    const res = await fetch(`${config.base_url}/api/tags`, {
+    const cleanBase = config.base_url.endsWith('/api')
+      ? config.base_url.slice(0, -4)
+      : config.base_url;
+    const res = await fetch(`${cleanBase}/api/tags`, {
       signal: AbortSignal.timeout(5000)
     });
     const latency = Date.now() - start;
     if (!res.ok) return { ok: false, reason: `HTTP ${res.status}`, latency };
     const data = await res.json();
     const models = (data.models ?? []).map(m => m.name);
-    const found = models.includes(config.model);
+    const found = models.some(m => m === config.model || m.startsWith(config.model + ":"));
     return {
       ok: found,
       reason: found ? `${config.model} available` : `${config.model} not installed`,
