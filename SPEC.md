@@ -788,3 +788,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-04-29 | 3.3.2 | Groq added as fallback3 — llama-3.3-70b-versatile | Independent rate limit pool, ~315 TPS on LPU hardware |
+| 2026-04-29 | 3.3.2 | Cerebras added as fallback4 — qwen-3-235b-a22b-instruct-2507 | 1M tokens/day free, 235B model |
+| 2026-04-29 | 3.3.2 | runOpenAICompatible() added to orchestrator.js | Single runner for all OpenAI-compatible providers |
+| 2026-04-29 | 3.3.2 | sdd check-engines updated to show all 6 providers | Groq and Cerebras rows added |
