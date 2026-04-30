@@ -780,3 +780,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-27 | 3.3.0 | Memory summarizer path and call fixed | memAbsPath passed correctly, existsSync guard added |
 
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
+| 2026-04-29 | 3.3.1 | OpenRouter fallback upgraded to gpt-oss-120b:free | 6x larger than gpt-oss-20b, near-parity with o4-mini on reasoning benchmarks |
+| 2026-04-29 | 3.3.1 | Ollama local fallback fully operational | tinyllama installed, serve auto-starts via .bashrc, model name match fixed |
+| 2026-04-29 | 3.3.1 | Ollama model override bug fixed | per-agent routing only applies when provider is Gemini |
+| 2026-04-29 | 3.3.1 | sdd check-engines Ollama URL and model match fixed | double /api path corrected, tinyllama:latest suffix handled |
