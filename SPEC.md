@@ -439,7 +439,8 @@ Every session is logged to `learning/sessions/` with topic, explanation given, q
 
 ### MEMORY SYSTEM
 **MVP:** `memory/memory.txt` — flat file, append-only
-**Compression:** Manual summarization when file exceeds ~50KB
+**Retrieval:** Keyword-based semantic filter — last 5 exchanges always injected verbatim, top 3 relevant older exchanges scored by word overlap with current task, total capped at 2000 chars.
+**Compression:** Auto-summarization when file exceeds 40KB (Phase 18)
 
 | Layer | Path | Status |
 |---|---|---|
@@ -612,7 +613,7 @@ cd ~/sdd && npm install @google/generative-ai
 - OpenRouter free tier models change without notice — run `sdd check-engines` to verify before use
 - Gemini free tier hard limit: 20 requests/day on gemini-2.5-flash-lite
 - Self-research local mode only — no web search or external knowledge retrieval
-- Memory has no semantic retrieval — flat file injected in full into every prompt
+- ~~Memory has no semantic retrieval~~ — **Fixed:** keyword-based filter injects last 5 exchanges verbatim + top 3 relevant older exchanges, capped at 2000 chars (88% token reduction on a 17KB file)
 - TRI-STRUCTURE stripping on simple tasks is line-based heuristic — edge cases may include stray bullet lines
 - Cost tracker underestimates input tokens — counts task string only, not full compiled prompt
 - Video and audio: structured output only — no local processing on mobile
@@ -788,6 +789,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-04-30 | 3.3.3 | Fix #1: semantic memory retrieval — keyword filter, last 5 verbatim + top 3 relevant, 2000 char cap | Eliminates full flat-file injection — 88% token reduction on real memory file |
 | 2026-04-29 | 3.3.2 | Groq added as fallback3 — llama-3.3-70b-versatile | Independent rate limit pool, ~315 TPS on LPU hardware |
 | 2026-04-29 | 3.3.2 | Cerebras added as fallback4 — qwen-3-235b-a22b-instruct-2507 | 1M tokens/day free, 235B model |
 | 2026-04-29 | 3.3.2 | runOpenAICompatible() added to orchestrator.js | Single runner for all OpenAI-compatible providers |

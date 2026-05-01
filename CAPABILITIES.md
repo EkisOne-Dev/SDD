@@ -4,10 +4,10 @@
 > Intended audience: technical reviewers, external auditors, and the system owner.
 
 **System:** Structured Development System (SDD)
-**Version:** 3.3.2
+**Version:** 3.3.3
 **Platform:** Android / Termux
 **Runtime:** Node.js
-**Last Updated:** 2026-04-30
+**Last Updated:** 2026-04-30 (rev 2)
 
 ---
 
@@ -144,7 +144,7 @@ tail -20 ~/sdd/memory/memory.txt
 Expected: The most recent task and response appended as `User: ... / Assistant: ...` entries.
 
 **Known limitations:**
-- Single flat file — no semantic retrieval. Old context dilutes relevance over time.
+- Keyword-based retrieval active — last 5 exchanges verbatim + top 3 relevant older exchanges by word overlap, capped at 2000 chars. Old context no longer dilutes every prompt.
 - A 50KB warning fires in `saveMemory()` but no automatic compression occurs yet. Manual intervention required when file grows large.
 - Memory is injected in full — no filtering or relevance ranking.
 
