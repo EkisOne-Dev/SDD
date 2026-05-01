@@ -604,6 +604,53 @@ cd ~/sdd && npm install @google/generative-ai
 | 16 | TRI-STRUCTURE suppression on simple tasks — basic agent routing + post-chain strip | ✅ Complete |
 | 17 | Score drift ASCII chart — rolling 10-run trend after every scored task | ✅ Complete |
 | 18 | Memory summarization — auto-compress at 40KB, keep last 5 exchanges verbatim | ✅ Complete |
+| 19 | main.js decomposition — extract post-chain pipeline into post-chain.js | 🔲 Planned |
+| 20 | Schema validation — validate system.json and adapter.json on load with clean error messages | 🔲 Planned |
+
+---
+
+## REFACTOR ROADMAP
+
+### Phase 19 — main.js Decomposition
+**Problem:** `main.js` currently handles 7 responsibilities — CLI routing, preflight checks, chain execution, TRI-STRUCTURE stripping, self-critique, post-processing (score/drift/meta/cost/memory), and logging. This violates Single Responsibility Principle and makes the file hard to maintain, test, or extend.
+
+**Target architecture:**
+```
+main.js         → CLI routing + preflight only
+post-chain.js   → strip + critique + memory + score + drift + meta + cost + log
+validator.js    → schema validation for config files on load
+```
+
+**Files to create:**
+- `orchestrator/post-chain.js` — owns everything after the chain result returns
+- `orchestrator/validator.js` — validates system.json and adapter.json schemas
+
+**Files to modify:**
+- `orchestrator/main.js` — imports and delegates to post-chain.js after runChain()
+- `orchestrator/orchestrator.js` — calls validator.js in loadConfig() and loadEngineAdapter()
+
+**Success criteria:**
+- main.js task execution block reduced from ~60 lines to ~15 lines
+- All post-chain logic testable in isolation via post-chain.js
+- Any malformed config file produces a clear human-readable error instead of a crash
+
+---
+
+### Phase 20 — Schema Validation
+**Problem:** If `config/system.json` or `engine/adapter.json` are malformed or missing required fields, the system crashes with a raw Node.js error that gives no actionable guidance. A production-grade system must fail loudly and clearly.
+
+**Required fields to validate:**
+
+`system.json` required: version, memory_file, default_agent, default_phase, capability_check_enabled, negotiation_enabled, scoring_enabled, cost_tracking_enabled, meta_observation_enabled, self_research_enabled, self_research_mode
+
+`adapter.json` required: primary.provider, primary.model, primary.api_key_env, primary.base_url, active
+
+**Behavior on validation failure:**
+- Print specific field name that is missing or invalid
+- Print the file path that failed
+- Exit with code 1 — never proceed with a broken config
+
+**RULE:** Validation runs before any other system operation. No task executes against an unvalidated config.
 
 ---
 
@@ -790,6 +837,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-04-30 | 3.3.9 | Phase 19 + 20 planned — main.js decomposition and schema validation added to roadmap | Code quality audit identified SRP violation and missing runtime validation |
 | 2026-04-30 | 3.3.8 | Fix #5: web search layer added to self-research — Wikipedia REST API, no key required | Two-step search+summary, 500 char cap, silent fail if offline |
 | 2026-04-30 | 3.3.7 | Fix #4: TRI-STRUCTURE strip upgraded to regex [ARTIFACT] extraction — heuristic as fallback | Eliminates stray bullet/header lines in simple task output |
 | 2026-04-30 | 3.3.6 | Improve: score trend chart — bars replaced with number grid | Compact, precise, shows exact values not approximations |
