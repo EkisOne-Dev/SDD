@@ -4,7 +4,7 @@
 > Intended audience: technical reviewers, external auditors, and the system owner.
 
 **System:** Structured Development System (SDD)
-**Version:** 3.3.4
+**Version:** 3.3.5
 **Platform:** Android / Termux
 **Runtime:** Node.js
 **Last Updated:** 2026-04-30 (rev 2)
@@ -597,7 +597,7 @@ tail -1 ~/sdd/meta/scores/scores.jsonl
 Expected: JSON object with `timestamp`, `task`, and `scores` fields including `clarity`, `usefulness`, `efficiency`, `redundancy`, `overall`.
 
 **Known limitations:**
-- Heuristic scoring — not semantic. A short precise answer may score low on usefulness purely due to length. A verbose answer may score high. This can cause the self-improvement system to optimize in the wrong direction.
+- Heuristic scoring — not semantic. Scorer updated to remove length bias: clarity base raised to 60, formatting is a bonus not a requirement, usefulness no longer rewards length over keyword precision.
 - Overall score formula is a fixed weighted average — not tunable from config.
 
 ---
