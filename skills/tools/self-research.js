@@ -76,6 +76,35 @@ ${localContext}`;
   }
 }
 
+
+async function webSearch(task) {
+  try {
+    // Step 1: search Wikipedia for best matching article
+    const query = encodeURIComponent(task);
+    const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${query}&format=json&srlimit=1&origin=*`;
+    const searchRes = await fetch(searchUrl, { signal: AbortSignal.timeout(6000) });
+    if (!searchRes.ok) return null;
+    const searchData = await searchRes.json();
+    const topResult = searchData?.query?.search?.[0];
+    if (!topResult) return null;
+
+    // Step 2: fetch summary for top result
+    const titleEncoded = encodeURIComponent(topResult.title);
+    const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${titleEncoded}`;
+    const summaryRes = await fetch(summaryUrl, { signal: AbortSignal.timeout(6000) });
+    if (!summaryRes.ok) return null;
+    const summaryData = await summaryRes.json();
+
+    const extract = summaryData?.extract;
+    if (!extract || extract.length < 50) return null;
+
+    // Cap at 500 chars to avoid bloating the prompt
+    return `Web context [${summaryData.title}]:\n${extract.slice(0, 500)}`;
+  } catch {
+    return null; // Fail silently — network unavailable or timeout
+  }
+}
+
 export async function runSelfResearch(task, config, adapter) {
   const parts = [];
 
@@ -112,5 +141,13 @@ export async function runSelfResearch(task, config, adapter) {
     }
   }
 
-  return parts.length > 0 ? localContext : null;
+  // Web search layer — activates when self_research_mode is "web"
+  if (config.self_research_mode === "web") {
+    const webContext = await webSearch(task);
+    if (webContext) {
+      parts.push(webContext);
+    }
+  }
+
+  return parts.length > 0 ? parts.join("\n\n") : null;
 }
