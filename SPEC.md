@@ -789,6 +789,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-04-30 | 3.3.6 | Improve: score trend chart — bars replaced with number grid | Compact, precise, shows exact values not approximations |
 | 2026-04-30 | 3.3.5 | Fix #3: scorer bias removed — short precise answers score fairly | Clarity base 60, formatting optional bonus, length bias removed from usefulness and efficiency |
 | 2026-04-30 | 3.3.4 | Fix #2: cost tracker now measures full compiled prompt — input tokens accurate | Was counting task string only (~9 tokens) — now counts full prompt chars (~1184 tokens) |
 | 2026-04-30 | 3.3.3 | Fix #1: semantic memory retrieval — keyword filter, last 5 verbatim + top 3 relevant, 2000 char cap | Eliminates full flat-file injection — 88% token reduction on real memory file |

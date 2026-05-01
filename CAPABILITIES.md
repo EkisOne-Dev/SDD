@@ -4,7 +4,7 @@
 > Intended audience: technical reviewers, external auditors, and the system owner.
 
 **System:** Structured Development System (SDD)
-**Version:** 3.3.5
+**Version:** 3.3.6
 **Platform:** Android / Termux
 **Runtime:** Node.js
 **Last Updated:** 2026-04-30 (rev 2)
@@ -1018,7 +1018,7 @@ Expected: Clean plain-text answer with no [INTERNAL REASONING] or [VERIFICATION]
 ### 34 — Score Drift ASCII Chart
 
 **What it does:**
-After every scored task, a rolling 10-run ASCII bar chart is printed showing per-dimension trends (Clarity, Usefulness, Efficiency, Redundancy) with averages. Allows immediate visual detection of scoring drift without any external tools.
+After every scored task, a rolling 10-run number grid is printed showing exact per-dimension scores (Clarity, Usefulness, Efficiency, Redundancy) with averages. Columns are aligned oldest → newest for easy trend reading. Allows immediate visual detection of scoring drift without any external tools.
 
 **Trigger:** Automatic after every scored task.
 
