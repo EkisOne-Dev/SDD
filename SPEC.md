@@ -610,7 +610,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 22 | Fix pipeline loadMemory — task not passed, semantic filter bypassed in all pipeline stages | ✅ Complete |
 | 23 | Fix chain routing — first-match replaced with scored best-match across all trigger sets | ✅ Complete |
 | 24 | Fix pipeline duplication — runPipeline and resumePipeline share 80% logic, extract runStageLoop() | ✅ Complete |
-| 25 | Fix router.js — registry.json read from disk on every call, add module-level cache | 🔲 Planned |
+| 25 | Fix router.js — registry.json read from disk on every call, add module-level cache | ✅ Complete |
 | 26 | Expand negotiator — 5 rigid regex triggers replaced with broader pattern coverage | 🔲 Planned |
 
 ---
@@ -1003,6 +1003,7 @@ validator.js    → schema validation for config files on load
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-05-01 | 3.4.7 | Phase 25 complete — router.js registry cached at module level | Eliminates redundant disk read on every task |
 | 2026-05-01 | 3.4.6 | Phase 24 complete — runStageLoop() extracted, 49 duplicate lines removed from pipeline.js | DRY compliant |
 | 2026-05-01 | 3.4.5 | Phase 23 complete — selectChain uses scored best-match, "write a strategy" now correctly routes to strategist | Eliminates first-match misrouting |
 | 2026-05-01 | 3.4.4 | Phase 22 complete — pipeline loadMemory now passes task, semantic filter active in all stages | Fix #1 now applies to pipeline runs too |
