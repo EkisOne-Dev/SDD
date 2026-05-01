@@ -615,7 +615,7 @@ cd ~/sdd && npm install @google/generative-ai
 - Self-research local mode only — no web search or external knowledge retrieval
 - ~~Memory has no semantic retrieval~~ — **Fixed:** keyword-based filter injects last 5 exchanges verbatim + top 3 relevant older exchanges, capped at 2000 chars (88% token reduction on a 17KB file)
 - TRI-STRUCTURE stripping on simple tasks is line-based heuristic — edge cases may include stray bullet lines
-- Cost tracker underestimates input tokens — counts task string only, not full compiled prompt
+- ~~Cost tracker underestimates input tokens~~ — **Fixed:** full compiled prompt chars passed from chains.js, input tokens now accurate (~1184 vs ~9 on real task)
 - Video and audio: structured output only — no local processing on mobile
 - Log date reflects device timezone (expected behavior)
 - Ollama installed and active — tinyllama pulled. Run `ollama serve` before switching to local_fallback
@@ -789,6 +789,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-04-30 | 3.3.4 | Fix #2: cost tracker now measures full compiled prompt — input tokens accurate | Was counting task string only (~9 tokens) — now counts full prompt chars (~1184 tokens) |
 | 2026-04-30 | 3.3.3 | Fix #1: semantic memory retrieval — keyword filter, last 5 verbatim + top 3 relevant, 2000 char cap | Eliminates full flat-file injection — 88% token reduction on real memory file |
 | 2026-04-29 | 3.3.2 | Groq added as fallback3 — llama-3.3-70b-versatile | Independent rate limit pool, ~315 TPS on LPU hardware |
 | 2026-04-29 | 3.3.2 | Cerebras added as fallback4 — qwen-3-235b-a22b-instruct-2507 | 1M tokens/day free, 235B model |
