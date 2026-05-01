@@ -144,7 +144,7 @@ async function runStage(state, stage, deps) {
 
   const { contract, prompt: promptTemplate } = loadPipelinePhase(stage);
   const agent    = loadAgentSafe(STAGE_AGENTS[stage], loadAgent);
-  const memory   = loadMemory(config);
+  const memory   = loadMemory(config, state.original_task);
 
   // Load prior artifact (previous stage output)
   const stagesIdx   = STAGES.indexOf(stage);
