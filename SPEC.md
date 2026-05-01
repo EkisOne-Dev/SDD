@@ -606,6 +606,118 @@ cd ~/sdd && npm install @google/generative-ai
 | 18 | Memory summarization — auto-compress at 40KB, keep last 5 exchanges verbatim | ✅ Complete |
 | 19 | main.js decomposition — extract post-chain pipeline into post-chain.js | ✅ Complete |
 | 20 | Schema validation — validate system.json and adapter.json on load with clean error messages | ✅ Complete |
+| 21 | Fix pipeline logExecution — passes objects instead of strings, corrupts every log entry | 🔲 Planned |
+| 22 | Fix pipeline loadMemory — task not passed, semantic filter bypassed in all pipeline stages | 🔲 Planned |
+| 23 | Fix chain routing — first-match replaced with scored best-match across all trigger sets | 🔲 Planned |
+| 24 | Fix pipeline duplication — runPipeline and resumePipeline share 80% logic, extract runStageLoop() | 🔲 Planned |
+| 25 | Fix router.js — registry.json read from disk on every call, add module-level cache | 🔲 Planned |
+| 26 | Expand negotiator — 5 rigid regex triggers replaced with broader pattern coverage | 🔲 Planned |
+
+---
+
+## CODE QUALITY STANDARDS
+
+These standards apply to ALL code in the SDD system — new features, fixes, and refactors. No code is merged that violates these principles. This is the permanent engineering contract for the project.
+
+---
+
+### 1. Single Responsibility Principle (SRP)
+Every file, module, and function has exactly one reason to change. Functions do one thing. Files own one domain.
+
+- ✅ `post-chain.js` — owns post-result processing only
+- ✅ `validator.js` — owns config validation only
+- ❌ A function that both runs an engine call AND writes to a log file
+
+**Rule:** If you cannot describe a function's purpose in one sentence without using "and", split it.
+
+---
+
+### 2. Explicit over Implicit
+No silent failures. No assumptions about state. Every error must be catchable and produce a human-readable message with the specific field, file, or operation that failed.
+
+- ✅ `validator.js` — names the exact missing field and file path
+- ❌ `JSON.parse(raw)` with no try/catch — crashes with a raw Node.js stack trace
+- ❌ Passing `null` silently instead of throwing
+
+**Rule:** Every I/O operation (file read, API call, JSON parse) must have explicit error handling.
+
+---
+
+### 3. No Dead Code
+No unused variables, no alias assignments, no unreachable branches.
+
+- ❌ `const finalPrompt = prompt;` — identical alias, zero purpose
+- ❌ 50KB memory warning that can never fire because compression triggers at 40KB
+- ❌ `deepseek` model branch in runEngine — no deepseek provider exists in adapter.json
+
+**Rule:** If a variable or branch cannot be justified by a specific line in SPEC.md, remove it.
+
+---
+
+### 4. No Variable Shadowing
+Inner scope variables must never share names with outer scope variables in the same call chain.
+
+- ❌ `const agents = effectiveAgents` inside a loop that already has `agents` in scope
+- ❌ Reusing `config`, `adapter`, or `task` as local variable names inside functions that receive them as parameters
+
+**Rule:** If ESLint `no-shadow` would flag it, rename it.
+
+---
+
+### 5. DRY — No Copy-Paste Logic
+Identical logic blocks must be extracted into shared functions. If the same code appears in two places, it belongs in a third file that both import.
+
+- ❌ `runPipeline` and `resumePipeline` sharing 80% identical stage-loop logic
+- ❌ Duplicate readline `prompt()` helpers defined in both pipeline.js and negotiator.js
+
+**Rule:** If you find yourself copying more than 3 lines from one function to another, extract it.
+
+---
+
+### 6. Best-Match over First-Match
+When routing or selecting from a set of options (chains, skills, negotiator triggers), always score all candidates and pick the highest-scoring match — never stop at the first hit.
+
+- ❌ Chain selector stops at first trigger match — "write a strategy" routes to creative instead of strategy
+- ✅ Score all chains by trigger overlap count, return the chain with the highest score
+
+**Rule:** Any selection algorithm that uses a `for...of` loop with an early `return` inside is a candidate for scoring instead.
+
+---
+
+### 7. I/O Caching
+Files that are read on every function call but never change at runtime must be cached at module level.
+
+- ❌ `router.js` reads `registry.json` from disk on every skill lookup
+- ✅ Read once at module load, reuse the parsed object
+
+**Rule:** If a `readFileSync` call is inside a function that is called more than once per session, cache it.
+
+---
+
+### 8. Consistent Logging Contract
+`logExecution()` accepts a string only. Never pass an object. Log entries must be human-readable in the log file without a JSON parser.
+
+- ❌ `logExecution({ stage: "PIPELINE", status: "STARTED" })` → writes `[object Object]`
+- ✅ `logExecution("PIPELINE:propose STARTED — project: my-project")`
+
+**Rule:** All logExecution calls must be string literals or template literals. No objects.
+
+---
+
+### 9. Context Completeness
+Every function that builds or passes context (memory, task, prior output) must pass the full context required by the downstream consumer. No partial context.
+
+- ❌ `loadMemory(config)` in pipeline — omits task, bypasses semantic filter
+- ✅ `loadMemory(config, task)` — full context, filter activates
+
+**Rule:** When calling any context-building function, verify all parameters are supplied. Omitted parameters that have defaults are a code smell — investigate why the default exists.
+
+---
+
+### 10. Spec-to-Code Traceability
+Every function, file, and feature must map to a phase or capability in SPEC.md or CAPABILITIES.md. Code without a spec entry is not production-ready.
+
+**Rule:** Before committing any new function or file, confirm it is documented in SPEC.md. The spec is always updated in the same commit as the code.
 
 ---
 
@@ -651,6 +763,60 @@ validator.js    → schema validation for config files on load
 - Exit with code 1 — never proceed with a broken config
 
 **RULE:** Validation runs before any other system operation. No task executes against an unvalidated config.
+
+---
+
+### Phase 21 — Fix pipeline logExecution (Critical Bug)
+**Problem:** `pipeline.js` calls `logExecution()` with plain objects instead of strings. Every pipeline log entry writes `[object Object]` — completely unreadable. Violates Code Quality Standard #8.
+
+**Fix:** Convert all `logExecution()` calls in pipeline.js to template literal strings.
+
+**Files:** `orchestrator/pipeline.js`
+
+---
+
+### Phase 22 — Fix pipeline loadMemory (Active Bug)
+**Problem:** All 7 pipeline stage calls use `loadMemory(config)` without passing `task`. The semantic filter built in Fix #1 is fully bypassed. Violates Code Quality Standard #9.
+
+**Fix:** Pass `state.original_task` as second argument to `loadMemory()` in `runStage()`.
+
+**Files:** `orchestrator/pipeline.js`
+
+---
+
+### Phase 23 — Fix chain routing (Structural)
+**Problem:** `selectChain()` returns on the first trigger match. "write a strategy" routes to `creative` instead of `strategy` because "write" appears first. Violates Code Quality Standard #6.
+
+**Fix:** Score all chains by trigger overlap count, return highest scorer. Tie-break by chain order.
+
+**Files:** `orchestrator/chains.js`
+
+---
+
+### Phase 24 — Fix pipeline duplication (Structural)
+**Problem:** `runPipeline()` and `resumePipeline()` share ~80% identical logic. Violates Code Quality Standard #5.
+
+**Fix:** Extract shared `runStageLoop(state, deps)` function. Both entry points call it.
+
+**Files:** `orchestrator/pipeline.js`
+
+---
+
+### Phase 25 — Fix router.js caching (Optimization)
+**Problem:** `routeSkill()` reads and parses `registry.json` from disk on every call. Violates Code Quality Standard #7.
+
+**Fix:** Cache parsed registry at module level. Read once on first call, reuse thereafter.
+
+**Files:** `skills/router.js`
+
+---
+
+### Phase 26 — Expand negotiator coverage (Structural)
+**Problem:** Only 5 rigid regex triggers. The vast majority of real-world tasks bypass negotiation entirely. Violates Code Quality Standard #6.
+
+**Fix:** Expand to 15+ triggers covering vague requests, missing context, ambiguous scope, and multi-intent tasks. Replace pure regex with keyword+pattern hybrid matching.
+
+**Files:** `skills/tools/negotiator.js`
 
 ---
 
@@ -837,6 +1003,7 @@ validator.js    → schema validation for config files on load
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-05-01 | 3.4.2 | Code Quality Standards added — 10 permanent engineering principles | Phase 21-26 audit fixes added to roadmap |
 | 2026-05-01 | 3.4.1 | Add backup.sh + sdd backup command — git push, SD card .bashrc backup, RESTORE.md | Full system recoverable after Termux uninstall |
 | 2026-04-30 | 3.4.0 | Phase 19 complete — post-chain.js extracted from main.js, SRP restored | main.js task block reduced from 60 lines to 3 lines |
 | 2026-04-30 | 3.4.0 | Phase 20 complete — validator.js wired into orchestrator.js | Missing/invalid config fields now produce clear error messages and exit cleanly |
