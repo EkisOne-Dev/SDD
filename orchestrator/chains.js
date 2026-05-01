@@ -79,11 +79,18 @@ export function classifyComplexity(task, chain) {
 
 export function selectChain(task) {
   const t = task.toLowerCase();
+  let bestChain = null;
+  let bestScore = 0;
+
   for (const chain of CHAINS) {
-    if (chain.triggers.some(k => t.includes(k))) {
-      return { type: chain.type, agents: chain.agents };
+    const score = chain.triggers.filter(k => t.includes(k)).length;
+    if (score > bestScore) {
+      bestScore = score;
+      bestChain = chain;
     }
   }
+
+  if (bestChain) return { type: bestChain.type, agents: bestChain.agents };
   return { type: "basic", agents: ["basic"] };
 }
 
