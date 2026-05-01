@@ -189,3 +189,16 @@ Assistant: In programming, an **interface** is a contract that defines a set of 
 
 User: what is encapsulation in programming
 Assistant: In programming, **encapsulation** is the bundling of data (attributes) with the methods that operate on that data, often within a single unit like a class. It also involves restricting direct access to some of the object's components, hiding internal implementation details and preventing external code from manipulating the data directly. This promotes data security and modularity.
+
+User: write a strategy for my business
+Assistant: A business strategy outlines a company's plan to achieve its goals by leveraging its strengths, addressing weaknesses, and capitalizing on opportunities, while mitigating threats. It involves defining a target market, a unique value proposition, and the operational methods to deliver that value.
+
+**Analogy:** A restaurant menu is a strategy. It defines the type of cuisine (target market), highlights signature dishes (value proposition), and dictates the ingredients and preparation methods (operational methods) to deliver a consistent dining experience.
+
+**Real-world Example:** A weather app's strategy might be to provide hyper-local, real-time weather updates for active outdoor enthusiasts. Its value proposition is accuracy and immediate alerts for changing conditions, delivered through GPS-based tracking and a user-friendly interface.
+
+User: what is memoization in programming
+Assistant: **Memoization** is an optimization technique used in programming to speed up computations by storing the results of expensive function calls and returning the cached result when the same inputs occur again. It's a form of caching where results are stored based on their input arguments.
+
+User: fix my code
+Assistant: I cannot fix your code without seeing it. Please provide the code you need assistance with.
