@@ -4,7 +4,7 @@
 > Intended audience: technical reviewers, external auditors, and the system owner.
 
 **System:** Structured Development System (SDD)
-**Version:** 3.3.6
+**Version:** 3.3.7
 **Platform:** Android / Termux
 **Runtime:** Node.js
 **Last Updated:** 2026-04-30 (rev 2)
@@ -1011,7 +1011,7 @@ sdd "what is a variable"
 Expected: Clean plain-text answer with no [INTERNAL REASONING] or [VERIFICATION] blocks. Chain log shows `basic` agent only.
 
 **Known limitations:**
-- Strip is line-based heuristic — edge cases may include stray bullet lines from reasoning sections.
+- Strip uses regex to extract content between [ARTIFACT] and [VERIFICATION] markers. Line-based heuristic retained as fallback. Edge cases eliminated.
 
 ---
 

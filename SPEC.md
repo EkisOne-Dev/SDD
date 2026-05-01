@@ -614,7 +614,7 @@ cd ~/sdd && npm install @google/generative-ai
 - Gemini free tier hard limit: 20 requests/day on gemini-2.5-flash-lite
 - Self-research local mode only — no web search or external knowledge retrieval
 - ~~Memory has no semantic retrieval~~ — **Fixed:** keyword-based filter injects last 5 exchanges verbatim + top 3 relevant older exchanges, capped at 2000 chars (88% token reduction on a 17KB file)
-- TRI-STRUCTURE stripping on simple tasks is line-based heuristic — edge cases may include stray bullet lines
+- ~~TRI-STRUCTURE stripping edge cases~~ — **Fixed:** regex now extracts content between [ARTIFACT] and [VERIFICATION] markers cleanly. Line-based heuristic kept as fallback only.
 - ~~Cost tracker underestimates input tokens~~ — **Fixed:** full compiled prompt chars passed from chains.js, input tokens now accurate (~1184 vs ~9 on real task)
 - Video and audio: structured output only — no local processing on mobile
 - Log date reflects device timezone (expected behavior)
@@ -789,6 +789,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-04-30 | 3.3.7 | Fix #4: TRI-STRUCTURE strip upgraded to regex [ARTIFACT] extraction — heuristic as fallback | Eliminates stray bullet/header lines in simple task output |
 | 2026-04-30 | 3.3.6 | Improve: score trend chart — bars replaced with number grid | Compact, precise, shows exact values not approximations |
 | 2026-04-30 | 3.3.5 | Fix #3: scorer bias removed — short precise answers score fairly | Clarity base 60, formatting optional bonus, length bias removed from usefulness and efficiency |
 | 2026-04-30 | 3.3.4 | Fix #2: cost tracker now measures full compiled prompt — input tokens accurate | Was counting task string only (~9 tokens) — now counts full prompt chars (~1184 tokens) |
