@@ -1,4 +1,5 @@
 import fs from "fs";
+import { validateSystemConfig, validateAdapterConfig } from "./validator.js";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -8,13 +9,19 @@ const ROOT = path.resolve(__dirname, "..");
 // ── Config loaders ────────────────────────────────────────────────────────────
 
 export function loadConfig() {
-  const raw = fs.readFileSync(path.join(ROOT, "config/system.json"), "utf-8");
-  return JSON.parse(raw);
+  const filePath = path.join(ROOT, "config/system.json");
+  const raw = fs.readFileSync(filePath, "utf-8");
+  const config = JSON.parse(raw);
+  validateSystemConfig(config, filePath);
+  return config;
 }
 
 export function loadEngineAdapter() {
-  const raw = fs.readFileSync(path.join(ROOT, "engine/adapter.json"), "utf-8");
-  return JSON.parse(raw);
+  const filePath = path.join(ROOT, "engine/adapter.json");
+  const raw = fs.readFileSync(filePath, "utf-8");
+  const adapter = JSON.parse(raw);
+  validateAdapterConfig(adapter, filePath);
+  return adapter;
 }
 
 // ── Memory ────────────────────────────────────────────────────────────────────
