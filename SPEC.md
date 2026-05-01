@@ -604,8 +604,8 @@ cd ~/sdd && npm install @google/generative-ai
 | 16 | TRI-STRUCTURE suppression on simple tasks — basic agent routing + post-chain strip | ✅ Complete |
 | 17 | Score drift ASCII chart — rolling 10-run trend after every scored task | ✅ Complete |
 | 18 | Memory summarization — auto-compress at 40KB, keep last 5 exchanges verbatim | ✅ Complete |
-| 19 | main.js decomposition — extract post-chain pipeline into post-chain.js | 🔲 Planned |
-| 20 | Schema validation — validate system.json and adapter.json on load with clean error messages | 🔲 Planned |
+| 19 | main.js decomposition — extract post-chain pipeline into post-chain.js | ✅ Complete |
+| 20 | Schema validation — validate system.json and adapter.json on load with clean error messages | ✅ Complete |
 
 ---
 
@@ -837,6 +837,10 @@ validator.js    → schema validation for config files on load
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-04-30 | 3.4.0 | Phase 19 complete — post-chain.js extracted from main.js, SRP restored | main.js task block reduced from 60 lines to 3 lines |
+| 2026-04-30 | 3.4.0 | Phase 20 complete — validator.js wired into orchestrator.js | Missing/invalid config fields now produce clear error messages and exit cleanly |
+| 2026-04-30 | 3.4.0 | Phase 19 complete — post-chain.js extracted from main.js, SRP restored | main.js task block reduced from 60 lines to 3 lines |
+| 2026-04-30 | 3.4.0 | Phase 20 complete — validator.js wired into orchestrator.js | Missing/invalid config fields now produce clear error messages and exit cleanly |
 | 2026-04-30 | 3.3.9 | Phase 19 + 20 planned — main.js decomposition and schema validation added to roadmap | Code quality audit identified SRP violation and missing runtime validation |
 | 2026-04-30 | 3.3.8 | Fix #5: web search layer added to self-research — Wikipedia REST API, no key required | Two-step search+summary, 500 char cap, silent fail if offline |
 | 2026-04-30 | 3.3.7 | Fix #4: TRI-STRUCTURE strip upgraded to regex [ARTIFACT] extraction — heuristic as fallback | Eliminates stray bullet/header lines in simple task output |

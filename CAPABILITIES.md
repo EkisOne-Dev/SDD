@@ -4,7 +4,7 @@
 > Intended audience: technical reviewers, external auditors, and the system owner.
 
 **System:** Structured Development System (SDD)
-**Version:** 3.3.8
+**Version:** 3.4.0
 **Platform:** Android / Termux
 **Runtime:** Node.js
 **Last Updated:** 2026-04-30 (rev 2)
@@ -1059,6 +1059,72 @@ Expected: Both files exist. If compression has triggered, `memory.txt` is signif
 
 **Known limitations:**
 - Summarization quality depends on the AI engine — Ollama (TinyLlama) produces weaker summaries than Gemini.
+
+---
+
+### 36 — Post-Chain Pipeline (Phase 19)
+
+**What it does:**
+All post-chain processing (TRI-STRUCTURE stripping, self-critique, memory save, scoring, drift, meta, cost) is handled by `orchestrator/post-chain.js`. main.js delegates entirely after runChain() returns.
+
+**Files responsible:**
+- `orchestrator/post-chain.js` → owns all post-result processing
+- `orchestrator/main.js` → calls runPostChain() with result context
+
+**Verification test:**
+```bash
+sdd "what is encapsulation"
+```
+Expected: full pipeline runs — result, score, drift, cost all display correctly.
+
+---
+
+### 37 — Schema Validation (Phase 20)
+
+**What it does:**
+On every startup, `system.json` and `adapter.json` are validated against required field schemas. Any missing or invalid field produces a clear error message with the field name and file path, then exits with code 1.
+
+**Files responsible:**
+- `orchestrator/validator.js` → validateSystemConfig(), validateAdapterConfig()
+- `orchestrator/orchestrator.js` → calls validators in loadConfig() and loadEngineAdapter()
+
+**Verification test:**
+Delete any field from system.json, run `sdd "test"`, confirm error names the missing field exactly.
+
+**Known limitations:** None.
+
+---
+
+### 36 — Post-Chain Pipeline (Phase 19)
+
+**What it does:**
+All post-chain processing (TRI-STRUCTURE stripping, self-critique, memory save, scoring, drift, meta, cost) is handled by `orchestrator/post-chain.js`. main.js delegates entirely after runChain() returns.
+
+**Files responsible:**
+- `orchestrator/post-chain.js` → owns all post-result processing
+- `orchestrator/main.js` → calls runPostChain() with result context
+
+**Verification test:**
+```bash
+sdd "what is encapsulation"
+```
+Expected: full pipeline runs — result, score, drift, cost all display correctly.
+
+---
+
+### 37 — Schema Validation (Phase 20)
+
+**What it does:**
+On every startup, `system.json` and `adapter.json` are validated against required field schemas. Any missing or invalid field produces a clear error message with the field name and file path, then exits with code 1.
+
+**Files responsible:**
+- `orchestrator/validator.js` → validateSystemConfig(), validateAdapterConfig()
+- `orchestrator/orchestrator.js` → calls validators in loadConfig() and loadEngineAdapter()
+
+**Verification test:**
+Delete any field from system.json, run `sdd "test"`, confirm error names the missing field exactly.
+
+**Known limitations:** None.
 
 ---
 
