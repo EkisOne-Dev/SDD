@@ -111,6 +111,7 @@ export async function runChain(task, chain, config, adapter, skillContext) {
 
   let previousOutput = null;
   let finalResult = null;
+  let totalPromptChars = 0;
 
   // For simple tasks, use basic agent directly — avoids TRI-STRUCTURE from specialists
   const effectiveAgents = (complexity === 'simple' && type !== 'simple')
@@ -153,6 +154,7 @@ export async function runChain(task, chain, config, adapter, skillContext) {
     );
 
     const finalPrompt = prompt;
+    totalPromptChars += finalPrompt.length;
 
     const result = await runEngine(finalPrompt, adapter, agentName, complexity);
 
@@ -166,5 +168,5 @@ export async function runChain(task, chain, config, adapter, skillContext) {
     }
   }
 
-  return { result: finalResult, complexity };
+  return { result: finalResult, complexity, promptChars: totalPromptChars };
 }

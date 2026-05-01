@@ -16,7 +16,7 @@ function estimateTokens(text) {
 }
 
 function logCost(task, prompt, result, agentCount) {
-  const inputTokens = estimateTokens(prompt);
+  const inputTokens = typeof prompt === "number" ? Math.ceil(prompt / CHARS_PER_TOKEN) : estimateTokens(prompt);
   const outputTokens = estimateTokens(result);
   const totalTokens = inputTokens + outputTokens;
 

@@ -161,7 +161,7 @@ async function run(injectedTask = null) {
   console.log("⚙  Running SDD...\n");
 
   try {
-    const { result, complexity } = await runChain(task, chain, config, adapter, skillContext);
+    const { result, complexity, promptChars } = await runChain(task, chain, config, adapter, skillContext);
 
     // ── Strip TRI-STRUCTURE on simple tasks ──────────────────────────────
     let finalResult = result;
@@ -219,7 +219,7 @@ async function run(injectedTask = null) {
 
     // ── Cost tracking ──────────────────────────────────────────────────
     if (config.cost_tracking_enabled) {
-      const costEntry = logCost(task, task, finalResult, chain.agents.length);
+      const costEntry = logCost(task, promptChars || task, finalResult, chain.agents.length);
       displayCost(costEntry);
       logExecution(`COST: calls=${costEntry.api_calls} tokens=${costEntry.total_tokens}`);
     }
