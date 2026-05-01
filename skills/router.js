@@ -4,15 +4,22 @@ import { dirname, join } from "path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export function routeSkill(task) {
-  const registryPath = join(__dirname, "registry.json");
-  let registry;
+// ── Module-level cache — read once, reuse every call (Standard #7) ───────────
+let _registryCache = null;
 
+function loadRegistry() {
+  if (_registryCache) return _registryCache;
   try {
-    registry = JSON.parse(readFileSync(registryPath, "utf8"));
+    _registryCache = JSON.parse(readFileSync(join(__dirname, "registry.json"), "utf8"));
+    return _registryCache;
   } catch {
     return null;
   }
+}
+
+export function routeSkill(task) {
+  const registry = loadRegistry();
+  if (!registry) return null;
 
   const t = task.toLowerCase();
 
