@@ -166,16 +166,23 @@ async function run(injectedTask = null) {
     // ── Strip TRI-STRUCTURE on simple tasks ──────────────────────────────
     let finalResult = result;
     if (complexity === 'simple' && result.includes('[INTERNAL REASONING]')) {
-      const lines = result.split('\n');
-      const startIdx = lines.findIndex(line => {
-        const t = line.trim();
-        return t.length > 20 &&
-          !t.startsWith('[') &&
-          !t.startsWith('*') &&
-          !t.startsWith('-') &&
-          !t.match(/^\d+\./);
-      });
-      if (startIdx >= 0) finalResult = lines.slice(startIdx).join('\n').trim();
+      // Primary: extract cleanly between [ARTIFACT] and [VERIFICATION]
+      const artifactMatch = result.match(/\[ARTIFACT\][^\n]*\n([\s\S]*?)(?=\[VERIFICATION\]|$)/i);
+      if (artifactMatch && artifactMatch[1].trim().length > 0) {
+        finalResult = artifactMatch[1].trim();
+      } else {
+        // Fallback: find first substantive non-header line
+        const lines = result.split('\n');
+        const startIdx = lines.findIndex(line => {
+          const t = line.trim();
+          return t.length > 20 &&
+            !t.startsWith('[') &&
+            !t.startsWith('*') &&
+            !t.startsWith('-') &&
+            !t.match(/^\d+\./);
+        });
+        if (startIdx >= 0) finalResult = lines.slice(startIdx).join('\n').trim();
+      }
     }
 
     // ── Self-critique (optional) ─────────────────────────────────────────
