@@ -1003,6 +1003,7 @@ validator.js    → schema validation for config files on load
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-05-01 | 3.5.1 | Add terminal color UI — colors.js utility with semantic scheme | Magenta=skill, Cyan=status, Green=result, Yellow=metrics, Red=warnings, Dim=cost |
 | 2026-05-01 | 3.5.0 | Phase 26 complete — negotiator expanded to 15 triggers with best-match scoring | Coverage of real-world tasks dramatically improved |
 | 2026-05-01 | 3.4.7 | Phase 25 complete — router.js registry cached at module level | Eliminates redundant disk read on every task |
 | 2026-05-01 | 3.4.6 | Phase 24 complete — runStageLoop() extracted, 49 duplicate lines removed from pipeline.js | DRY compliant |
