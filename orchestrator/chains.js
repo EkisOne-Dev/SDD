@@ -128,7 +128,7 @@ export async function runChain(task, chain, config, adapter, skillContext) {
     const agent = loadAgent(agentName);
 
     // Build memory block
-    let rawMemory = loadMemory(config);
+    let rawMemory = loadMemory(config, task);
     if (skillContext) {
       rawMemory += "\n\n[SKILL CONTEXT — Self Research]\n" + skillContext;
     }

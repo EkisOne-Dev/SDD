@@ -19,9 +19,64 @@ export function loadEngineAdapter() {
 
 // ── Memory ────────────────────────────────────────────────────────────────────
 
-export function loadMemory(config) {
+export function loadMemory(config, task = "") {
   try {
-    return fs.readFileSync(path.join(ROOT, config.memory_file), "utf-8");
+    const raw = fs.readFileSync(path.join(ROOT, config.memory_file), "utf-8");
+    if (!task) return raw.slice(-2000);
+
+    // Parse into exchange pairs
+    const lines = raw.split("\n");
+    const exchanges = [];
+    let current = null;
+
+    for (const line of lines) {
+      if (line.startsWith("User:")) {
+        if (current) exchanges.push(current);
+        current = { user: line, assistant: [] };
+      } else if (current) {
+        current.assistant.push(line);
+      }
+    }
+    if (current) exchanges.push(current);
+
+    if (exchanges.length === 0) return "";
+
+    // Always keep last 5 verbatim
+    const KEEP_LAST = 5;
+    const recent = exchanges.slice(-KEEP_LAST);
+    const older = exchanges.slice(0, -KEEP_LAST);
+
+    // Score older exchanges by keyword overlap with task
+    const taskWords = new Set(
+      task.toLowerCase().replace(/[^a-z0-9 ]/g, "").split(" ").filter(w => w.length > 3)
+    );
+
+    const scored = older.map(ex => {
+      const text = (ex.user + " " + ex.assistant.join(" ")).toLowerCase();
+      let score = 0;
+      for (const word of taskWords) {
+        if (text.includes(word)) score++;
+      }
+      return { ex, score };
+    });
+
+    // Take top 3 relevant older exchanges
+    const relevant = scored
+      .filter(s => s.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3)
+      .map(s => s.ex);
+
+    const toInject = [...relevant, ...recent];
+
+    // Serialize and cap at 2000 chars
+    let result = toInject.map(ex =>
+      ex.user + "\n" + ex.assistant.join("\n")
+    ).join("\n");
+
+    if (result.length > 2000) result = result.slice(-2000);
+    return result;
+
   } catch {
     return "";
   }
