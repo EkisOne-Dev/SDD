@@ -628,6 +628,8 @@ cd ~/sdd && npm install @google/generative-ai
 | Gemini 2.5 Flash Lite | LLM engine (primary) | GEMINI_API_KEY | Quota-based | Active |
 | OpenRouter Llama 3.3 70B | LLM engine (fallback) | OPENROUTER_API_KEY | Free tier | Active — replaces Llama 4 Scout (removed) |
 
+| Groq / Llama 3.3 70B Versatile | LLM engine (fallback3) | GROQ_API_KEY | Free tier | ✅ Active — ~315 TPS on LPU |
+| Cerebras / Qwen 3 235B | LLM engine (fallback4) | CEREBRAS_API_KEY | 1M tokens/day | ✅ Active — largest free model |
 | Ollama / TinyLlama | LLM engine (local) | Pre-installed | Unlimited | ✅ Active — tinyllama pulled |
 | Pollinations.ai | Image generation | No key required | Free | Active — sdd image command |
 | Gemini (consumer app) | Image generation | Google account | 20/day | Manual — no API |

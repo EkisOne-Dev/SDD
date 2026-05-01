@@ -4,10 +4,10 @@
 > Intended audience: technical reviewers, external auditors, and the system owner.
 
 **System:** Structured Development System (SDD)
-**Version:** 2.7.0
+**Version:** 3.3.2
 **Platform:** Android / Termux
 **Runtime:** Node.js
-**Last Updated:** 2026-04-27
+**Last Updated:** 2026-04-30
 
 ---
 
@@ -58,6 +58,12 @@ To verify the full system: run each verification test in order and compare outpu
 | 27 | Strategist Agent | ✅ Active | 11 |
 | 28 | CLI Navigation Layer | ✅ Active | 12 |
 | 29 | Mentorship System | ✅ Active | 12 |
+| 30 | Learn Session Loop | ✅ Active | 13 |
+| 31 | Pipeline Visibility Commands | ✅ Active | 14 |
+| 32 | Engine Health Check | ✅ Active | 15 |
+| 33 | TRI-STRUCTURE Suppression | ✅ Active | 16 |
+| 34 | Score Drift ASCII Chart | ✅ Active | 17 |
+| 35 | Memory Summarization | ✅ Active | 18 |
 
 ---
 
@@ -910,6 +916,149 @@ Expected: JSON with `topic` and `topics` array of 8 progressive learning topics.
 - Session runs as a continuous loop — stays open until user types "quit" or "next" advances all topics. (Phase 13 complete)
 - Gemini free tier (20 req/day) can be exhausted before a session completes.
 - OpenRouter free tier models change without notice — fallback may fail if model is removed.
+
+---
+
+### 30 — Learn Session Loop
+
+**What it does:**
+`sdd learn "topic"` keeps the mentor session open across multiple exchanges until the user types "quit". No re-run required between responses. The "next" command advances to the next topic and saves progress.
+
+**Trigger:** `sdd learn "topic"` — session stays open via readline loop.
+
+**Files responsible:**
+- `skills/tools/learn-command.js` → session loop handler
+- `skills/tools/learner.js` → progress and session persistence
+
+**Config flag:** None. Always active.
+
+**Verification test:**
+```bash
+sdd learn "JavaScript for beginners"
+```
+Expected: Mentor session opens, waits for response. Typing a reply continues the session without re-running the command. Typing "quit" exits cleanly.
+
+**Known limitations:**
+- Gemini free tier (20 req/day) can be exhausted before a session completes.
+
+---
+
+### 31 — Pipeline Visibility Commands
+
+**What it does:**
+`sdd projects` lists all pipeline projects with their current stage and artifact count. `sdd postmortems` displays the most recent postmortem report for completed projects.
+
+**Trigger:** `sdd projects` / `sdd postmortems`
+
+**Files responsible:**
+- `orchestrator/menu.js` → `showProjects()`, `showPostmortems()`
+- `orchestrator/main.js` — routes commands
+
+**Config flag:** None. Always active.
+
+**Verification test:**
+```bash
+sdd projects
+sdd postmortems
+```
+Expected: `sdd projects` lists project names, stages, and artifact counts. `sdd postmortems` prints the latest postmortem markdown report.
+
+**Known limitations:** None.
+
+---
+
+### 32 — Engine Health Check
+
+**What it does:**
+`sdd check-engines` pings all 6 configured providers with a real minimal API call, reports live/down status, latency in ms, and marks the currently active provider.
+
+**Trigger:** `sdd check-engines`
+
+**Files responsible:**
+- `skills/tools/engine-check.js` → per-provider check functions
+- `orchestrator/main.js` — routes command
+
+**Config flag:** None. Always active.
+
+**Verification test:**
+```bash
+sdd check-engines
+```
+Expected: Table showing ✅/❌ for all 6 providers (Gemini, Gemma 4 31B, gpt-oss-120b, Groq, Cerebras, Ollama) with latency and active marker.
+
+**Known limitations:**
+- A 429 on a provider shows ❌ even though the provider is healthy — quota exhaustion, not a failure.
+
+---
+
+### 33 — TRI-STRUCTURE Suppression
+
+**What it does:**
+Simple tasks bypass TRI-STRUCTURE formatting entirely. The basic agent is used directly, skipping specialist agents and the reviewer. If a specialist agent does run on a simple task and includes reasoning sections, they are stripped from the final output before display.
+
+**Trigger:** Automatic — complexity classifier in `chains.js` sets `simple` flag before chain selection.
+
+**Files responsible:**
+- `orchestrator/chains.js` → complexity classifier
+- `orchestrator/main.js` → post-chain strip logic
+
+**Config flag:** None. Always active.
+
+**Verification test:**
+```bash
+sdd "what is a variable"
+```
+Expected: Clean plain-text answer with no [INTERNAL REASONING] or [VERIFICATION] blocks. Chain log shows `basic` agent only.
+
+**Known limitations:**
+- Strip is line-based heuristic — edge cases may include stray bullet lines from reasoning sections.
+
+---
+
+### 34 — Score Drift ASCII Chart
+
+**What it does:**
+After every scored task, a rolling 10-run ASCII bar chart is printed showing per-dimension trends (Clarity, Usefulness, Efficiency, Redundancy) with averages. Allows immediate visual detection of scoring drift without any external tools.
+
+**Trigger:** Automatic after every scored task.
+
+**Files responsible:**
+- `skills/tools/drift-control.js` → `displayChart()`
+- `orchestrator/main.js` — calls displayChart after score
+
+**Config flag:** `scoring_enabled` in `config/system.json`. Chart only displays when scoring is active.
+
+**Verification test:**
+```bash
+sdd "what is a loop in programming"
+```
+Expected: After score panel, a 4-row ASCII bar chart prints with last 10 runs per dimension and row averages.
+
+**Known limitations:** Requires at least 1 prior scored run to display meaningful trend.
+
+---
+
+### 35 — Memory Summarization
+
+**What it does:**
+When `memory/memory.txt` exceeds 40KB, the system automatically compresses it. The last 5 exchanges are kept verbatim. Older exchanges are grouped by topic and summarized. A backup of the original file is saved before compression.
+
+**Trigger:** Automatic — checked on every `saveMemory()` call.
+
+**Files responsible:**
+- `skills/tools/memory-summarizer.js` → compression logic
+- `orchestrator/orchestrator.js` → `saveMemory()` triggers check
+
+**Config flag:** None. Always active when memory file exceeds threshold.
+
+**Verification test:**
+```bash
+ls -lh ~/sdd/memory/memory.txt ~/sdd/memory/memory.backup.txt
+```
+Expected: Both files exist. If compression has triggered, `memory.txt` is significantly smaller than `memory.backup.txt`.
+
+**Known limitations:**
+- Summarization quality depends on the AI engine — Ollama (TinyLlama) produces weaker summaries than Gemini.
 
 ---
 
