@@ -612,7 +612,7 @@ cd ~/sdd && npm install @google/generative-ai
 - ~~Heuristic scorer bias~~ — **Fixed:** base clarity raised to 60, formatting is bonus not requirement, length bonus removed from usefulness, efficiency penalty threshold tightened. Short precise answers now score fairly.
 - OpenRouter free tier models change without notice — run `sdd check-engines` to verify before use
 - Gemini free tier hard limit: 20 requests/day on gemini-2.5-flash-lite
-- Self-research local mode only — no web search or external knowledge retrieval
+- ~~Self-research local mode only~~ — **Fixed:** web mode added. Wikipedia REST API fetched via two-step search+summary. Activated via self_research_mode="web" in system.json. Fails silently if offline.
 - ~~Memory has no semantic retrieval~~ — **Fixed:** keyword-based filter injects last 5 exchanges verbatim + top 3 relevant older exchanges, capped at 2000 chars (88% token reduction on a 17KB file)
 - ~~TRI-STRUCTURE stripping edge cases~~ — **Fixed:** regex now extracts content between [ARTIFACT] and [VERIFICATION] markers cleanly. Line-based heuristic kept as fallback only.
 - ~~Cost tracker underestimates input tokens~~ — **Fixed:** full compiled prompt chars passed from chains.js, input tokens now accurate (~1184 vs ~9 on real task)
@@ -632,6 +632,7 @@ cd ~/sdd && npm install @google/generative-ai
 | Groq / Llama 3.3 70B Versatile | LLM engine (fallback3) | GROQ_API_KEY | Free tier | ✅ Active — ~315 TPS on LPU |
 | Cerebras / Qwen 3 235B | LLM engine (fallback4) | CEREBRAS_API_KEY | 1M tokens/day | ✅ Active — largest free model |
 | Ollama / TinyLlama | LLM engine (local) | Pre-installed | Unlimited | ✅ Active — tinyllama pulled |
+| Wikipedia REST API | Web research context | No key required | Unlimited | Active — self_research_mode=web |
 | Pollinations.ai | Image generation | No key required | Free | Active — sdd image command |
 | Gemini (consumer app) | Image generation | Google account | 20/day | Manual — no API |
 | Bing Image Creator | Image generation | Microsoft account | Generous | Watermarked |
@@ -789,6 +790,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-04-30 | 3.3.8 | Fix #5: web search layer added to self-research — Wikipedia REST API, no key required | Two-step search+summary, 500 char cap, silent fail if offline |
 | 2026-04-30 | 3.3.7 | Fix #4: TRI-STRUCTURE strip upgraded to regex [ARTIFACT] extraction — heuristic as fallback | Eliminates stray bullet/header lines in simple task output |
 | 2026-04-30 | 3.3.6 | Improve: score trend chart — bars replaced with number grid | Compact, precise, shows exact values not approximations |
 | 2026-04-30 | 3.3.5 | Fix #3: scorer bias removed — short precise answers score fairly | Clarity base 60, formatting optional bonus, length bias removed from usefulness and efficiency |
