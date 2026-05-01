@@ -837,6 +837,7 @@ validator.js    → schema validation for config files on load
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-05-01 | 3.4.1 | Add backup.sh + sdd backup command — git push, SD card .bashrc backup, RESTORE.md | Full system recoverable after Termux uninstall |
 | 2026-04-30 | 3.4.0 | Phase 19 complete — post-chain.js extracted from main.js, SRP restored | main.js task block reduced from 60 lines to 3 lines |
 | 2026-04-30 | 3.4.0 | Phase 20 complete — validator.js wired into orchestrator.js | Missing/invalid config fields now produce clear error messages and exit cleanly |
 | 2026-04-30 | 3.4.0 | Phase 19 complete — post-chain.js extracted from main.js, SRP restored | main.js task block reduced from 60 lines to 3 lines |

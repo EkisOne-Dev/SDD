@@ -4,7 +4,7 @@
 > Intended audience: technical reviewers, external auditors, and the system owner.
 
 **System:** Structured Development System (SDD)
-**Version:** 3.4.0
+**Version:** 3.4.1
 **Platform:** Android / Termux
 **Runtime:** Node.js
 **Last Updated:** 2026-04-30 (rev 2)
@@ -1059,6 +1059,33 @@ Expected: Both files exist. If compression has triggered, `memory.txt` is signif
 
 **Known limitations:**
 - Summarization quality depends on the AI engine — Ollama (TinyLlama) produces weaker summaries than Gemini.
+
+---
+
+### 38 — Backup System
+
+**What it does:**
+`sdd backup` commits all runtime files (memory, scores, costs, config) to git, pushes to GitHub, copies `.bashrc` to SD card, and writes a `RESTORE.md` with step-by-step recovery instructions. Entire system is recoverable after Termux uninstall.
+
+**Trigger:** `sdd backup`
+
+**Files responsible:**
+- `backup.sh` → full backup logic
+- `orchestrator/main.js` → routes `sdd backup` command
+
+**SD card output:** `/sdcard/sdd-backup/`
+- `.bashrc.backup` — API keys and aliases
+- `backup.sh` — the script itself
+- `RESTORE.md` — recovery instructions
+
+**Verification test:**
+```bash
+sdd backup
+```
+Expected: runtime files committed if changed, pushed to GitHub, SD card files written, all steps show ✅.
+
+**Known limitations:**
+- Requires GitHub auth to be cached (HTTPS token). If token expires, push will prompt for credentials.
 
 ---
 
