@@ -6,6 +6,7 @@ import {
   logExecution,
   runEngine
 } from "./orchestrator.js";
+import { c } from "./colors.js";
 
 // ── Chain definitions ─────────────────────────────────────────────────────────
 
@@ -110,7 +111,7 @@ export async function runChain(task, chain, config, adapter, skillContext) {
   const phase = loadPhase(config.default_phase);
 
   if (isMulti) {
-    console.log(`\n🔗 Chain [${complexity}]: ${agents.join(" → ")}`);
+    console.log(c.status(`\n🔗 Chain [${complexity}]: ${agents.join(" → ")}`));
     logExecution(`CHAIN SELECTED: ${type} [${agents.join(" → ")}] complexity=${complexity}`);
   } else {
     logExecution(`AGENT SELECTED: ${agents[0]} complexity=${complexity}`);
@@ -130,7 +131,7 @@ export async function runChain(task, chain, config, adapter, skillContext) {
     const agentName = agents[i];
     const isLast = i === agents.length - 1;
 
-    console.log(`\n🤖 Agent: ${agentName} [${complexity}]`);
+    console.log(c.status(`\n🤖 Agent: ${agentName} [${complexity}]`));
     logExecution(`CHAIN AGENT STARTED: ${agentName}`);
 
     const agent = loadAgent(agentName);
@@ -171,7 +172,7 @@ export async function runChain(task, chain, config, adapter, skillContext) {
     logExecution(`CHAIN AGENT COMPLETE: ${agentName}`);
 
     if (isMulti && !isLast) {
-      console.log(`\n✓ ${agentName} complete — passing to ${agents[i + 1]}...\n`);
+      console.log(c.dim(`\n✓ ${agentName} complete — passing to ${agents[i + 1]}...\n`));
     }
   }
 

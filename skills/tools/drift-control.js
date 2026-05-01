@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { c } from '../../orchestrator/colors.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '../../');
@@ -78,16 +79,16 @@ function checkDrift(currentScores) {
 }
 
 function displayDrift(report) {
-  console.log('\n─────────────────────────');
-  console.log('⚠️  DRIFT DETECTED');
+  console.log(c.warning('\n─────────────────────────'));
+  console.log(c.warning('⚠️  DRIFT DETECTED'));
   console.log('─────────────────────────');
   console.log(`Baseline captured: ${report.captured_at.split('T')[0]}`);
   for (const d of report.drifts) {
     console.log(`  ${d.dimension.padEnd(12)} baseline ${d.baseline}  →  now ${d.current}  (${d.delta})`);
   }
-  console.log('─────────────────────────');
-  console.log('Run: sdd baseline   to reset baseline to current averages');
-  console.log('─────────────────────────\n');
+  console.log(c.warning('─────────────────────────'));
+  console.log(c.dim('Run: sdd baseline   to reset baseline to current averages'));
+  console.log(c.warning('─────────────────────────\n'));
 }
 
 function displayBaseline(baseline) {
@@ -110,8 +111,8 @@ function displayChart() {
   const dims = ['clarity', 'usefulness', 'efficiency', 'redundancy'];
   const labels = { clarity: 'Clarity   ', usefulness: 'Useful    ', efficiency: 'Efficiency', redundancy: 'Redundancy' };
 
-  console.log('\n─────────────────────────────────────────');
-  console.log(`📈 SCORE TREND  (last ${recent.length} runs)`);
+  console.log(c.metric('\n─────────────────────────────────────────'));
+  console.log(c.metric(`📈 SCORE TREND  (last ${recent.length} runs)`));
   console.log(`     ← older${' '.repeat(28)}recent →`);
   console.log('─────────────────────────────────────────');
 

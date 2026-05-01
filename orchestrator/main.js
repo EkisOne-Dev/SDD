@@ -26,6 +26,7 @@ import { runLearnCommand } from '../skills/tools/learn-command.js';
 import { generateImage } from '../skills/tools/image-gen.js';
 import { runProposalManager } from "../skills/tools/proposal-manager.js";
 import { runPostChain } from "./post-chain.js";
+import { c } from "./colors.js";
 
 // ── Main execution ───────────────────────────────────────────────────────────
 async function run(injectedTask = null) {
@@ -156,7 +157,7 @@ async function run(injectedTask = null) {
   if (config.self_research_enabled) {
     const matchedSkill = routeSkill(task);
     if (matchedSkill) {
-      console.log(`\n🔍 Skill: ${matchedSkill.name}`);
+      console.log(c.skill(`\n🔍 Skill: ${matchedSkill.name}`));
       logExecution(`SKILL MATCHED: ${matchedSkill.id}`);
     }
     skillContext = await runSelfResearch(task, config, adapter);
@@ -165,14 +166,14 @@ async function run(injectedTask = null) {
 
   // ── Chain selection and execution ────────────────────────────────────────
   const chain = selectChain(task);
-  console.log("⚙  Running SDD...\n");
+  console.log(c.dim("⚙  Running SDD...\n"));
 
   try {
     const { result, complexity, promptChars } = await runChain(task, chain, config, adapter, skillContext);
     await runPostChain({ task, result, complexity, chain, promptChars, config, adapter });
   } catch (err) {
     const msg = `ERROR: ${err.message}`;
-    console.error("\n" + msg);
+    console.error(c.error("\n" + msg));
     logExecution(msg);
   }
 }

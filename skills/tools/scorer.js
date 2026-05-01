@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { fileURLToPath } from 'url';
+import { c } from '../../orchestrator/colors.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SCORES_DIR = path.join(__dirname, '../../meta/scores');
 
@@ -107,15 +108,15 @@ function saveScore(task, output, scores) {
 }
 
 function displayScore(scores) {
-  console.log('\n─────────────────────────');
-  console.log('📊 OUTPUT SCORE');
+  console.log(c.metric('\n─────────────────────────'));
+  console.log(c.metric('📊 OUTPUT SCORE'));
+  console.log(c.metric('─────────────────────────'));
+  console.log(c.metric(`  Clarity     ${bar(scores.clarity)}  ${scores.clarity}`));
+  console.log(c.metric(`  Usefulness  ${bar(scores.usefulness)}  ${scores.usefulness}`));
+  console.log(c.metric(`  Efficiency  ${bar(scores.efficiency)}  ${scores.efficiency}`));
+  console.log(c.metric(`  Redundancy  ${bar(scores.redundancy)}  ${scores.redundancy}`));
   console.log('─────────────────────────');
-  console.log(`  Clarity     ${bar(scores.clarity)}  ${scores.clarity}`);
-  console.log(`  Usefulness  ${bar(scores.usefulness)}  ${scores.usefulness}`);
-  console.log(`  Efficiency  ${bar(scores.efficiency)}  ${scores.efficiency}`);
-  console.log(`  Redundancy  ${bar(scores.redundancy)}  ${scores.redundancy}`);
-  console.log('─────────────────────────');
-  console.log(`  Overall     ${bar(scores.overall)}  ${scores.overall}/100`);
+  console.log(c.metric(`  Overall     ${bar(scores.overall)}  ${scores.overall}/100`));
   console.log('─────────────────────────\n');
 }
 

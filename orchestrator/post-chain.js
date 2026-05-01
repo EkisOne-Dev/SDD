@@ -6,6 +6,7 @@ import { checkDrift, displayDrift, displayChart } from "../skills/tools/drift-co
 import { logCost, displayCost } from "../skills/tools/cost-tracker.js";
 import { summarizeMemoryIfNeeded } from "../skills/tools/memory-summarizer.js";
 import { runProposalManager } from "../skills/tools/proposal-manager.js";
+import { c } from "./colors.js";
 
 export function stripTriStructure(result, complexity) {
   if (complexity !== 'simple' || !result.includes('[INTERNAL REASONING]')) {
@@ -32,7 +33,7 @@ export async function runPostChain({ task, result, complexity, chain, promptChar
 
   // ── Self-critique (optional) ──────────────────────────────────────────
   if (config.self_critique_enabled && complexity === 'complex' && chain.agents.length > 1) {
-    console.log('\n🔎 Running self-critique...');
+    console.log(c.status('\n🔎 Running self-critique...'));
     const critique = await runSelfCritique(task, finalResult, adapter);
     if (critique && critique !== 'PASS') {
       finalResult = finalResult + '\n\n[SELF-CRITIQUE]\n' + critique;
@@ -43,7 +44,7 @@ export async function runPostChain({ task, result, complexity, chain, promptChar
   }
 
   // ── Display result ────────────────────────────────────────────────────
-  console.log('\n=== RESULT ===\n');
+  console.log(c.result('\n=== RESULT ===\n'));
   console.log(finalResult);
 
   // ── Memory ────────────────────────────────────────────────────────────
