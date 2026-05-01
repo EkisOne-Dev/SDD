@@ -22,3 +22,13 @@
 {"timestamp":"2026-04-30T11:25:34.832Z","task":"explain what an API is in simple terms","api_calls":2,"input_tokens":10,"output_tokens":534,"total_tokens":544}
 {"timestamp":"2026-04-30T11:47:26.886Z","task":"what is recursion in programming","api_calls":2,"input_tokens":8,"output_tokens":57,"total_tokens":65}
 {"timestamp":"2026-04-30T11:51:57.382Z","task":"what is a boolean in programming","api_calls":2,"input_tokens":8,"output_tokens":81,"total_tokens":89}
+{"timestamp":"2026-04-30T23:25:12.535Z","task":"what is a variable in programming","api_calls":2,"input_tokens":9,"output_tokens":65,"total_tokens":74}
+{"timestamp":"2026-05-01T01:51:27.473Z","task":"what is a function in programming","api_calls":2,"input_tokens":9,"output_tokens":82,"total_tokens":91}
+{"timestamp":"2026-05-01T02:18:53.572Z","task":"what is a loop in programming","api_calls":2,"input_tokens":null,"output_tokens":74,"total_tokens":null}
+{"timestamp":"2026-05-01T02:22:02.720Z","task":"what is an object in programming","api_calls":2,"input_tokens":1184,"output_tokens":124,"total_tokens":1308}
+{"timestamp":"2026-05-01T02:26:59.106Z","task":"what is an array","api_calls":2,"input_tokens":1136,"output_tokens":58,"total_tokens":1194}
+{"timestamp":"2026-05-01T02:38:02.618Z","task":"what is a class in programming","api_calls":2,"input_tokens":1184,"output_tokens":92,"total_tokens":1276}
+{"timestamp":"2026-05-01T02:44:26.677Z","task":"what is inheritance in programming","api_calls":2,"input_tokens":1185,"output_tokens":121,"total_tokens":1306}
+{"timestamp":"2026-05-01T02:55:54.815Z","task":"what is polymorphism in programming","api_calls":2,"input_tokens":1245,"output_tokens":104,"total_tokens":1349}
+{"timestamp":"2026-05-01T03:33:28.160Z","task":"what is an interface in programming","api_calls":2,"input_tokens":1306,"output_tokens":84,"total_tokens":1390}
+{"timestamp":"2026-05-01T03:37:28.001Z","task":"what is encapsulation in programming","api_calls":2,"input_tokens":1283,"output_tokens":96,"total_tokens":1379}

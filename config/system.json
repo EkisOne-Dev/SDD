@@ -10,9 +10,9 @@
   "negotiation_enabled": true,
   "auto_improvement": false,
   "self_research_enabled": true,
-  "self_research_mode": "web",
   "self_critique_enabled": false,
   "scoring_enabled": true,
   "meta_observation_enabled": true,
-  "cost_tracking_enabled": true
+  "cost_tracking_enabled": true,
+  "self_research_mode": "web"
 }

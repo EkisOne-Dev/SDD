@@ -33,3 +33,14 @@
 {"timestamp":"2026-04-30T11:25:34.822Z","task":"explain what an API is in simple terms","scores":{"clarity":90,"usefulness":100,"efficiency":55,"redundancy":80,"overall":81}}
 {"timestamp":"2026-04-30T11:47:26.874Z","task":"what is recursion in programming","scores":{"clarity":55,"usefulness":87,"efficiency":70,"redundancy":80,"overall":73}}
 {"timestamp":"2026-04-30T11:50:31.639Z","task":"what is a boolean in programming","scores":{"clarity":55,"usefulness":87,"efficiency":70,"redundancy":80,"overall":73}}
+{"timestamp":"2026-04-30T23:25:12.521Z","task":"what is a variable in programming","scores":{"clarity":70,"usefulness":87,"efficiency":70,"redundancy":80,"overall":77}}
+{"timestamp":"2026-05-01T01:51:27.467Z","task":"what is a function in programming","scores":{"clarity":70,"usefulness":87,"efficiency":70,"redundancy":80,"overall":77}}
+{"timestamp":"2026-05-01T02:16:21.933Z","task":"what is a loop in programming","scores":{"clarity":70,"usefulness":87,"efficiency":70,"redundancy":80,"overall":77}}
+{"timestamp":"2026-05-01T02:18:53.568Z","task":"what is a loop in programming","scores":{"clarity":70,"usefulness":87,"efficiency":70,"redundancy":80,"overall":77}}
+{"timestamp":"2026-05-01T02:22:02.716Z","task":"what is an object in programming","scores":{"clarity":70,"usefulness":87,"efficiency":70,"redundancy":80,"overall":77}}
+{"timestamp":"2026-05-01T02:26:59.103Z","task":"what is an array","scores":{"clarity":80,"usefulness":70,"efficiency":70,"redundancy":80,"overall":75}}
+{"timestamp":"2026-05-01T02:38:02.613Z","task":"what is a class in programming","scores":{"clarity":70,"usefulness":77,"efficiency":70,"redundancy":80,"overall":74}}
+{"timestamp":"2026-05-01T02:44:26.672Z","task":"what is inheritance in programming","scores":{"clarity":70,"usefulness":77,"efficiency":70,"redundancy":80,"overall":74}}
+{"timestamp":"2026-05-01T02:55:54.809Z","task":"what is polymorphism in programming","scores":{"clarity":70,"usefulness":77,"efficiency":70,"redundancy":80,"overall":74}}
+{"timestamp":"2026-05-01T03:33:28.150Z","task":"what is an interface in programming","scores":{"clarity":70,"usefulness":90,"efficiency":70,"redundancy":80,"overall":78}}
+{"timestamp":"2026-05-01T03:37:27.992Z","task":"what is encapsulation in programming","scores":{"clarity":70,"usefulness":77,"efficiency":70,"redundancy":80,"overall":74}}
