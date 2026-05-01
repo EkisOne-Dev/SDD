@@ -204,14 +204,10 @@ async function askAdvance(stage, nextStage) {
 
 // ── Main pipeline entry ─────────────────────────────────────────────────────
 
-async function runPipeline(task, deps) {
-  let state = createProject(task);
+// ── Shared stage loop — used by both runPipeline and resumePipeline ───────────
 
-  console.log(`\n🚀 Pipeline started: ${state.project_name}`);
-  console.log(`   Stages: ${STAGES.join(' → ')}\n`);
-
+async function runStageLoop(state, deps) {
   for (const stage of STAGES) {
-    // Skip already-completed stages (for resume support)
     if (state.stages_completed.includes(stage)) {
       console.log(`⏭  Skipping ${stage} (already complete)`);
       continue;
@@ -222,13 +218,11 @@ async function runPipeline(task, deps) {
       saveState(state);
 
       if (stage === 'archive') {
-        // Pipeline complete
         state.status = 'complete';
         saveState(state);
         logPipeline(state.project_name, 'Pipeline complete — all stages done');
         const pm = generatePostmortem(state.original_task, state.stages_completed);
-        console.log(`
-📋 Postmortem saved: ${pm.filepath}`);
+        console.log(`\n📋 Postmortem saved: ${pm.filepath}`);
         logPipeline(state.project_name, `Postmortem generated: ${pm.filepath}`);
         console.log(`\n🎉 Project "${state.project_name}" is complete.`);
         console.log(`   All artifacts in: projects/${state.project_name}/outputs/`);
@@ -255,7 +249,6 @@ async function runPipeline(task, deps) {
         process.exit(0);
       }
 
-      // Y or anything else — continue
       console.log(`\n▶  Advancing to ${nextStage.toUpperCase()}...\n`);
 
     } catch (err) {
@@ -267,7 +260,12 @@ async function runPipeline(task, deps) {
   }
 }
 
-// ── Resume entry ────────────────────────────────────────────────────────────
+async function runPipeline(task, deps) {
+  const state = createProject(task);
+  console.log(`\n🚀 Pipeline started: ${state.project_name}`);
+  console.log(`   Stages: ${STAGES.join(' → ')}\n`);
+  await runStageLoop(state, deps);
+}
 
 async function resumePipeline(projectName, deps) {
   const state = loadState(projectName);
@@ -290,58 +288,11 @@ async function resumePipeline(projectName, deps) {
   console.log(`   Next stage: ${state.current_stage}`);
 
   state.status = 'active';
-
-  for (const stage of STAGES) {
-    if (state.stages_completed.includes(stage)) {
-      console.log(`⏭  Skipping ${stage} (already complete)`);
-      continue;
-    }
-
-    try {
-      const { nextStage } = await runStage(state, stage, deps);
-      saveState(state);
-
-      if (stage === 'archive') {
-        const pm2 = generatePostmortem(state.original_task, state.stages_completed);
-        console.log(`
-📋 Postmortem saved: ${pm2.filepath}`);
-        logPipeline(state.project_name, `Postmortem generated: ${pm2.filepath}`);
-        state.status = 'complete';
-        saveState(state);
-        logPipeline(state.project_name, 'Pipeline complete — resumed and finished');
-        console.log(`\n🎉 Project "${state.project_name}" is complete.`);
-        console.log(`   All artifacts in: projects/${state.project_name}/outputs/`);
-        break;
-      }
-
-      const answer = await askAdvance(stage, nextStage);
-
-      if (answer === 'P') {
-        state.status = 'paused';
-        saveState(state);
-        logPipeline(state.project_name, `Pipeline paused after ${stage}`);
-        console.log(`\n⏸  Paused after ${stage.toUpperCase()}.`);
-        console.log(`   Resume with: sdd resume ${state.project_name}`);
-        process.exit(0);
-      }
-
-      if (answer === 'N') {
-        state.status = 'aborted';
-        saveState(state);
-        logPipeline(state.project_name, `Pipeline aborted after ${stage}`);
-        console.log(`\n🛑 Aborted after ${stage.toUpperCase()}.`);
-        process.exit(0);
-      }
-
-      console.log(`\n▶  Advancing to ${nextStage.toUpperCase()}...\n`);
-
-    } catch (err) {
-      state.status = 'error';
-      saveState(state);
-      console.error(`\n❌ Pipeline failed at ${stage}: ${err.message}`);
-      process.exit(1);
-    }
-  }
+  await runStageLoop(state, deps);
 }
+
+// ── Resume entry ────────────────────────────────────────────────────────────
+
+
 
 export { runPipeline, resumePipeline, createProject, STAGES };
