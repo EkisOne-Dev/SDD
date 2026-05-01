@@ -608,7 +608,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 20 | Schema validation — validate system.json and adapter.json on load with clean error messages | ✅ Complete |
 | 21 | Fix pipeline logExecution — passes objects instead of strings, corrupts every log entry | ✅ Complete |
 | 22 | Fix pipeline loadMemory — task not passed, semantic filter bypassed in all pipeline stages | ✅ Complete |
-| 23 | Fix chain routing — first-match replaced with scored best-match across all trigger sets | 🔲 Planned |
+| 23 | Fix chain routing — first-match replaced with scored best-match across all trigger sets | ✅ Complete |
 | 24 | Fix pipeline duplication — runPipeline and resumePipeline share 80% logic, extract runStageLoop() | 🔲 Planned |
 | 25 | Fix router.js — registry.json read from disk on every call, add module-level cache | 🔲 Planned |
 | 26 | Expand negotiator — 5 rigid regex triggers replaced with broader pattern coverage | 🔲 Planned |
@@ -1003,6 +1003,7 @@ validator.js    → schema validation for config files on load
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-05-01 | 3.4.5 | Phase 23 complete — selectChain uses scored best-match, "write a strategy" now correctly routes to strategist | Eliminates first-match misrouting |
 | 2026-05-01 | 3.4.4 | Phase 22 complete — pipeline loadMemory now passes task, semantic filter active in all stages | Fix #1 now applies to pipeline runs too |
 | 2026-05-01 | 3.4.3 | Phase 21 complete — pipeline logExecution fixed, all calls now template literals | Eliminates [object Object] in pipeline logs |
 | 2026-05-01 | 3.4.2 | Code Quality Standards added — 10 permanent engineering principles | Phase 21-26 audit fixes added to roadmap |
