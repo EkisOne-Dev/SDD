@@ -606,7 +606,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 18 | Memory summarization — auto-compress at 40KB, keep last 5 exchanges verbatim | ✅ Complete |
 | 19 | main.js decomposition — extract post-chain pipeline into post-chain.js | ✅ Complete |
 | 20 | Schema validation — validate system.json and adapter.json on load with clean error messages | ✅ Complete |
-| 21 | Fix pipeline logExecution — passes objects instead of strings, corrupts every log entry | 🔲 Planned |
+| 21 | Fix pipeline logExecution — passes objects instead of strings, corrupts every log entry | ✅ Complete |
 | 22 | Fix pipeline loadMemory — task not passed, semantic filter bypassed in all pipeline stages | 🔲 Planned |
 | 23 | Fix chain routing — first-match replaced with scored best-match across all trigger sets | 🔲 Planned |
 | 24 | Fix pipeline duplication — runPipeline and resumePipeline share 80% logic, extract runStageLoop() | 🔲 Planned |
@@ -1003,6 +1003,7 @@ validator.js    → schema validation for config files on load
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-05-01 | 3.4.3 | Phase 21 complete — pipeline logExecution fixed, all calls now template literals | Eliminates [object Object] in pipeline logs |
 | 2026-05-01 | 3.4.2 | Code Quality Standards added — 10 permanent engineering principles | Phase 21-26 audit fixes added to roadmap |
 | 2026-05-01 | 3.4.1 | Add backup.sh + sdd backup command — git push, SD card .bashrc backup, RESTORE.md | Full system recoverable after Termux uninstall |
 | 2026-04-30 | 3.4.0 | Phase 19 complete — post-chain.js extracted from main.js, SRP restored | main.js task block reduced from 60 lines to 3 lines |
