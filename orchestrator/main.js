@@ -112,6 +112,12 @@ async function run(injectedTask = null) {
     return;
   }
 
+  if (task.toLowerCase() === 'backup') {
+    const { execSync } = await import('child_process');
+    execSync(process.env.HOME + '/sdd/backup.sh', { stdio: 'inherit' });
+    return;
+  }
+
   if (!task) {
     await runMenu(run);
     return;
