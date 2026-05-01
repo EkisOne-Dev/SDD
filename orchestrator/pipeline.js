@@ -158,7 +158,7 @@ async function runStage(state, stage, deps) {
     priorArtifact
   );
 
-  logExecution({ stage: `PIPELINE:${stage}`, project: state.project_name, status: 'STARTED' });
+  logExecution(`PIPELINE:${stage} STARTED — project: ${state.project_name}`);
   console.log(`\n⏳ Running ${stage} stage...\n`);
 
   let result;
@@ -166,7 +166,7 @@ async function runStage(state, stage, deps) {
     result = await runEngine(fullPrompt, adapter);
   } catch (err) {
     console.error(`\n❌ Engine error during ${stage}: ${err.message}`);
-    logExecution({ stage: `PIPELINE:${stage}`, project: state.project_name, status: 'ENGINE_ERROR', error: err.message });
+    logExecution(`PIPELINE:${stage} ENGINE_ERROR — project: ${state.project_name} — ${err.message}`);
     throw err;
   }
 
@@ -180,7 +180,7 @@ async function runStage(state, stage, deps) {
   const nextStage = STAGES[stagesIdx + 1] || null;
   state.current_stage = nextStage || 'complete';
 
-  logExecution({ stage: `PIPELINE:${stage}`, project: state.project_name, status: 'COMPLETE' });
+  logExecution(`PIPELINE:${stage} COMPLETE — project: ${state.project_name}`);
   logPipeline(state.project_name, `Stage ${stage} complete — artifact saved`);
 
   // Print result
