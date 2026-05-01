@@ -19,18 +19,20 @@ function scoreOutput(task, output) {
 }
 
 function scoreClarity(output) {
-  let score = 50;
-  if (output.includes('##') || output.includes('**')) score += 15;
-  if (output.includes('\n-') || output.includes('\n*')) score += 10;
+  let score = 60;
+  // Formatting is a bonus, not a requirement
+  if (output.includes('##') || output.includes('**')) score += 10;
+  if (output.includes('\n-') || output.includes('\n*')) score += 5;
   const sentences = output.split(/[.!?]+/).filter(s => s.trim().length > 0);
   if (sentences.length > 0) {
     const avgLen = output.length / sentences.length;
-    if (avgLen < 150) score += 15;
-    else if (avgLen > 300) score -= 10;
+    if (avgLen < 200) score += 10; // concise sentences are clear
+    else if (avgLen > 400) score -= 10; // overly long sentences hurt clarity
   }
+  // Penalize wall-of-text lines but not short clean answers
   const lines = output.split('\n');
   const avgLineLen = output.length / Math.max(lines.length, 1);
-  if (avgLineLen > 200) score -= 10;
+  if (avgLineLen > 300) score -= 10;
   return Math.min(100, Math.max(0, score));
 }
 
@@ -46,13 +48,16 @@ function scoreUsefulness(task, output) {
   }
   const overlap = taskWords.size > 0 ? hits / taskWords.size : 0;
   score += Math.round(overlap * 40);
-  if (output.length > 200) score += 10;
+  // Precision bonus: high keyword coverage in a short answer is excellent
+  if (overlap > 0.8 && output.length < 300) score += 10;
+  // Only penalise truly empty answers
+  if (output.length < 50) score -= 20;
   return Math.min(100, Math.max(0, score));
 }
 
 function scoreEfficiency(task, output) {
   let score = 70;
-  if (task.length > 100 && output.length < 200) score -= 20;
+  if (task.length > 150 && output.length < 100) score -= 20; // very thin answer on complex task
   if (task.length < 50 && output.length > 2000) score -= 15;
   const fillers = [
     'certainly', 'of course', 'absolutely', 'great question',
