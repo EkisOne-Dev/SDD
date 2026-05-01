@@ -610,15 +610,15 @@ cd ~/sdd && npm install @google/generative-ai
 ## KNOWN LIMITATIONS (Current)
 
 - ~~Heuristic scorer bias~~ — **Fixed:** base clarity raised to 60, formatting is bonus not requirement, length bonus removed from usefulness, efficiency penalty threshold tightened. Short precise answers now score fairly.
-- OpenRouter free tier models change without notice — run `sdd check-engines` to verify before use
-- Gemini free tier hard limit: 20 requests/day on gemini-2.5-flash-lite
+- OpenRouter free tier models change without notice — `sdd check-engines` detects failures before use
+- Gemini free tier hard limit: 20 requests/day on gemini-2.5-flash-lite — mitigated by 5-provider cascade
 - ~~Self-research local mode only~~ — **Fixed:** web mode added. Wikipedia REST API fetched via two-step search+summary. Activated via self_research_mode="web" in system.json. Fails silently if offline.
 - ~~Memory has no semantic retrieval~~ — **Fixed:** keyword-based filter injects last 5 exchanges verbatim + top 3 relevant older exchanges, capped at 2000 chars (88% token reduction on a 17KB file)
 - ~~TRI-STRUCTURE stripping edge cases~~ — **Fixed:** regex now extracts content between [ARTIFACT] and [VERIFICATION] markers cleanly. Line-based heuristic kept as fallback only.
 - ~~Cost tracker underestimates input tokens~~ — **Fixed:** full compiled prompt chars passed from chains.js, input tokens now accurate (~1184 vs ~9 on real task)
 - Video and audio: structured output only — no local processing on mobile
 - Log date reflects device timezone (expected behavior)
-- Ollama installed and active — tinyllama pulled. Run `ollama serve` before switching to local_fallback
+- Ollama installed and active — tinyllama pulled. `ollama serve` auto-starts via .bashrc
 
 ---
 
