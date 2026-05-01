@@ -25,6 +25,7 @@ import { runEngineCheck } from '../skills/tools/engine-check.js';
 import { runLearnCommand } from '../skills/tools/learn-command.js';
 import { generateImage } from '../skills/tools/image-gen.js';
 import { runProposalManager } from "../skills/tools/proposal-manager.js";
+import { runPostChain } from "./post-chain.js";
 
 // ── Main execution ───────────────────────────────────────────────────────────
 async function run(injectedTask = null) {
@@ -162,76 +163,7 @@ async function run(injectedTask = null) {
 
   try {
     const { result, complexity, promptChars } = await runChain(task, chain, config, adapter, skillContext);
-
-    // ── Strip TRI-STRUCTURE on simple tasks ──────────────────────────────
-    let finalResult = result;
-    if (complexity === 'simple' && result.includes('[INTERNAL REASONING]')) {
-      // Primary: extract cleanly between [ARTIFACT] and [VERIFICATION]
-      const artifactMatch = result.match(/\[ARTIFACT\][^\n]*\n([\s\S]*?)(?=\[VERIFICATION\]|$)/i);
-      if (artifactMatch && artifactMatch[1].trim().length > 0) {
-        finalResult = artifactMatch[1].trim();
-      } else {
-        // Fallback: find first substantive non-header line
-        const lines = result.split('\n');
-        const startIdx = lines.findIndex(line => {
-          const t = line.trim();
-          return t.length > 20 &&
-            !t.startsWith('[') &&
-            !t.startsWith('*') &&
-            !t.startsWith('-') &&
-            !t.match(/^\d+\./);
-        });
-        if (startIdx >= 0) finalResult = lines.slice(startIdx).join('\n').trim();
-      }
-    }
-
-    // ── Self-critique (optional) ─────────────────────────────────────────
-    if (config.self_critique_enabled && complexity === "complex" && chain.agents.length > 1) {
-      console.log("\n🔎 Running self-critique...");
-      const critique = await runSelfCritique(task, result, adapter);
-      if (critique && critique !== "PASS") {
-        finalResult = result + "\n\n[SELF-CRITIQUE]\n" + critique;
-        logExecution(`SELF-CRITIQUE APPENDED`);
-      } else {
-        logExecution(`SELF-CRITIQUE: PASS`);
-      }
-    }
-
-    console.log("\n=== RESULT ===\n");
-    console.log(finalResult);
-
-    saveMemory(config, `\nUser: ${task}\nAssistant: ${finalResult}`);
-    const memAbsPath = process.env.HOME + '/sdd/' + config.memory_file;
-    await summarizeMemoryIfNeeded(memAbsPath, runEngine, adapter);
-
-    // ── Scoring ──────────────────────────────────────────────────────────
-    if (config.scoring_enabled) {
-      const scores = scoreOutput(task, finalResult);
-      displayScore(scores);
-      saveScore(task, finalResult, scores);
-      logExecution(`SCORE: overall=${scores.overall} clarity=${scores.clarity} usefulness=${scores.usefulness} efficiency=${scores.efficiency} redundancy=${scores.redundancy}`);
-    }
-    // ── Drift control ───────────────────────────────────────────────────
-    if (config.scoring_enabled) {
-      const driftReport = checkDrift(finalResult);
-      if (driftReport) displayDrift(driftReport);
-      displayChart();
-    }
-
-    if (config.meta_observation_enabled) {
-      const staged = observe();
-      if (staged) logExecution(`META: ${staged.length} proposal(s) staged`);
-      await runProposalManager();
-    }
-
-    // ── Cost tracking ──────────────────────────────────────────────────
-    if (config.cost_tracking_enabled) {
-      const costEntry = logCost(task, promptChars || task, finalResult, chain.agents.length);
-      displayCost(costEntry);
-      logExecution(`COST: calls=${costEntry.api_calls} tokens=${costEntry.total_tokens}`);
-    }
-    logExecution(`TASK COMPLETED: ${task}`);
-
+    await runPostChain({ task, result, complexity, chain, promptChars, config, adapter });
   } catch (err) {
     const msg = `ERROR: ${err.message}`;
     console.error("\n" + msg);
