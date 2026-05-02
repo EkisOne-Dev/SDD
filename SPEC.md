@@ -615,7 +615,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 27 | Visual spinner — animated progress indicator during AI engine calls | ✅ Complete |
 | 28 | Pre-commit git hook — auto-validate committed code against Code Quality Standards | ✅ Complete |
 | 29 | Fix STD-3 + STD-4 violations in chains.js — dead code alias and variable shadowing | ✅ Complete |
-| 30 | Role-specific memory injection — only first agent receives full memory context | 🔲 Planned |
+| 30 | Role-specific memory injection — only first agent receives full memory context | ✅ Complete |
 | 31 | 3-tier complexity — add moderate tier between simple and complex | 🔲 Planned |
 | 32 | Structured agent handoff — replace blob context with summary/findings/artifact schema | 🔲 Planned |
 | 33 | Chain-specific phase contracts — dev/research/analysis get their own contracts | 🔲 Planned |
@@ -1191,6 +1191,7 @@ Fix: Pass chain type as a variable into the reviewer prompt. The prompt template
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-05-02 | 3.6.3 | Phase 30 complete — role-specific memory injection, subsequent agents skip memory block | Token efficiency improved on all multi-agent chains |
 | 2026-05-02 | 3.6.2 | Phase 29 complete — STD-3 and STD-4 violations removed from chains.js | finalPrompt alias and agents shadow both eliminated |
 | 2026-05-02 | 3.6.1 | Phase 29-34 specced — multi-agent workflow audit complete, 6 improvement phases added to roadmap | Covers STD fixes, memory injection, complexity tiers, structured handoff, chain contracts, reviewer focus |
 | 2026-05-01 | 3.6.0 | Phase 28 complete — pre-commit hook blocks STD violations, sdd hook-install/uninstall commands added | hooks/pre-commit + hooks/check.js + hooks/rules.js |
