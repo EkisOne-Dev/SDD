@@ -48,3 +48,5 @@
 {"timestamp":"2026-05-01T23:16:52.274Z","task":"what is memoization in programming","scores":{"clarity":80,"usefulness":77,"efficiency":70,"redundancy":80,"overall":77}}
 {"timestamp":"2026-05-01T23:30:36.180Z","task":"fix my code","scores":{"clarity":70,"usefulness":100,"efficiency":70,"redundancy":80,"overall":80}}
 {"timestamp":"2026-05-01T23:38:47.214Z","task":"what is abstraction in programming","scores":{"clarity":85,"usefulness":90,"efficiency":70,"redundancy":80,"overall":81}}
+{"timestamp":"2026-05-02T03:15:28.273Z","task":"what is a design pattern in programming","scores":{"clarity":85,"usefulness":90,"efficiency":55,"redundancy":80,"overall":78}}
+{"timestamp":"2026-05-02T03:22:02.192Z","task":"what is a singleton pattern","scores":{"clarity":85,"usefulness":77,"efficiency":70,"redundancy":80,"overall":78}}

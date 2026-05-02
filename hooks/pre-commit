@@ -1,0 +1,51 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# ── SDD Pre-Commit Hook ───────────────────────────────────────────────────────
+# Validates staged JS files against SDD Code Quality Standards before commit.
+# Install with: sdd hook-install
+# Remove with:  sdd hook-uninstall
+
+SDD_DIR="$HOME/sdd"
+CHECKER="$SDD_DIR/hooks/check.js"
+STAGED=$(git diff --cached --name-only --diff-filter=ACM | grep '\.js$')
+
+if [ -z "$STAGED" ]; then
+  exit 0
+fi
+
+echo ""
+echo "🔍 SDD Pre-Commit — checking Code Quality Standards..."
+echo ""
+
+VIOLATIONS=0
+
+for FILE in $STAGED; do
+  RESULT=$(node "$CHECKER" "$FILE" 2>&1)
+  STATUS=$(echo "$RESULT" | head -1)
+
+  if [ "$STATUS" = "FAIL" ]; then
+    VIOLATIONS=$((VIOLATIONS + 1))
+    echo "  ❌ $FILE"
+    echo "$RESULT" | tail -n +2 | while read -r line; do
+      echo "     $line"
+    done
+    echo ""
+  else
+    echo "  ✅ $FILE"
+  fi
+done
+
+echo ""
+
+if [ "$VIOLATIONS" -gt 0 ]; then
+  echo "─────────────────────────────────────────"
+  echo "❌ COMMIT BLOCKED — $VIOLATIONS file(s) violate Code Quality Standards"
+  echo "   Fix the violations above and try again."
+  echo "   Standards reference: SPEC.md → CODE QUALITY STANDARDS"
+  echo "─────────────────────────────────────────"
+  exit 1
+fi
+
+echo "─────────────────────────────────────────"
+echo "✅ All files pass Code Quality Standards"
+echo "─────────────────────────────────────────"
+exit 0

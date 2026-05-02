@@ -113,6 +113,28 @@ async function run(injectedTask = null) {
     return;
   }
 
+  if (task.toLowerCase() === 'hook-install') {
+    const { execSync } = await import('child_process');
+    const hookSrc = process.env.HOME + '/sdd/hooks/pre-commit';
+    const hookDst = process.env.HOME + '/sdd/.git/hooks/pre-commit';
+    execSync('cp ' + hookSrc + ' ' + hookDst);
+    execSync('chmod +x ' + hookDst);
+    console.log('\n✅ Pre-commit hook installed — all commits will be validated.\n');
+    return;
+  }
+
+  if (task.toLowerCase() === 'hook-uninstall') {
+    const hookDst = process.env.HOME + '/sdd/.git/hooks/pre-commit';
+    try {
+      const { execSync } = await import('child_process');
+      execSync('rm ' + hookDst);
+      console.log('\n✅ Pre-commit hook removed.\n');
+    } catch {
+      console.log('\n⚠️  No hook found to remove.\n');
+    }
+    return;
+  }
+
   if (task.toLowerCase() === 'backup') {
     const { execSync } = await import('child_process');
     execSync(process.env.HOME + '/sdd/backup.sh', { stdio: 'inherit' });
