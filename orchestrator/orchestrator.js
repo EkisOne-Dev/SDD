@@ -1,4 +1,5 @@
 import fs from "fs";
+import { createSpinner } from "./spinner.js";
 import { validateSystemConfig, validateAdapterConfig } from "./validator.js";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -190,7 +191,16 @@ export async function runEngine(prompt, adapter, agentName = null, complexity = 
     const providerKey = providers[idx];
     const providerConfig = providerKey === adapter.active ? active : { ...adapter[providerKey] };
     try {
-      return await executeEngine(prompt, providerConfig);
+      const spinner = createSpinner(providerConfig.model);
+      spinner.start();
+      try {
+        const result = await executeEngine(prompt, providerConfig);
+        spinner.stop();
+        return result;
+      } catch (e) {
+        spinner.stop();
+        throw e;
+      }
     } catch (e) {
       const isRetryable = e.status === 429 || e.status === 503 || (e.message && (e.message.includes('429') || e.message.includes('503') || e.message.includes('quota')));
       if (isRetryable && idx + 1 < providers.length) {
