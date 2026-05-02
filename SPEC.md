@@ -612,6 +612,8 @@ cd ~/sdd && npm install @google/generative-ai
 | 24 | Fix pipeline duplication — runPipeline and resumePipeline share 80% logic, extract runStageLoop() | ✅ Complete |
 | 25 | Fix router.js — registry.json read from disk on every call, add module-level cache | ✅ Complete |
 | 26 | Expand negotiator — 5 rigid regex triggers replaced with broader pattern coverage | ✅ Complete |
+| 27 | Visual spinner — animated progress indicator during AI engine calls | 🔲 Planned |
+| 28 | Pre-commit git hook — auto-validate committed code against Code Quality Standards | 🔲 Planned |
 
 ---
 
@@ -820,6 +822,60 @@ validator.js    → schema validation for config files on load
 
 ---
 
+### Phase 27 — Visual Spinner
+**Problem:** When SDD makes an AI engine call, there is no visual feedback. The terminal appears frozen for 3-15 seconds depending on provider. This is a poor user experience, especially on slower providers like Gemini or when the cascade triggers.
+
+**Inspiration:** Gentleman Guardian Angel (gga) implements a configurable spinner with timeout that shows animated progress during AI calls. Adapted for SDD's Node.js architecture.
+
+**Design:**
+- Spinner runs as a `setInterval` loop in Node.js while `runEngine()` awaits
+- Uses ANSI escape codes from `colors.js` to animate in place (no new lines)
+- Shows current provider name while waiting
+- Clears cleanly when result arrives — no leftover characters
+- Stops immediately on error or timeout
+
+**Spinner frames:** `⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏` (braille dot animation)
+
+**Files:**
+- `orchestrator/spinner.js` — spinner utility (SRP: owns spinner only)
+- `orchestrator/orchestrator.js` — wraps `runEngine()` with spinner
+
+**Success criteria:**
+- Spinner appears immediately when engine call starts
+- Spinner clears cleanly when result arrives
+- Provider name visible while waiting
+- Works correctly in cascade — shows each provider switch
+
+---
+
+### Phase 28 — Pre-Commit Git Hook
+**Problem:** Code Quality Standards exist in SPEC.md but are not enforced at commit time. A developer (or future session) could commit code that violates the 10 standards and it would only be caught in a later review.
+
+**Inspiration:** Gentleman Guardian Angel's pre-commit hook pattern — runs AI validation on every `git commit`. Adapted for SDD's own codebase.
+
+**Design:**
+- `hooks/pre-commit` bash script installs as `.git/hooks/pre-commit`
+- On every `git commit`, scans staged `.js` files in the SDD repo
+- Checks against SDD's own Code Quality Standards (the 10 rules in SPEC.md)
+- Validates: no dead code aliases, no object-style logExecution calls, no variable shadowing patterns, no readFileSync inside exported functions without cache
+- Pass → commit proceeds normally
+- Fail → commit blocked with specific violation listed
+- `sdd hook-install` command installs the hook
+- `sdd hook-uninstall` command removes it
+
+**Files:**
+- `hooks/pre-commit` — the git hook script
+- `hooks/rules.js` — machine-readable version of the 10 Code Quality Standards
+- `orchestrator/main.js` — routes `sdd hook-install` and `sdd hook-uninstall`
+
+**Success criteria:**
+- `sdd hook-install` creates `.git/hooks/pre-commit` and makes it executable
+- Committing a file with `logExecution({...})` is blocked with a clear message
+- Committing clean code proceeds without interruption
+- `sdd hook-uninstall` removes the hook cleanly
+
+---
+
 ## KNOWN LIMITATIONS (Current)
 
 - ~~Heuristic scorer bias~~ — **Fixed:** base clarity raised to 60, formatting is bonus not requirement, length bonus removed from usefulness, efficiency penalty threshold tightened. Short precise answers now score fairly.
@@ -1003,6 +1059,7 @@ validator.js    → schema validation for config files on load
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-05-01 | 3.5.2 | Phase 27-28 specced — visual spinner and pre-commit hook added to roadmap | Inspired by Gentleman Guardian Angel gga architecture |
 | 2026-05-01 | 3.5.1 | Add terminal color UI — colors.js utility with semantic scheme | Magenta=skill, Cyan=status, Green=result, Yellow=metrics, Red=warnings, Dim=cost |
 | 2026-05-01 | 3.5.0 | Phase 26 complete — negotiator expanded to 15 triggers with best-match scoring | Coverage of real-world tasks dramatically improved |
 | 2026-05-01 | 3.4.7 | Phase 25 complete — router.js registry cached at module level | Eliminates redundant disk read on every task |
