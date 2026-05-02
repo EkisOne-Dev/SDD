@@ -135,10 +135,14 @@ export async function runChain(task, chain, config, adapter, skillContext) {
 
     const agent = loadAgent(agentName);
 
-    // Build memory block
-    let rawMemory = loadMemory(config, task);
-    if (skillContext) {
-      rawMemory += "\n\n[SKILL CONTEXT — Self Research]\n" + skillContext;
+    // Build memory block — only first agent gets full memory (Phase 30)
+    // Subsequent agents already have context from prior agent output — memory adds noise not signal
+    let rawMemory = '';
+    if (i === 0) {
+      rawMemory = loadMemory(config, task);
+      if (skillContext) {
+        rawMemory += "\n\n[SKILL CONTEXT — Self Research]\n" + skillContext;
+      }
     }
 
     // Compress and inject prior agent output
@@ -147,7 +151,7 @@ export async function runChain(task, chain, config, adapter, skillContext) {
       : null;
 
     const memory = compressedPrior
-      ? rawMemory + `\n\n[PRIOR AGENT OUTPUT — ${agents[i - 1].toUpperCase()}]\n` + compressedPrior
+      ? rawMemory + `\n\n[PRIOR AGENT OUTPUT — ${effectiveAgents[i - 1].toUpperCase()}]\n` + compressedPrior
       : rawMemory;
 
     const prompt = buildPrompt(
