@@ -614,6 +614,12 @@ cd ~/sdd && npm install @google/generative-ai
 | 26 | Expand negotiator — 5 rigid regex triggers replaced with broader pattern coverage | ✅ Complete |
 | 27 | Visual spinner — animated progress indicator during AI engine calls | ✅ Complete |
 | 28 | Pre-commit git hook — auto-validate committed code against Code Quality Standards | ✅ Complete |
+| 29 | Fix STD-3 + STD-4 violations in chains.js — dead code alias and variable shadowing | 🔲 Planned |
+| 30 | Role-specific memory injection — only first agent receives full memory context | 🔲 Planned |
+| 31 | 3-tier complexity — add moderate tier between simple and complex | 🔲 Planned |
+| 32 | Structured agent handoff — replace blob context with summary/findings/artifact schema | 🔲 Planned |
+| 33 | Chain-specific phase contracts — dev/research/analysis get their own contracts | 🔲 Planned |
+| 34 | Task-aware reviewer + skill router best-match fix | 🔲 Planned |
 
 ---
 
@@ -876,6 +882,132 @@ validator.js    → schema validation for config files on load
 
 ---
 
+### Phase 29 — Fix STD Violations in chains.js
+**Problem:** Two Code Quality Standard violations remain in `chains.js` from before the pre-commit hook existed:
+- STD-3: `const finalPrompt = prompt` — dead alias, zero purpose, adds confusion
+- STD-4: `const agents = effectiveAgents` inside the loop body — shadows the outer `agents` destructured from chain
+
+**Fix:**
+- Remove `const finalPrompt = prompt` — use `prompt` directly in `totalPromptChars +=` and `runEngine()` calls
+- Remove `const agents = effectiveAgents` inside loop — use `effectiveAgents[i]` and `effectiveAgents[i-1]` directly
+
+**Files:** `orchestrator/chains.js`
+
+**Standards:** STD-3 (No Dead Code), STD-4 (No Variable Shadowing)
+
+---
+
+### Phase 30 — Role-Specific Memory Injection
+**Problem:** Every agent in a multi-agent chain receives the same full memory block. The reviewer gets the same 2000-char memory context as the researcher, even though the reviewer only needs the prior agent output and the original task. This wastes tokens on every multi-agent run and dilutes the reviewer's focus.
+
+**Fix:** Memory injection is now role-aware:
+- Agent index 0 (first agent): receives full semantic memory as before
+- Agent index 1+ (subsequent agents): receives NO memory injection — only prior agent output and task
+
+**Why this is correct:** Subsequent agents in a chain already have full context from the prior agent's output. Injecting additional memory adds noise, not signal.
+
+**Files:** `orchestrator/chains.js` — `runChain()` function
+
+**Standard:** STD-9 (Context Completeness) — only inject context that is actually needed
+
+---
+
+### Phase 31 — 3-Tier Complexity Classification
+**Problem:** The complexity classifier is binary — simple or complex. This creates a false equivalence: "explain recursion in depth" and "build a complete JWT authentication system with refresh tokens and rate limiting" both get classified as complex and receive identical treatment.
+
+**3-tier design:**
+- `simple` — single keyword or short task, no complex keywords → basic agent only, no TRI-STRUCTURE, no self-critique
+- `moderate` — multi-agent chain triggered but task is short + single-intent → specialist agents run, TRI-STRUCTURE active, self-critique skipped
+- `complex` — multi-agent chain + long task OR multiple complex keywords → full treatment, self-critique eligible
+
+**Classification logic:**
+- simple: chain.agents.length === 1 OR (task.length < 80 AND !hasComplexKeyword)
+- complex: isMultiAgent AND isLong AND hasComplexKeyword (all three)
+- moderate: everything else
+
+**Impact:** Moderate tasks no longer trigger self-critique unnecessarily. Complex tasks receive the full pipeline they deserve.
+
+**Files:** `orchestrator/chains.js` — `classifyComplexity()`
+
+---
+
+### Phase 32 — Structured Agent Handoff
+**Problem:** When agent N passes its output to agent N+1, the entire raw output blob is compressed and injected. The next agent receives everything — reasoning sections, formatting artifacts, verbose explanations — mixed into its context. This is the biggest workflow gap: unstructured context passing degrades every multi-agent chain.
+
+**Root cause:** Agents produce TRI-STRUCTURE output ([INTERNAL REASONING] / [ARTIFACT] / [VERIFICATION]) but the handoff only uses the raw text, not the structured sections.
+
+**Fix — Structured handoff extraction:**
+When passing output from agent N to agent N+1, extract only:
+1. The [ARTIFACT] section — the actual deliverable
+2. A 2-sentence summary of [INTERNAL REASONING] key conclusions
+3. The original task (always re-injected for grounding)
+
+The [VERIFICATION] section is never passed forward — it is for the user, not downstream agents.
+
+**Handoff format:**
+```
+[PRIOR AGENT: {agentName}]
+Summary: {2-sentence conclusion from reasoning}
+Deliverable: {extracted ARTIFACT content}
+```
+
+**Fallback:** If no TRI-STRUCTURE markers found (e.g. basic agent output), fall back to current compressContext() behavior.
+
+**Files:** `orchestrator/chains.js` — new `extractHandoff()` function, replaces `compressContext()` in agent loop
+
+**Standard:** STD-9 (Context Completeness) — pass exactly what is needed, nothing more
+
+---
+
+### Phase 33 — Chain-Specific Phase Contracts
+**Problem:** All tasks — development, research, analysis, creative — use the same `phases/basic/contract.json`. This generic contract has a generic success criteria ("Output is accurate, structured, and actionable") and generic output format ("structured text"). A developer agent is constrained by the same contract as a researcher.
+
+**Fix — Per-chain contracts:**
+Create specialized contracts for each chain type:
+
+| Chain | Contract focus | Success criteria | Output format |
+|---|---|---|---|
+| development | Correct, runnable code | Code executes, handles edge cases, no security issues | Code blocks with explanation |
+| research | Accurate, cited facts | Claims are verifiable, sources are credible | Structured summary with key findings |
+| analysis | Data-driven insights | Conclusions follow from evidence, no unsupported claims | Report with findings and recommendations |
+| architecture | Sound system design | Components are cohesive, dependencies are minimal | Diagram description + component specs |
+| strategy | Actionable plan | Steps are concrete, prioritized, and time-bound | Roadmap with milestones |
+| creative | Engaging, on-brand content | Content matches brief, tone is consistent | Final content piece |
+
+**Files:**
+- `phases/development/contract.json` + `prompt.txt`
+- `phases/research/contract.json` + `prompt.txt`
+- `phases/analysis/contract.json` + `prompt.txt`
+- `phases/architecture/contract.json` + `prompt.txt`
+- `phases/strategy/contract.json` + `prompt.txt`
+- `phases/creative/contract.json` + `prompt.txt`
+- `orchestrator/chains.js` — pass chain type to `loadPhase()`
+- `orchestrator/orchestrator.js` — `loadPhase()` accepts chain type, falls back to basic
+
+---
+
+### Phase 34 — Task-Aware Reviewer + Skill Router Best-Match
+**Two improvements in one phase (both are small, both touch routing):**
+
+**34A — Task-aware reviewer directive:**
+The reviewer currently applies a generic QA lens to all output. A code review and a research review need different criteria.
+Fix: Pass chain type as a variable into the reviewer prompt. The prompt template includes a `{review_focus}` placeholder that maps to chain-specific criteria:
+- development → "Check for correctness, edge cases, and security issues"
+- research → "Check for accuracy, unsupported claims, and logical consistency"
+- analysis → "Check for data-driven reasoning and absence of unsupported conclusions"
+- default → "Check for clarity, completeness, and accuracy"
+
+**Files:** `orchestrator/chains.js` — pass `type` to reviewer prompt, `agents/reviewer/strategy.txt` — add `{review_focus}` placeholder support
+
+**34B — Skill router best-match:**
+`router.js` still uses first-match for skill selection (returns on first trigger hit). Identical gap to what we fixed in chains.js (Phase 23). Fix: score all enabled skills by trigger overlap count, return highest scorer.
+
+**Files:** `skills/router.js` — `routeSkill()` function
+
+**Standard:** STD-6 (Best-Match over First-Match)
+
+---
+
 ## KNOWN LIMITATIONS (Current)
 
 - ~~Heuristic scorer bias~~ — **Fixed:** base clarity raised to 60, formatting is bonus not requirement, length bonus removed from usefulness, efficiency penalty threshold tightened. Short precise answers now score fairly.
@@ -1059,6 +1191,7 @@ validator.js    → schema validation for config files on load
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-05-02 | 3.6.1 | Phase 29-34 specced — multi-agent workflow audit complete, 6 improvement phases added to roadmap | Covers STD fixes, memory injection, complexity tiers, structured handoff, chain contracts, reviewer focus |
 | 2026-05-01 | 3.6.0 | Phase 28 complete — pre-commit hook blocks STD violations, sdd hook-install/uninstall commands added | hooks/pre-commit + hooks/check.js + hooks/rules.js |
 | 2026-05-01 | 3.5.3 | Phase 27 complete — braille spinner animates during engine calls, clears cleanly on result | spinner.js created |
 | 2026-05-01 | 3.5.2 | Phase 27-28 specced — visual spinner and pre-commit hook added to roadmap | Inspired by Gentleman Guardian Angel gga architecture |
