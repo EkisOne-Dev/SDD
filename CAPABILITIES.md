@@ -4,7 +4,7 @@
 > Intended audience: technical reviewers, external auditors, and the system owner.
 
 **System:** Structured Development System (SDD)
-**Version:** 3.5.3
+**Version:** 3.6.0
 **Platform:** Android / Termux
 **Runtime:** Node.js
 **Last Updated:** 2026-04-30 (rev 2)
@@ -1059,6 +1059,35 @@ Expected: Both files exist. If compression has triggered, `memory.txt` is signif
 
 **Known limitations:**
 - Summarization quality depends on the AI engine — Ollama (TinyLlama) produces weaker summaries than Gemini.
+
+---
+
+### 39 — Pre-Commit Hook (Phase 28)
+
+**What it does:**
+On every `git commit`, scans staged `.js` files and validates them against SDD's Code Quality Standards. Blocks the commit if any violation is found and prints the exact rule ID, file, and fix instruction.
+
+**Trigger:** Automatic on every `git commit` after `sdd hook-install`
+
+**Commands:**
+- `sdd hook-install` — installs the hook into `.git/hooks/pre-commit`
+- `sdd hook-uninstall` — removes the hook
+
+**Files responsible:**
+- `hooks/pre-commit` — bash hook script
+- `hooks/check.js` — Node.js validator (5 rules: STD-3, STD-4, STD-7, STD-8, STD-9)
+- `hooks/rules.js` — machine-readable rule definitions
+- `orchestrator/main.js` — routes hook-install/uninstall commands
+
+**Verification test:**
+```bash
+echo 'logExecution({ stage: "test" });' > test.js
+git add test.js && git commit -m "test"
+```
+Expected: commit blocked with [STD-8] violation message.
+
+**Known limitations:**
+- Only checks 5 of the 10 standards — the remaining 5 require AST parsing to detect reliably.
 
 ---
 
