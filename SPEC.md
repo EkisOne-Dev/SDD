@@ -612,7 +612,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 24 | Fix pipeline duplication — runPipeline and resumePipeline share 80% logic, extract runStageLoop() | ✅ Complete |
 | 25 | Fix router.js — registry.json read from disk on every call, add module-level cache | ✅ Complete |
 | 26 | Expand negotiator — 5 rigid regex triggers replaced with broader pattern coverage | ✅ Complete |
-| 27 | Visual spinner — animated progress indicator during AI engine calls | 🔲 Planned |
+| 27 | Visual spinner — animated progress indicator during AI engine calls | ✅ Complete |
 | 28 | Pre-commit git hook — auto-validate committed code against Code Quality Standards | 🔲 Planned |
 
 ---
@@ -1059,6 +1059,7 @@ validator.js    → schema validation for config files on load
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-05-01 | 3.5.3 | Phase 27 complete — braille spinner animates during engine calls, clears cleanly on result | spinner.js created |
 | 2026-05-01 | 3.5.2 | Phase 27-28 specced — visual spinner and pre-commit hook added to roadmap | Inspired by Gentleman Guardian Angel gga architecture |
 | 2026-05-01 | 3.5.1 | Add terminal color UI — colors.js utility with semantic scheme | Magenta=skill, Cyan=status, Green=result, Yellow=metrics, Red=warnings, Dim=cost |
 | 2026-05-01 | 3.5.0 | Phase 26 complete — negotiator expanded to 15 triggers with best-match scoring | Coverage of real-world tasks dramatically improved |
