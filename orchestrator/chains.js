@@ -127,9 +127,8 @@ export async function runChain(task, chain, config, adapter, skillContext) {
     : agents;
 
   for (let i = 0; i < effectiveAgents.length; i++) {
-    const agents = effectiveAgents;
-    const agentName = agents[i];
-    const isLast = i === agents.length - 1;
+    const agentName = effectiveAgents[i];
+    const isLast = i === effectiveAgents.length - 1;
 
     console.log(c.status(`\n🤖 Agent: ${agentName} [${complexity}]`));
     logExecution(`CHAIN AGENT STARTED: ${agentName}`);
@@ -161,10 +160,9 @@ export async function runChain(task, chain, config, adapter, skillContext) {
       complexity
     );
 
-    const finalPrompt = prompt;
-    totalPromptChars += finalPrompt.length;
+    totalPromptChars += prompt.length;
 
-    const result = await runEngine(finalPrompt, adapter, agentName, complexity);
+    const result = await runEngine(prompt, adapter, agentName, complexity);
 
     previousOutput = result;
     finalResult = result;
@@ -172,7 +170,7 @@ export async function runChain(task, chain, config, adapter, skillContext) {
     logExecution(`CHAIN AGENT COMPLETE: ${agentName}`);
 
     if (isMulti && !isLast) {
-      console.log(c.dim(`\n✓ ${agentName} complete — passing to ${agents[i + 1]}...\n`));
+      console.log(c.dim(`\n✓ ${agentName} complete — passing to ${effectiveAgents[i + 1]}...\n`));
     }
   }
 
