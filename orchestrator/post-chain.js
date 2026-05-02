@@ -32,7 +32,7 @@ export async function runPostChain({ task, result, complexity, chain, promptChar
   let finalResult = stripTriStructure(result, complexity);
 
   // ── Self-critique (optional) ──────────────────────────────────────────
-  if (config.self_critique_enabled && complexity === 'complex' && chain.agents.length > 1) {
+  if (config.self_critique_enabled && complexity === 'complex' && chain.agents.length > 1) { // moderate skips self-critique
     console.log(c.status('\n🔎 Running self-critique...'));
     const critique = await runSelfCritique(task, finalResult, adapter);
     if (critique && critique !== 'PASS') {

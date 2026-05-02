@@ -69,11 +69,19 @@ const COMPLEX_KEYWORDS = [
 
 export function classifyComplexity(task, chain) {
   const isMultiAgent = chain.agents.length > 1;
-  const isLong = task.length > 100;
-  const hasComplexKeyword = COMPLEX_KEYWORDS.some(k => task.toLowerCase().includes(k));
+  const isLong = task.length > 60; // lowered from 100 — most meaningful complex tasks are 60-90 chars
+  const t = task.toLowerCase();
+  const complexKeywordCount = COMPLEX_KEYWORDS.filter(k => t.includes(k)).length;
+  const hasComplexKeyword = complexKeywordCount > 0;
 
-  if (isMultiAgent && (isLong || hasComplexKeyword)) return "complex";
-  return "simple";
+  // simple: single agent OR short task with no complex keywords
+  if (!isMultiAgent || (!isLong && !hasComplexKeyword)) return "simple";
+
+  // complex: multi-agent AND long AND multiple complex keywords
+  if (isMultiAgent && isLong && complexKeywordCount >= 2) return "complex";
+
+  // moderate: everything else — specialist agents run, self-critique skipped
+  return "moderate";
 }
 
 // ── Chain selector ────────────────────────────────────────────────────────────
