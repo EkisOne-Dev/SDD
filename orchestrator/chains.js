@@ -103,11 +103,49 @@ export function selectChain(task) {
   return { type: "basic", agents: ["basic"] };
 }
 
-// ── Context compressor ────────────────────────────────────────────────────────
+// ── Context compressor (fallback) ────────────────────────────────────────────
 
 function compressContext(text, maxChars = 6000) {
   if (!text || text.length <= maxChars) return text;
   return `[COMPRESSED — ${text.length} chars truncated to ${maxChars}]\n${text.slice(0, maxChars)}\n...[truncated]`;
+}
+
+// ── Structured handoff extractor (Phase 32) ───────────────────────────────────
+// Extracts only what the next agent needs: artifact + reasoning summary + task
+// Falls back to compressContext if no TRI-STRUCTURE markers found
+
+function extractHandoff(output, agentName) {
+  if (!output) return null;
+
+  // Extract [ARTIFACT] section
+  const artifactMatch = output.match(/\[ARTIFACT\][^\n]*\n([\s\S]*?)(?=\[VERIFICATION\]|$)/i);
+  const artifact = artifactMatch ? artifactMatch[1].trim() : null;
+
+  // Extract [INTERNAL REASONING] — take first 3 sentences as summary
+  const reasoningMatch = output.match(/\[INTERNAL REASONING\][^\n]*\n([\s\S]*?)(?=\[ARTIFACT\]|$)/i);
+  let reasoningSummary = null;
+  if (reasoningMatch) {
+    const sentences = reasoningMatch[1]
+      .replace(/\n/g, ' ')
+      .split(/(?<=[.!?])\s+/)
+      .map(s => s.trim())
+      .filter(s => s.length > 20)
+      .slice(0, 2)
+      .join(' ');
+    if (sentences.length > 0) reasoningSummary = sentences;
+  }
+
+  // If no TRI-STRUCTURE found — fallback to compression
+  if (!artifact && !reasoningSummary) {
+    return compressContext(output);
+  }
+
+  // Build structured handoff block
+  const lines = [`[PRIOR AGENT: ${agentName.toUpperCase()}]`];
+  if (reasoningSummary) lines.push(`Summary: ${reasoningSummary}`);
+  if (artifact) lines.push(`Deliverable:\n${compressContext(artifact, 4000)}`);
+
+  return lines.join('\n');
 }
 
 // ── Chain runner ──────────────────────────────────────────────────────────────
@@ -155,7 +193,7 @@ export async function runChain(task, chain, config, adapter, skillContext) {
 
     // Compress and inject prior agent output
     const compressedPrior = previousOutput
-      ? compressContext(previousOutput)
+      ? extractHandoff(previousOutput, effectiveAgents[i - 1])
       : null;
 
     const memory = compressedPrior
