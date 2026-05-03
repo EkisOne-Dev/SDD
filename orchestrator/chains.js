@@ -183,6 +183,8 @@ export async function runChain(task, chain, config, adapter, skillContext) {
     ? ['basic']
     : agents;
 
+  const reviewFocus = REVIEW_FOCUS[type] || REVIEW_FOCUS.basic;
+
   for (let i = 0; i < effectiveAgents.length; i++) {
     const agentName = effectiveAgents[i];
     const isLast = i === effectiveAgents.length - 1;
@@ -211,7 +213,6 @@ export async function runChain(task, chain, config, adapter, skillContext) {
       ? rawMemory + `\n\n[PRIOR AGENT OUTPUT — ${effectiveAgents[i - 1].toUpperCase()}]\n` + compressedPrior
       : rawMemory;
 
-    const reviewFocus = REVIEW_FOCUS[type] || REVIEW_FOCUS.basic;
     const prompt = buildPrompt(
       phase.promptTemplate,
       phase.contract,
