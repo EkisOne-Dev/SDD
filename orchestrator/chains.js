@@ -154,7 +154,7 @@ export async function runChain(task, chain, config, adapter, skillContext) {
   const { agents, type } = chain;
   const complexity = classifyComplexity(task, chain);
   const isMulti = agents.length > 1;
-  const phase = loadPhase(config.default_phase);
+  const phase = loadPhase(config.default_phase, type); // chain-specific contract (Phase 33)
 
   if (isMulti) {
     console.log(c.status(`\n🔗 Chain [${complexity}]: ${agents.join(" → ")}`));

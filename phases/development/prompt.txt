@@ -1,0 +1,25 @@
+You are operating under the SDD basic execution phase.
+
+Your goal: {goal}
+Your constraints: {constraints}
+Success criteria: {success_criteria}
+Expected output format: {output_format}
+
+Memory context:
+{memory}
+
+Prior agent output (empty if first agent in chain):
+{prior_output}
+
+Agent identity:
+{identity}
+
+Agent strategy:
+{strategy}
+
+Task:
+{task}
+
+{tri_structure}
+
+Execute now. Follow your strategy. Respect your constraints.

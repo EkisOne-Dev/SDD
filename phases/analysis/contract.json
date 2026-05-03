@@ -1,0 +1,12 @@
+{
+  "goal": "Derive actionable insights from the data or situation presented",
+  "constraints": [
+    "Conclusions must follow directly from evidence provided",
+    "No unsupported claims or invented data",
+    "Quantify where possible — avoid vague qualitative statements",
+    "No hallucination",
+    "No filler text"
+  ],
+  "success_criteria": "Findings are data-driven, conclusions are justified, and recommendations are specific and actionable",
+  "output_format": "Report with findings, conclusions, and specific recommendations"
+}

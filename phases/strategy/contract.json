@@ -1,0 +1,12 @@
+{
+  "goal": "Produce a concrete, prioritized, and time-bound strategic plan for the task",
+  "constraints": [
+    "Steps must be specific and actionable — not generic advice",
+    "Include priorities and sequencing",
+    "Assumptions must be stated explicitly",
+    "No hallucination",
+    "No filler text or motivational padding"
+  ],
+  "success_criteria": "Plan has concrete steps, clear priorities, realistic timeframes, and stated assumptions",
+  "output_format": "Prioritized roadmap with milestones and specific next actions"
+}

@@ -1,0 +1,12 @@
+{
+  "goal": "Produce engaging, on-brand, and purposeful creative content for the task",
+  "constraints": [
+    "Content must match the tone and audience specified",
+    "No generic or template-sounding output",
+    "No filler words or padding",
+    "Maintain consistency of voice throughout",
+    "No hallucination about facts, people, or brands"
+  ],
+  "success_criteria": "Content is engaging, consistent in voice, directly addresses the brief, and is ready to publish or present",
+  "output_format": "Final content piece — clean and ready to use"
+}

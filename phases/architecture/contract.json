@@ -1,0 +1,12 @@
+{
+  "goal": "Design a sound, scalable system architecture that directly addresses the task requirements",
+  "constraints": [
+    "Components must be cohesive with minimal coupling",
+    "All dependencies must be explicitly named",
+    "Design must be implementable — no speculative or theoretical-only components",
+    "No hallucination — use established patterns only",
+    "No filler text"
+  ],
+  "success_criteria": "Architecture is complete, components are well-defined, dependencies are explicit, and a developer can implement from this design",
+  "output_format": "Component descriptions, their responsibilities, interfaces, and interaction flows"
+}

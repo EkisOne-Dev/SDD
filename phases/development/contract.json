@@ -1,0 +1,12 @@
+{
+  "goal": "Produce correct, complete, and secure code that solves the task",
+  "constraints": [
+    "Code must be complete and runnable — no pseudocode or placeholders",
+    "Handle edge cases and error conditions explicitly",
+    "No security vulnerabilities",
+    "No hallucination — only use patterns and APIs you are certain exist",
+    "No filler text or unnecessary explanation"
+  ],
+  "success_criteria": "Code executes correctly, handles edge cases, contains no security issues, and is ready for production use",
+  "output_format": "Code blocks with brief explanation of key decisions"
+}

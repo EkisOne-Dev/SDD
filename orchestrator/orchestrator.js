@@ -116,13 +116,25 @@ export function loadAgent(agentName) {
 
 // ── Phase loader ──────────────────────────────────────────────────────────────
 
-export function loadPhase(phaseName) {
-  const phaseDir = path.join(ROOT, "phases", phaseName);
-  const contract = JSON.parse(
-    fs.readFileSync(path.join(phaseDir, "contract.json"), "utf-8")
-  );
-  const promptTemplate = fs.readFileSync(path.join(phaseDir, "prompt.txt"), "utf-8");
-  return { contract, promptTemplate };
+// ── Phase cache — read once per chain type, reuse (Standard #7) ─────────────
+const _phaseCache = {};
+
+export function loadPhase(phaseName, chainType = null) {
+  const cacheKey = chainType || phaseName;
+  if (_phaseCache[cacheKey]) return _phaseCache[cacheKey];
+
+  const chainPhaseDir = chainType ? path.join(ROOT, "phases", chainType) : null;
+  const defaultPhaseDir = path.join(ROOT, "phases", phaseName);
+
+  let contractPath = path.join(defaultPhaseDir, "contract.json");
+  if (chainPhaseDir && fs.existsSync(path.join(chainPhaseDir, "contract.json"))) {
+    contractPath = path.join(chainPhaseDir, "contract.json");
+  }
+
+  const contract = JSON.parse(fs.readFileSync(contractPath, "utf-8"));
+  const promptTemplate = fs.readFileSync(path.join(defaultPhaseDir, "prompt.txt"), "utf-8");
+  _phaseCache[cacheKey] = { contract, promptTemplate };
+  return _phaseCache[cacheKey];
 }
 
 // ── Prompt builder ────────────────────────────────────────────────────────────

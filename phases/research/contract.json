@@ -1,0 +1,12 @@
+{
+  "goal": "Provide accurate, well-structured information that directly answers the task",
+  "constraints": [
+    "All claims must be verifiable — no speculation presented as fact",
+    "Cite sources or domain context where relevant",
+    "No hallucination — if uncertain, state uncertainty explicitly",
+    "No filler text or padding",
+    "Prioritize accuracy over completeness"
+  ],
+  "success_criteria": "Output is factually accurate, logically structured, and provides genuine insight into the topic",
+  "output_format": "Structured summary with key findings clearly separated"
+}
