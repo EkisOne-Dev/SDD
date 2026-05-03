@@ -61,16 +61,26 @@ function saveArtifact(name, stage, content) {
   fs.writeFileSync(p, content);
 }
 
+// ── Pipeline phase cache — read once per stage, reuse (Standard #7) ────────────
+const _pipelinePhaseCache = {};
+
 function loadPipelinePhase(stage) {
+  if (_pipelinePhaseCache[stage]) return _pipelinePhaseCache[stage];
   const base = path.join(SDD_ROOT, 'phases', 'pipeline', stage);
   const contract = JSON.parse(fs.readFileSync(path.join(base, 'contract.json'), 'utf8'));
-  const prompt   = fs.readFileSync(path.join(base, 'prompt.txt'), 'utf8');
-  return { contract, prompt };
+  const promptTpl = fs.readFileSync(path.join(base, 'prompt.txt'), 'utf8');
+  _pipelinePhaseCache[stage] = { contract, prompt: promptTpl };
+  return _pipelinePhaseCache[stage];
 }
 
-function loadAgentSafe(name, loadAgent) {
+function loadAgentSafe(name, loadAgent, logExecution) {
   try { return loadAgent(name); }
-  catch (_) { return loadAgent('basic'); }
+  catch (err) {
+    const msg = `PIPELINE WARNING: agent "${name}" failed to load (${err.message}) — falling back to basic`;
+    if (logExecution) logExecution(msg);
+    console.warn(`\n⚠️  ${msg}\n`);
+    return loadAgent('basic');
+  }
 }
 
 function buildPipelinePrompt(promptTemplate, task, memory, priorArtifact) {
@@ -80,10 +90,7 @@ function buildPipelinePrompt(promptTemplate, task, memory, priorArtifact) {
     .replace('{{prior_artifact}}', priorArtifact || '(none — first stage)');
 }
 
-function prompt(question) {
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-  return new Promise(resolve => rl.question(question, ans => { rl.close(); resolve(ans.trim()); }));
-}
+// prompt() removed — use askUser() from utils.js (Standard #5)
 
 function logPipeline(projectName, message) {
   const logDir  = path.join(SDD_ROOT, 'logs');
@@ -143,7 +150,7 @@ async function runStage(state, stage, deps) {
   console.log(`${'─'.repeat(50)}`);
 
   const { contract, prompt: promptTemplate } = loadPipelinePhase(stage);
-  const agent    = loadAgentSafe(STAGE_AGENTS[stage], loadAgent);
+  const agent    = loadAgentSafe(STAGE_AGENTS[stage], loadAgent, logExecution);
   const memory   = loadMemory(config, state.original_task);
 
   // Load prior artifact (previous stage output)
@@ -198,7 +205,7 @@ async function askAdvance(stage, nextStage) {
   if (!nextStage) return 'Y'; // archive is last — no prompt needed
   console.log(`\nProceed to ${nextStage.toUpperCase()}?`);
   console.log('  [Y] Yes — continue   [P] Pause   [N] Abort');
-  const ans = await prompt('> ');
+  const ans = await askUser('> ');
   return ans.toUpperCase() || 'Y';
 }
 

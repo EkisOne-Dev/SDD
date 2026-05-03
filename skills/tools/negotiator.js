@@ -1,4 +1,4 @@
-import * as readline from "readline";
+import { askUser } from "../../orchestrator/utils.js";
 
 // ── Negotiation triggers ─────────────────────────────────────────────────────
 // Each trigger has a score weight — higher = stronger match signal
@@ -110,18 +110,7 @@ const TRIGGERS = [
   }
 ];
 
-function ask(question) {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-  return new Promise(resolve => {
-    rl.question(question, answer => {
-      rl.close();
-      resolve(answer.trim().toUpperCase());
-    });
-  });
-}
+// ask() removed — use askUser() from utils.js (Standard #5)
 
 // ── Best-match trigger selection (Standard #6) ───────────────────────────────
 function findBestTrigger(task) {
@@ -152,7 +141,7 @@ export async function checkNegotiation(task) {
   console.log("  C. Cancel — I will rephrase my request");
   console.log("");
 
-  const answer = await ask("Your choice (A, B or C): ");
+  const answer = (await askUser("Your choice (A, B or C): ")).toUpperCase();
 
   if (answer === "C") {
     console.log("\nTask cancelled. Re-run with your updated request.\n");

@@ -1,4 +1,37 @@
 import readline from 'readline';
+
+// ── Status cache — read once per session (Standard #7) ───────────────────────
+let _statusCache = null;
+
+function getStatusData(ROOT) {
+  if (_statusCache) return _statusCache;
+  const { existsSync, readFileSync, readdirSync } = require('fs');
+  const { execSync } = require('child_process');
+  const data = {};
+  const scorePath = ROOT + '/meta/scores/scores.jsonl';
+  if (existsSync(scorePath)) {
+    const lines = readFileSync(scorePath, 'utf-8').trim().split('\n').filter(Boolean);
+    if (lines.length) {
+      try { data.lastScore = JSON.parse(lines[lines.length - 1]); } catch {}
+    }
+  }
+  const proposalsPath = ROOT + '/meta/proposals';
+  data.proposals = existsSync(proposalsPath)
+    ? readdirSync(proposalsPath).filter(f => f.endsWith('.json')).length
+    : 0;
+  const costPath = ROOT + '/meta/costs/costs.jsonl';
+  if (existsSync(costPath)) {
+    const lines = readFileSync(costPath, 'utf-8').trim().split('\n').filter(Boolean);
+    let total = 0;
+    lines.forEach(l => { try { total += JSON.parse(l).calls ?? 1; } catch {} });
+    data.apiCalls = total;
+  } else { data.apiCalls = 0; }
+  try { data.git = execSync(`git -C ${ROOT} log -1 --format="%h %s"`).toString().trim(); }
+  catch { data.git = '—'; }
+  _statusCache = data;
+  return _statusCache;
+}
+import { askWithRl } from './utils.js';
 import { execSync } from 'child_process';
 import { existsSync, readFileSync, readdirSync } from 'fs';
 import path from 'path';
@@ -7,9 +40,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
 
-function prompt(rl, question) {
-  return new Promise(resolve => rl.question(question, resolve));
-}
+// prompt() removed — use askWithRl() from utils.js (Standard #5)
 
 export function showHelp() {
   console.log(`
@@ -35,46 +66,16 @@ export function showHelp() {
 }
 
 export function showStatus() {
+  const d = getStatusData(ROOT);
   console.log('\n📊 SDD System Status\n');
-
-  const scorePath = path.join(ROOT, 'meta/scores/scores.jsonl');
-  if (existsSync(scorePath)) {
-    const lines = readFileSync(scorePath, 'utf-8').trim().split('\n').filter(Boolean);
-    if (lines.length) {
-      try {
-        const last = JSON.parse(lines[lines.length - 1]);
-        console.log(`  Last score:   ${last.scores?.overall ?? '—'}/100  (${(last.task ?? '').slice(0, 40)})`);
-      } catch { console.log('  Last score:   —'); }
-    }
+  if (d.lastScore) {
+    console.log(`  Last score:   ${d.lastScore.scores?.overall ?? '—'}/100  (${(d.lastScore.task ?? '').slice(0, 40)})`);
   } else {
     console.log('  Last score:   — (no scores yet)');
   }
-
-  const proposalsPath = path.join(ROOT, 'meta/proposals');
-  if (existsSync(proposalsPath)) {
-    const count = readdirSync(proposalsPath).filter(f => f.endsWith('.json')).length;
-    console.log(`  Proposals:    ${count} pending`);
-  } else {
-    console.log('  Proposals:    0 pending');
-  }
-
-  const costPath = path.join(ROOT, 'meta/costs/costs.jsonl');
-  if (existsSync(costPath)) {
-    const lines = readFileSync(costPath, 'utf-8').trim().split('\n').filter(Boolean);
-    let total = 0;
-    lines.forEach(l => { try { total += JSON.parse(l).calls ?? 1; } catch {} });
-    console.log(`  API calls:    ${total} logged`);
-  } else {
-    console.log('  API calls:    0 logged');
-  }
-
-  try {
-    const git = execSync(`git -C ${ROOT} log -1 --format="%h %s"`).toString().trim();
-    console.log(`  Git HEAD:     ${git}`);
-  } catch {
-    console.log('  Git HEAD:     —');
-  }
-
+  console.log(`  Proposals:    ${d.proposals} pending`);
+  console.log(`  API calls:    ${d.apiCalls} logged`);
+  console.log(`  Git HEAD:     ${d.git ?? '—'}`);
   console.log();
 }
 
@@ -135,7 +136,7 @@ export async function runMenu(runTask) {
   10. View postmortems
 `);
 
-  const choice = (await prompt(rl, 'Select: ')).trim();
+  const choice = (await askWithRl(rl, 'Select: ')).trim();
   rl.close();
 
   switch (choice) {
