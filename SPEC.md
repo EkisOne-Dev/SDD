@@ -620,6 +620,12 @@ cd ~/sdd && npm install @google/generative-ai
 | 32 | Structured agent handoff — replace blob context with summary/findings/artifact schema | ✅ Complete |
 | 33 | Chain-specific phase contracts — dev/research/analysis get their own contracts | ✅ Complete |
 | 34 | Task-aware reviewer + skill router best-match fix | ✅ Complete |
+| 35 | sdd chat — interactive persistent conversation mode with any agent | 🔲 Planned |
+| 36 | File reading — --file flag injects file content as prompt context | 🔲 Planned |
+| 37 | sdd skills — AI-described skill list with examples | 🔲 Planned |
+| 38 | Autocomplete + UX improvements — bash completion, welcome banner, help redesign | 🔲 Planned |
+| 39 | Verified RAG researcher — confidence check + tiered web research + cross-verification | 🔲 Planned |
+| 40 | Multi-language support — language detection + per-session language config | 🔲 Planned |
 
 ---
 
@@ -1008,6 +1014,181 @@ Fix: Pass chain type as a variable into the reviewer prompt. The prompt template
 
 ---
 
+### Phase 35 — sdd chat (Interactive Conversation Mode)
+**Problem:** SDD is currently one-shot only — every task requires a new command. There is no way to have a back-and-forth conversation with an agent without re-running `sdd` each time. This is the single biggest UX gap between SDD and a real AI assistant.
+
+**Design:**
+- `sdd chat` opens an interactive REPL loop with the basic agent by default
+- `sdd chat researcher` opens a session with a specific agent
+- `sdd chat --chain development` opens a session using the full development chain
+- Each exchange in the session is sent to the AI with the full conversation history as context
+- Session history is stored in memory as a single conversation block
+- `exit` or `quit` closes the session and saves the conversation to memory
+- `clear` resets the session context without closing
+- `agent <name>` switches agent mid-session
+
+**Files:**
+- `orchestrator/chat.js` — REPL loop, session manager, history accumulator
+- `orchestrator/main.js` — routes `sdd chat` command
+
+**Success criteria:**
+- Session opens immediately with a prompt indicator (e.g. `[chat:basic] >`)
+- Each response maintains context from all prior exchanges in the session
+- `exit` saves the full conversation to memory and exits cleanly
+- Spinner shows during each AI call
+- Colors applied consistently with the rest of the UI
+
+---
+
+### Phase 36 — File Reading (--file flag)
+**Problem:** There is no way to provide a file to SDD for analysis, summarization, or review. You cannot say "review this code" and provide a file. This is a significant missing capability.
+
+**Design:**
+- `sdd "summarize this" --file ~/notes.txt` injects file content as prompt context
+- `sdd "review this code" --file ~/myapp.js` passes code to the developer+reviewer chain
+- File type detection routes content correctly:
+  - `.txt .md .json .js .py .sh .csv` → read directly as UTF-8
+  - `.pdf` → extract text via `pdftotext` (Termux package)
+  - Binary/unknown → warn user, skip injection
+- File content is injected into the prompt the same way skill context is injected — clean, no new architecture
+- File size cap: 50KB — larger files are truncated with a warning
+
+**Files:**
+- `skills/tools/file-reader.js` — file type detection, reading, truncation
+- `orchestrator/main.js` — parses `--file` flag before task execution
+- `orchestrator/chains.js` — passes file context alongside skill context
+
+**Success criteria:**
+- `sdd "what does this do" --file ~/sdd/orchestrator/chains.js` returns an accurate description
+- PDF reading works if `pdftotext` is installed
+- Files over 50KB produce a clear truncation warning
+- Binary files produce a clear unsupported format message
+
+---
+
+### Phase 37 — sdd skills (AI-Described Skill List)
+**Problem:** No command exists to discover what skills the system has. The registry is machine-readable JSON but not user-friendly. Users cannot explore SDD's capabilities conversationally.
+
+**Design:**
+- `sdd skills` asks the AI to describe each skill in the registry conversationally
+- Output format: skill name, what it does, when to use it, example trigger phrase
+- `sdd skills <name>` gives a detailed description of a specific skill
+- The AI reads the actual registry data — not hallucinated descriptions
+
+**Files:**
+- `orchestrator/main.js` — routes `sdd skills` command
+- `skills/registry.json` — read at runtime and injected into the prompt
+
+**Success criteria:**
+- `sdd skills` lists all enabled skills with plain-English descriptions
+- `sdd skills self-research` gives a detailed explanation of that specific skill
+- Descriptions come from the AI synthesizing the registry, not hardcoded strings
+
+---
+
+### Phase 38 — Autocomplete + UX Improvements
+**Problem:** The terminal UX has several low-effort, high-impact gaps: no command autocomplete, no welcome banner, and `sdd help` is unformatted.
+
+**Design — four improvements:**
+
+**38A — Bash autocomplete:**
+- Add a bash completion script to `.bashrc`
+- Completes: `sdd chat`, `sdd learn`, `sdd project`, `sdd resume`, `sdd image`, `sdd skills`, `sdd backup`, `sdd check-engines`, `sdd baseline`, `sdd costs`, `sdd status`, `sdd hook-install`, `sdd hook-uninstall`
+- Tab-completion works immediately after `source ~/.bashrc`
+
+**38B — Welcome banner:**
+- `sdd` with no args shows a welcome banner before the menu
+- Banner shows: SDD version, active provider, last score, pending proposals
+- Rendered in color using colors.js
+
+**38C — Redesigned sdd help:**
+- Grouped by category: Conversation, Pipeline, Learning, System, Dev Tools
+- Each command shows: name, usage, one-line description
+- Color-coded by category
+
+**38D — Session start indicator:**
+- Every `sdd "task"` run shows the date/time and active provider at the top
+- Single dim line — not intrusive
+
+**Files:**
+- `~/.bashrc` — completion script added
+- `orchestrator/menu.js` — welcome banner + redesigned help
+- `orchestrator/main.js` — session start indicator
+
+---
+
+### Phase 39 — Verified RAG Researcher
+**Problem:** The current researcher agent relies entirely on the LLM's training data, which may be outdated, biased, or hallucinated. There is no mechanism to verify claims against real sources, no confidence assessment before answering, and no cross-verification of facts from multiple sources.
+
+**This is the highest-value research improvement in the system.**
+
+**Design — 4-stage verified research pipeline:**
+
+**Stage 1 — Self-confidence assessment:**
+Before any web search, the researcher evaluates its own knowledge and assigns a confidence level:
+- `high` → answer from training knowledge, no web search needed
+- `medium` → supplement training knowledge with web verification
+- `low` → full web research pipeline, training knowledge used only as framing
+
+**Stage 2 — Tiered web research (low/medium confidence only):**
+Source hierarchy (searched in order, stops when sufficient verified content found):
+- Tier 1: Official documentation, .gov, .edu, peer-reviewed (highest trust)
+- Tier 2: MDN, official language/framework docs, IEEE, established references
+- Tier 3: Reputable journalism, known expert sources
+- Search via DuckDuckGo Instant Answer API (free, no key) + direct URL fetch
+- Each source is fetched and its content extracted (first 1000 chars)
+
+**Stage 3 — Cross-verification:**
+- Every key claim must appear in at least 2 independent sources to be marked `[confirmed]`
+- Claims from only 1 source are marked `[single-source]`
+- Claims not found in any source are marked `[model-knowledge]`
+- Contradicting sources are flagged as `[disputed]`
+
+**Stage 4 — Verified synthesis:**
+- Synthesizes confirmed facts into a structured response
+- Every claim carries its verification marker
+- Sources cited inline
+- Uncertainty is explicit, never hidden
+
+**Files:**
+- `skills/tools/verified-researcher.js` — 4-stage pipeline
+- `skills/tools/source-fetcher.js` — tiered URL fetcher with trust scoring
+- `agents/researcher/strategy.txt` — updated to use verified-researcher when confidence is low/medium
+- `config/system.json` — new flag: `verified_research_enabled: true`
+
+**Success criteria:**
+- Factual question returns answer with explicit confidence markers
+- Low-confidence topic triggers web research automatically
+- Claims marked `[confirmed]` appear in 2+ fetched sources
+- Response includes source citations
+- Hallucinated facts are caught and marked `[model-knowledge]` not presented as confirmed
+
+---
+
+### Phase 40 — Multi-Language Support
+**Problem:** SDD has no language configuration. The mentor and all agents respond in English regardless of user preference. Users who prefer to work in Spanish, French, Portuguese, or any other language have no way to configure this.
+
+**Design:**
+- `sdd lang <code>` sets the session language (e.g. `sdd lang es`, `sdd lang fr`, `sdd lang pt`)
+- Language preference is saved to `config/system.json` as `language: "es"`
+- Every agent prompt gets a language directive prepended: "Respond entirely in Spanish."
+- Language detection: if the user's task is written in a non-English language, auto-detect and respond in that language regardless of config
+- `sdd lang reset` reverts to English (default)
+
+**Files:**
+- `config/system.json` — new field: `language: "en"`
+- `orchestrator/orchestrator.js` — `buildPrompt()` prepends language directive
+- `orchestrator/main.js` — routes `sdd lang` command
+- `orchestrator/validator.js` — validates language code is a known ISO 639-1 code
+
+**Success criteria:**
+- `sdd lang es` + `sdd "qué es una variable"` returns Spanish response
+- Mentor sessions respond entirely in the configured language
+- Auto-detection works for Spanish, French, Portuguese, German inputs
+- `sdd lang reset` returns system to English
+
+---
+
 ## KNOWN LIMITATIONS (Current)
 
 - ~~Heuristic scorer bias~~ — **Fixed:** base clarity raised to 60, formatting is bonus not requirement, length bonus removed from usefulness, efficiency penalty threshold tightened. Short precise answers now score fairly.
@@ -1191,6 +1372,7 @@ Fix: Pass chain type as a variable into the reviewer prompt. The prompt template
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-05-02 | 3.7.3 | Phase 35-40 specced — chat mode, file reading, skills command, UX, verified RAG, multi-language | All high-priority improvements roadmapped |
 | 2026-05-02 | 3.7.2 | Phase 34 complete — chain-type review_focus injected per reviewer call, routeSkill() best-match | All 6 audit phases complete |
 | 2026-05-02 | 3.7.1 | Phase 33 complete — 6 chain contracts, loadPhase() cached (STD-7 fix caught by pre-commit hook) | Hook working as designed |
 | 2026-05-02 | 3.7.0 | Phase 32 complete — extractHandoff() active, agents receive Summary+Deliverable not raw blob | Biggest workflow gap closed |
