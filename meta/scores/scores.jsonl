@@ -50,3 +50,12 @@
 {"timestamp":"2026-05-01T23:38:47.214Z","task":"what is abstraction in programming","scores":{"clarity":85,"usefulness":90,"efficiency":70,"redundancy":80,"overall":81}}
 {"timestamp":"2026-05-02T03:15:28.273Z","task":"what is a design pattern in programming","scores":{"clarity":85,"usefulness":90,"efficiency":55,"redundancy":80,"overall":78}}
 {"timestamp":"2026-05-02T03:22:02.192Z","task":"what is a singleton pattern","scores":{"clarity":85,"usefulness":77,"efficiency":70,"redundancy":80,"overall":78}}
+{"timestamp":"2026-05-02T18:40:13.886Z","task":"what is dependency injection","scores":{"clarity":85,"usefulness":77,"efficiency":70,"redundancy":80,"overall":78}}
+{"timestamp":"2026-05-02T18:45:31.912Z","task":"explain the factory pattern in software design","scores":{"clarity":85,"usefulness":74,"efficiency":55,"redundancy":80,"overall":74}}
+{"timestamp":"2026-05-02T19:00:46.765Z","task":"what is a variable","scores":{"clarity":70,"usefulness":70,"efficiency":70,"redundancy":80,"overall":73}}
+{"timestamp":"2026-05-02T19:00:58.117Z","task":"explain the observer pattern","scores":{"clarity":85,"usefulness":77,"efficiency":55,"redundancy":80,"overall":74}}
+{"timestamp":"2026-05-02T19:01:54.993Z","task":"design and implement a complete caching system with TTL expiry and LRU eviction","scores":{"clarity":85,"usefulness":90,"efficiency":70,"redundancy":35,"overall":70}}
+{"timestamp":"2026-05-02T19:10:35.313Z","task":"design and implement a caching system with TTL expiry and LRU eviction","scores":{"clarity":85,"usefulness":90,"efficiency":70,"redundancy":50,"overall":74}}
+{"timestamp":"2026-05-02T23:41:11.859Z","task":"design a REST API for a task management system","scores":{"clarity":85,"usefulness":90,"efficiency":55,"redundancy":80,"overall":78}}
+{"timestamp":"2026-05-03T00:03:59.829Z","task":"build a function that validates email addresses in JavaScript","scores":{"clarity":85,"usefulness":90,"efficiency":70,"redundancy":0,"overall":61}}
+{"timestamp":"2026-05-03T00:12:23.944Z","task":"review and critique this code: function add(a,b) { return a+b }","scores":{"clarity":85,"usefulness":90,"efficiency":70,"redundancy":80,"overall":81}}

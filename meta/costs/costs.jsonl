@@ -38,3 +38,12 @@
 {"timestamp":"2026-05-01T23:38:47.219Z","task":"what is abstraction in programming","api_calls":2,"input_tokens":1289,"output_tokens":229,"total_tokens":1518}
 {"timestamp":"2026-05-02T03:15:28.288Z","task":"what is a design pattern in programming","api_calls":3,"input_tokens":7014,"output_tokens":691,"total_tokens":7705}
 {"timestamp":"2026-05-02T03:22:02.198Z","task":"what is a singleton pattern","api_calls":2,"input_tokens":1243,"output_tokens":199,"total_tokens":1442}
+{"timestamp":"2026-05-02T18:40:13.899Z","task":"what is dependency injection","api_calls":3,"input_tokens":1274,"output_tokens":334,"total_tokens":1608}
+{"timestamp":"2026-05-02T18:45:31.918Z","task":"explain the factory pattern in software design","api_calls":2,"input_tokens":4146,"output_tokens":879,"total_tokens":5025}
+{"timestamp":"2026-05-02T19:00:46.772Z","task":"what is a variable","api_calls":2,"input_tokens":1257,"output_tokens":29,"total_tokens":1286}
+{"timestamp":"2026-05-02T19:00:58.124Z","task":"explain the observer pattern","api_calls":2,"input_tokens":4104,"output_tokens":996,"total_tokens":5100}
+{"timestamp":"2026-05-02T19:01:54.998Z","task":"design and implement a complete caching system with TTL expiry and LRU eviction","api_calls":3,"input_tokens":6706,"output_tokens":2169,"total_tokens":8875}
+{"timestamp":"2026-05-02T19:10:35.320Z","task":"design and implement a caching system with TTL expiry and LRU eviction","api_calls":3,"input_tokens":8705,"output_tokens":3273,"total_tokens":11978}
+{"timestamp":"2026-05-02T23:41:11.876Z","task":"design a REST API for a task management system","api_calls":3,"input_tokens":7082,"output_tokens":1575,"total_tokens":8657}
+{"timestamp":"2026-05-03T00:04:58.518Z","task":"build a function that validates email addresses in JavaScript","api_calls":2,"input_tokens":4684,"output_tokens":6758,"total_tokens":11442}
+{"timestamp":"2026-05-03T00:12:23.950Z","task":"review and critique this code: function add(a,b) { return a+b }","api_calls":2,"input_tokens":4417,"output_tokens":1286,"total_tokens":5703}
