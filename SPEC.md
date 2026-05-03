@@ -618,7 +618,7 @@ cd ~/sdd && npm install @google/generative-ai
 | 30 | Role-specific memory injection — only first agent receives full memory context | ✅ Complete |
 | 31 | 3-tier complexity — add moderate tier between simple and complex | ✅ Complete |
 | 32 | Structured agent handoff — replace blob context with summary/findings/artifact schema | ✅ Complete |
-| 33 | Chain-specific phase contracts — dev/research/analysis get their own contracts | 🔲 Planned |
+| 33 | Chain-specific phase contracts — dev/research/analysis get their own contracts | ✅ Complete |
 | 34 | Task-aware reviewer + skill router best-match fix | 🔲 Planned |
 
 ---
@@ -1191,6 +1191,7 @@ Fix: Pass chain type as a variable into the reviewer prompt. The prompt template
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-05-02 | 3.7.1 | Phase 33 complete — 6 chain contracts, loadPhase() cached (STD-7 fix caught by pre-commit hook) | Hook working as designed |
 | 2026-05-02 | 3.7.0 | Phase 32 complete — extractHandoff() active, agents receive Summary+Deliverable not raw blob | Biggest workflow gap closed |
 | 2026-05-02 | 3.6.4 | Phase 31 complete — 3-tier complexity: simple/moderate/complex, isLong threshold 60 chars | Moderate runs specialists but skips self-critique |
 | 2026-05-02 | 3.6.3 | Phase 30 complete — role-specific memory injection, subsequent agents skip memory block | Token efficiency improved on all multi-agent chains |
