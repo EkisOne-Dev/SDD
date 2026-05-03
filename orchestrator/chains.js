@@ -148,6 +148,17 @@ function extractHandoff(output, agentName) {
   return lines.join('\n');
 }
 
+// ── Review focus by chain type (Phase 34A) ──────────────────────────────────
+const REVIEW_FOCUS = {
+  development:  "Check for correctness, edge cases, security vulnerabilities, and production readiness",
+  research:     "Check for factual accuracy, unsupported claims, and logical consistency",
+  analysis:     "Check for data-driven reasoning and absence of unsupported conclusions",
+  architecture: "Check for component cohesion, minimal coupling, and implementability",
+  strategy:     "Check for concrete steps, realistic timeframes, and stated assumptions",
+  creative:     "Check for tone consistency, engagement, and adherence to brief",
+  basic:        "Check for clarity, completeness, and accuracy"
+};
+
 // ── Chain runner ──────────────────────────────────────────────────────────────
 
 export async function runChain(task, chain, config, adapter, skillContext) {
@@ -200,6 +211,7 @@ export async function runChain(task, chain, config, adapter, skillContext) {
       ? rawMemory + `\n\n[PRIOR AGENT OUTPUT — ${effectiveAgents[i - 1].toUpperCase()}]\n` + compressedPrior
       : rawMemory;
 
+    const reviewFocus = REVIEW_FOCUS[type] || REVIEW_FOCUS.basic;
     const prompt = buildPrompt(
       phase.promptTemplate,
       phase.contract,
@@ -207,7 +219,8 @@ export async function runChain(task, chain, config, adapter, skillContext) {
       memory,
       task,
       compressedPrior || "",
-      complexity
+      complexity,
+      reviewFocus
     );
 
     totalPromptChars += prompt.length;

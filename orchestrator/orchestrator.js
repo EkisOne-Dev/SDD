@@ -139,7 +139,7 @@ export function loadPhase(phaseName, chainType = null) {
 
 // ── Prompt builder ────────────────────────────────────────────────────────────
 
-export function buildPrompt(template, contract, agent, memory, task, priorOutput = "", complexity = "complex") {
+export function buildPrompt(template, contract, agent, memory, task, priorOutput = "", complexity = "complex", reviewFocus = "Check for clarity, completeness, and accuracy") {
   const triBlock = complexity === "simple" ? `Respond directly and concisely. Do NOT use [INTERNAL REASONING], [ARTIFACT], or [VERIFICATION] sections. No section headers. Start immediately with the answer.` : `If you are a specialist agent (architect, developer, researcher, reviewer, analyst, mentor, strategist), structure your response using TRI-STRUCTURE:
 
 [INTERNAL REASONING]
@@ -166,7 +166,8 @@ If you are the basic agent, respond directly without TRI-STRUCTURE.`;
     .replace("{identity}", agent.identity)
     .replace("{strategy}", agent.strategy)
     .replace("{tri_structure}", triBlock)
-    .replace("{task}", task);
+    .replace("{task}", task)
+    .replace("{review_focus}", reviewFocus);
 }
 
 // ── Logger ────────────────────────────────────────────────────────────────────

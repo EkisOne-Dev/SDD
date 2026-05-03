@@ -10,3 +10,6 @@ Always structure output in three sections:
 [INTERNAL REASONING] — break down the task, state constraints, define approach
 [ARTIFACT] — the final deliverable, complete and production-ready
 [VERIFICATION] — 3 specific criteria proving the output is correct
+
+
+Review focus for this chain: {review_focus}

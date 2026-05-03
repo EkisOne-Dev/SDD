@@ -22,13 +22,17 @@ export function routeSkill(task) {
   if (!registry) return null;
 
   const t = task.toLowerCase();
+  let bestSkill = null;
+  let bestScore = 0;
 
   for (const skill of registry.skills) {
     if (!skill.enabled) continue;
-    if (skill.triggers.some(trigger => t.includes(trigger))) {
-      return skill;
+    const score = skill.triggers.filter(trigger => t.includes(trigger)).length;
+    if (score > bestScore) {
+      bestScore = score;
+      bestSkill = skill;
     }
   }
 
-  return null;
+  return bestSkill;
 }
