@@ -1372,6 +1372,7 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 | 2026-04-29 | 3.3.1 | gpt-oss-120b demoted to fallback2 | 4-provider cascade: Gemini → Gemma 4 31B → gpt-oss-120b → Ollama |
 | 2026-04-29 | 3.3.1 | Automatic provider cascade implemented | runEngine cascades to next provider on 429 or 503, displays model name |
 | 2026-04-29 | 3.3.1 | sdd check-engines updated to show all 4 providers | fallback2 row added, filter handles missing providers |
+| 2026-05-03 | 3.7.4 | Re-audit fix: orchestrator.js — STD-3 deepseek branch removed, STD-7 loadAgent() cached, STD-2 saveMemory error logged | All 3 issues caught in double-audit |
 | 2026-05-02 | 3.7.3 | Phase 35-40 specced — chat mode, file reading, skills command, UX, verified RAG, multi-language | All high-priority improvements roadmapped |
 | 2026-05-02 | 3.7.2 | Phase 34 complete — chain-type review_focus injected per reviewer call, routeSkill() best-match | All 6 audit phases complete |
 | 2026-05-02 | 3.7.1 | Phase 33 complete — 6 chain contracts, loadPhase() cached (STD-7 fix caught by pre-commit hook) | Hook working as designed |
