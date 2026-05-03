@@ -99,19 +99,26 @@ export function saveMemory(config, entry) {
       logExecution("WARNING: memory.txt exceeds 50KB — compression recommended");
       console.log("\n⚠️  Memory file exceeds 50KB. Consider running memory compression.");
     }
-  } catch (_) {}
+  } catch (err) {
+    logExecution(`WARNING: saveMemory stat check failed — ${err.message}`);
+  }
 }
 
 // ── Agent loader ──────────────────────────────────────────────────────────────
 
+// ── Agent cache — read once per agent name, reuse (Standard #7) ──────────────
+const _agentCache = {};
+
 export function loadAgent(agentName) {
+  if (_agentCache[agentName]) return _agentCache[agentName];
   const agentDir = path.join(ROOT, "agents", agentName);
   const identity = fs.readFileSync(path.join(agentDir, "identity.txt"), "utf-8");
   const strategy = fs.readFileSync(path.join(agentDir, "strategy.txt"), "utf-8");
   const constraints = JSON.parse(
     fs.readFileSync(path.join(agentDir, "constraints.json"), "utf-8")
   );
-  return { identity, strategy, constraints };
+  _agentCache[agentName] = { identity, strategy, constraints };
+  return _agentCache[agentName];
 }
 
 // ── Phase loader ──────────────────────────────────────────────────────────────
@@ -186,9 +193,7 @@ export async function runEngine(prompt, adapter, agentName = null, complexity = 
   if (agentName && adapter.agent_models && adapter.agent_models[agentName] && active.provider === "gemini") {
     const modelMap = adapter.agent_models[agentName];
     const chosenModel = modelMap[complexity] || modelMap["simple"];
-    if (chosenModel && chosenModel.includes("deepseek")) {
-      active = { ...adapter["fallback"], model: chosenModel };
-    } else if (chosenModel) {
+    if (chosenModel) {
       active.model = chosenModel;
     }
   }
