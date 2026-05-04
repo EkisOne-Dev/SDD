@@ -47,3 +47,4 @@
 {"timestamp":"2026-05-02T23:41:11.876Z","task":"design a REST API for a task management system","api_calls":3,"input_tokens":7082,"output_tokens":1575,"total_tokens":8657}
 {"timestamp":"2026-05-03T00:04:58.518Z","task":"build a function that validates email addresses in JavaScript","api_calls":2,"input_tokens":4684,"output_tokens":6758,"total_tokens":11442}
 {"timestamp":"2026-05-03T00:12:23.950Z","task":"review and critique this code: function add(a,b) { return a+b }","api_calls":2,"input_tokens":4417,"output_tokens":1286,"total_tokens":5703}
+{"timestamp":"2026-05-03T13:16:23.760Z","task":"what is encapsulation","api_calls":2,"input_tokens":1204,"output_tokens":350,"total_tokens":1554}
