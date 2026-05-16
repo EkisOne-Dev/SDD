@@ -73,3 +73,8 @@ echo "   ✅ RESTORE.md written to SD card"
 echo "─────────────────────────────────────"
 echo "✅ Backup complete — $(date '+%H:%M:%S')"
 echo ""
+
+# ── Step 6: Full code backup to SD card ──────────────────
+echo "💾 Backing up full SDD code to SD card..."
+cp -r "$SDD_DIR" "$BACKUP_DIR/sdd-full" 2>/dev/null || true
+echo "   ✅ Full code saved to $BACKUP_DIR/sdd-full"
