@@ -1,9 +1,13 @@
 {
   "name": "sdd",
-  "version": "1.0.0",
+  "version": "3.7.5",
   "type": "module",
+  "description": "Structured Development Dispatcher",
   "main": "orchestrator/main.js",
+  "scripts": {
+    "start": "node orchestrator/main.js"
+  },
   "dependencies": {
-    "@google/generative-ai": "^1.0.0"
+    "@google/generative-ai": "^0.21.0"
   }
 }

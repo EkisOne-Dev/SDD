@@ -5,8 +5,6 @@ let _statusCache = null;
 
 function getStatusData(ROOT) {
   if (_statusCache) return _statusCache;
-  const { existsSync, readFileSync, readdirSync } = require('fs');
-  const { execSync } = require('child_process');
   const data = {};
   const scorePath = ROOT + '/meta/scores/scores.jsonl';
   if (existsSync(scorePath)) {
