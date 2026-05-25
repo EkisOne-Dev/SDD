@@ -174,6 +174,17 @@ async function run(injectedTask = null) {
     task = negotiated;
   }
 
+  // ── Intent Parser ────────────────────────────────────────────────────────
+  if (config.intent_parser_enabled) {
+    const { parseIntent } = await import('../skills/tools/intent-parser.js');
+    const parsed = await parseIntent(task);
+    if (parsed) {
+      console.log(`\n🎯 Intent parsed [${parsed.task_type}|${parsed.complexity}] confidence:${parsed.confidence}`);
+      if (parsed.interpreted_task) task = parsed.interpreted_task;
+      logExecution(`INTENT PARSED: type=${parsed.task_type} complexity=${parsed.complexity} confidence=${parsed.confidence}`);
+    }
+  }
+
   // ── Skills check ─────────────────────────────────────────────────────────
   let skillContext = null;
   if (config.self_research_enabled) {

@@ -64,3 +64,6 @@
 {"timestamp":"2026-05-16T14:23:28.966Z","task":"--status","scores":{"clarity":70,"usefulness":80,"efficiency":70,"redundancy":80,"overall":75}}
 {"timestamp":"2026-05-16T14:23:54.469Z","task":"--list-agents","scores":{"clarity":75,"usefulness":50,"efficiency":70,"redundancy":80,"overall":69}}
 {"timestamp":"2026-05-16T14:24:11.751Z","task":"--help","scores":{"clarity":70,"usefulness":100,"efficiency":70,"redundancy":80,"overall":80}}
+{"timestamp":"2026-05-25T22:23:51.724Z","task":"what is a REST API","scores":{"clarity":85,"usefulness":70,"efficiency":70,"redundancy":80,"overall":76}}
+{"timestamp":"2026-05-25T22:25:26.236Z","task":"hey can you help me with something related to organizing my projects better and maybe tracking progr","scores":{"clarity":85,"usefulness":74,"efficiency":70,"redundancy":80,"overall":77}}
+{"timestamp":"2026-05-25T22:29:07.714Z","task":"Help organize projects, track progress","scores":{"clarity":85,"usefulness":82,"efficiency":70,"redundancy":80,"overall":79}}
