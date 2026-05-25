@@ -93,7 +93,7 @@
     },
     {
       "id": "F44", "phase": 44, "title": "Intent parser — phi4-mini JSON normalization",
-      "status": "planned", "priority": "high",
+      "status": "done", "priority": "high",
       "acceptance_criteria": [
         "Runs only on tasks >15 words or no clear keyword match",
         "Output is valid JSON: task_type, complexity, key_requirements, suggested_model",

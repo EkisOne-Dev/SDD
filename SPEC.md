@@ -1427,3 +1427,5 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 | 2026-05-25 | 3.9.0 | Phase 43 complete — skills/library/ created with 6 markdown skill files | intent-parser, spec-clarifier, guardian-angel, git-delivery, context-compaction, self-audit |
 | 2026-05-25 | 3.9.0 | registry.json expanded to 7 skills with library_file references | Future skills load full markdown instructions dynamically |
 | 2026-05-25 | 3.9.0 | router.js extended — loadSkillContent() loads markdown when skill matched | Skills now carry full instruction content alongside metadata |
+| 2026-05-25 | 3.9.1 | Phase 44 complete — intent parser wired | phi4-mini normalizes ambiguous tasks (>15 words or vague language) to structured JSON before agent execution |
+| 2026-05-25 | 3.9.1 | intent_parser_enabled flag added to system.json | Default false — enabled true after verification |
