@@ -61,3 +61,6 @@
 {"timestamp":"2026-05-03T00:12:23.944Z","task":"review and critique this code: function add(a,b) { return a+b }","scores":{"clarity":85,"usefulness":90,"efficiency":70,"redundancy":80,"overall":81}}
 {"timestamp":"2026-05-03T13:16:23.752Z","task":"what is encapsulation","scores":{"clarity":85,"usefulness":70,"efficiency":70,"redundancy":80,"overall":76}}
 {"timestamp":"2026-05-16T13:51:02.188Z","task":"what is a constructor in programming","scores":{"clarity":85,"usefulness":77,"efficiency":70,"redundancy":80,"overall":78}}
+{"timestamp":"2026-05-16T14:23:28.966Z","task":"--status","scores":{"clarity":70,"usefulness":80,"efficiency":70,"redundancy":80,"overall":75}}
+{"timestamp":"2026-05-16T14:23:54.469Z","task":"--list-agents","scores":{"clarity":75,"usefulness":50,"efficiency":70,"redundancy":80,"overall":69}}
+{"timestamp":"2026-05-16T14:24:11.751Z","task":"--help","scores":{"clarity":70,"usefulness":100,"efficiency":70,"redundancy":80,"overall":80}}

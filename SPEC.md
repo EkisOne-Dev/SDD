@@ -9,9 +9,9 @@
 
 | Field | Value |
 |---|---|
-| Document Version | 3.3.2 |
-| System Version | MVP → Phase 18 Complete |
-| Last Updated | 2026-04-29 |
+| Document Version | 3.7.2 |
+| System Version | MVP → Phase 34 Complete |
+| Last Updated | 2026-05-24 |
 | Status | Active Development |
 | Platform | Android / Termux |
 | Runtime | Node.js |

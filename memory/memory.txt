@@ -1,73 +1,6 @@
 [MEMORY SUMMARY — older sessions compressed]
-programming: design and implement a caching system with TTL expiry and LRU eviction
+architecture: design a REST API for a task management system
 [END SUMMARY]
-
-User: design a REST API for a task management system
-Assistant: [INTERNAL REASONING]
-The task is to execute the role of the Reviewer agent. My goal is to evaluate the provided Architect agent's output against the success criteria for the task of designing a REST API for a task management system.
-
-**Success Criteria for the Architect's Output:**
-1.  **Completeness:** The design should cover all essential aspects of a REST API for a task management system as expected from an Architect.
-2.  **Accuracy:** The design should adhere to RESTful principles and best practices.
-3.  **Clarity and Structure:** The output should be well-organized, easy to understand, and actionable.
-4.  **No Hallucination/Filler:** The output should be factual and avoid unnecessary or fabricated information.
-5.  **No Overcomplication:** The design should be straightforward and not overly complex.
-6.  **Actionability:** The output should provide a clear blueprint for subsequent development.
-
-**Architect's Deliverable Analysis:**
-The Architect's output provides:
-*   Architectural Principles.
-*   High-Level System Architecture diagram and description.
-*   Detailed API Specification (Base URL, Tasks Resource with Create Task example).
-
-**Review Approach:**
-1.  Evaluate the defined architectural principles for adherence to REST.
-2.  Assess the clarity and correctness of the high-level architecture.
-3.  Review the detailed API specification for completeness (e.g., CRUD operations for tasks, other resources like Projects and Users), consistency, and correctness of request/response examples.
-4.  Check for any signs of overcomplication, filler text, or hallucination.
-5.  Identify any critical omissions or areas needing improvement to meet the success criteria.
-
-**Critique Points:**
-*   The API specification is incomplete. It only details the `POST /tasks` endpoint. A comprehensive API design would include `GET`, `PUT`/`PATCH`, `DELETE` for tasks, and definitions for other primary resources like Projects and Users, along with their respective endpoints.
-*   While the principles are stated, the detailed specification doesn't fully demonstrate their application beyond basic resource definition.
-*   Error handling examples are truncated (`...[truncated]`), making it difficult to fully assess.
-*   Authentication and Authorization are mentioned in the architecture but not detailed within the API specification itself (e.g., how tokens are passed, what scopes are needed).
-
-**Plan:**
-1.  Acknowledge what is done well.
-2.  Identify critical omissions in the API specification.
-3.  Suggest specific additions to make the deliverable more complete and actionable.
-4.  Structure the review output according to the TRI-STRUCTURE.
-
-[ARTIFACT]
-**Review of Task Management REST API Design**
-
-**1. What is Working Well:**
-The provided design lays a strong foundation by clearly articulating core architectural principles (RESTfulness, resource-orientation, statelessness) and presenting a logical high-level system architecture. The conceptual diagram effectively illustrates the interaction between key components like the API Gateway, Authentication Service, Task Management API Service, and Database. The detailed specification for the `POST /tasks` endpoint is clear, with well-defined request and response bodies, and includes common fields like `projectId`, `dueDate`, and `priority`.
-
-**2. Critical Issues and Required Improvements:**
-The primary deficiency is the **incompleteness of the API specification**. While the Architect's role is to build upon the Researcher's work, the current deliverable is a partial specification, not a comprehensive API design.
-
-*   **Incomplete Resource Specification:** The specification for the `Tasks` resource is limited to `POST`. A complete design must include endpoints for:
-    *   Retrieving a single task (`GET /tasks/{id}`).
-    *   Retrieving a list of tasks (`GET /tasks` with potential query parameters for filtering, sorting, pagination).
-    *   Updating a task (`PUT /tasks/{id}` or `PATCH /tasks/{id}`).
-    *   Deleting a task (`DELETE /tasks/{id}`).
-*   **Missing Resource Definitions:** The system architecture mentions `Projects` and `Users` as primary resources, but their API endpoints and specifications are entirely absent from the detailed design. A task management system necessitates managing projects and users.
-*   **Inadequate Error Handling Detail:** The example for `400 Bad Request` is truncated (`...[truncated]`), preventing a full assessment of the error response structure and its usefulness for developers. This needs to be fully elaborated for all common error types (e.g., 401 Unauthorized, 403 Forbidden, 404 Not Found, 500 Internal Server Error).
-*   **Authentication/Authorization Integration:** While mentioned architecturally, the API specification does not detail how authentication (e.g., `Authorization: Bearer <token>`) and authorization are handled at the endpoint level (e.g., required scopes or user roles for different operations).
-
-**3. Recommendations for Next Steps:**
-To fulfill the task of designing a REST API for a task management system, the Architect must:
-*   **Expand the `Tasks` resource specification** to include all CRUD operations.
-*   **Define and specify the API endpoints for `Projects` and `Users` resources**, including their respective CRUD operations.
-*   **Provide complete, non-truncated examples for all relevant HTTP status codes and error responses.**
-*   **Clearly document authentication and authorization requirements** for each endpoint or resource.
-
-[VERIFICATION]
-1.  **Completeness of API Specification:** The provided output details only one operation (`POST`) for the `Tasks` resource and omits specifications for `Projects` and `Users` resources entirely, failing to meet the expected completeness for an API design.
-2.  **Actionability for Developers:** The truncated error response example and the absence of key resource specifications (`Projects`, `Users`, full `Tasks` CRUD) render the current design insufficient for developers to begin implementation.
-3.  **Adherence to RESTful Principles in Detail:** While principles are stated, their full application is not demonstrated across a complete set of resources and operations, particularly in error handling and authentication/authorization integration within endpoint specifications.
 
 User: build a function that validates email addresses in JavaScript
 Assistant: [INTERNAL REASONING]
@@ -534,3 +467,13 @@ Key characteristics:
 *   **Naming Convention:** They usually share the class name.
 *   **No Return Value:** They do not return any value.
 *   **Overloading:** Classes can have multiple constructors with different parameters, allowing for flexible object creation.
+
+User: --status
+Assistant: System Status: Operational
+
+User: --list-agents
+Assistant: Agent List:
+- SDD basic agent
+
+User: --help
+Assistant: The --help command provides assistance and information about available commands and features.
