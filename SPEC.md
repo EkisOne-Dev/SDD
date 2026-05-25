@@ -9,9 +9,9 @@
 
 | Field | Value |
 |---|---|
-| Document Version | 3.7.2 |
-| System Version | MVP → Phase 34 Complete |
-| Last Updated | 2026-05-24 |
+| Document Version | 3.8.0 |
+| System Version | MVP → Phase 42 Complete |
+| Last Updated | 2026-05-25 |
 | Status | Active Development |
 | Platform | Android / Termux |
 | Runtime | Node.js |
@@ -1422,3 +1422,5 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 | 2026-04-29 | 3.3.2 | 6-provider cascade active — Gemini → Gemma 4 31B → gpt-oss-120b → Groq → Cerebras → Ollama | Auto-cascades on 429/503, displays model name on switch |
 
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
+| 2026-05-25 | 3.8.0 | Phase 41 complete — constitution.md, featurelist.json, history.md created | Harness foundation established |
+| 2026-05-25 | 3.8.0 | Phase 42 complete — start.sh calibration upgrade, backup.sh extended | Calibration checks Node.js, git, required files, Ollama. Backup now stages SPEC.md, CAPABILITIES.md, constitution.md, featurelist.json, history.md |
