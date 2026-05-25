@@ -1,0 +1,180 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-05-24",
+  "completed_phases": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34],
+  "features": [
+    {
+      "id": "F35", "phase": 35, "title": "sdd chat — interactive conversation mode",
+      "status": "planned", "priority": "high",
+      "acceptance_criteria": [
+        "sdd chat launches persistent multi-turn session",
+        "User types responses without re-running sdd",
+        "quit exits cleanly and saves session",
+        "History preserved across exchanges within session"
+      ]
+    },
+    {
+      "id": "F36", "phase": 36, "title": "File reading — --file flag",
+      "status": "planned", "priority": "high",
+      "acceptance_criteria": [
+        "sdd --file path.txt 'analyze this' works",
+        "File content injected into agent prompt",
+        "Supports .txt .md .js .json .py .sh",
+        "File too large produces clear error"
+      ]
+    },
+    {
+      "id": "F37", "phase": 37, "title": "sdd skills — AI-described skill list",
+      "status": "planned", "priority": "medium",
+      "acceptance_criteria": [
+        "sdd skills lists all skills with human-readable descriptions",
+        "Each skill shows trigger keywords and current status",
+        "Output is formatted and scannable"
+      ]
+    },
+    {
+      "id": "F38", "phase": 38, "title": "Autocomplete + UX improvements",
+      "status": "planned", "priority": "medium",
+      "acceptance_criteria": [
+        "Tab autocomplete works for sdd commands",
+        "Welcome banner on sdd with no args",
+        "sdd help is formatted with columns"
+      ]
+    },
+    {
+      "id": "F39", "phase": 39, "title": "Verified RAG researcher",
+      "status": "planned", "priority": "high",
+      "acceptance_criteria": [
+        "Researcher cross-verifies claims against 2+ sources",
+        "Confidence score on factual claims",
+        "Sources cited in output",
+        "Hallucination rate measurably reduced"
+      ]
+    },
+    {
+      "id": "F40", "phase": 40, "title": "Multi-language support",
+      "status": "planned", "priority": "medium",
+      "acceptance_criteria": [
+        "Language detected from user input or set via config",
+        "All agents respond in configured language",
+        "sdd config language es|fr|pt|en works",
+        "Mentor teaches in user's language"
+      ]
+    },
+    {
+      "id": "F41", "phase": 41, "title": "Harness foundation — constitution.md, featurelist.json, history.md",
+      "status": "in_progress", "priority": "critical",
+      "acceptance_criteria": [
+        "constitution.md exists with 7 rule sections",
+        "featurelist.json exists with all F35-F51 entries",
+        "history.md exists with structured log entries",
+        "verify.sh checks for all three files and passes"
+      ]
+    },
+    {
+      "id": "F42", "phase": 42, "title": "Auto-update protocol + start.sh calibration",
+      "status": "planned", "priority": "critical",
+      "acceptance_criteria": [
+        "start.sh verifies constitution.md, SPEC.md, CAPABILITIES.md exist before launch",
+        "start.sh checks Node.js, git, Ollama status",
+        "backup.sh includes SPEC.md and CAPABILITIES.md in staged files",
+        "sdd backup command triggers full protocol"
+      ]
+    },
+    {
+      "id": "F43", "phase": 43, "title": "skills/library/ — markdown skill files",
+      "status": "planned", "priority": "high",
+      "acceptance_criteria": [
+        "skills/library/ directory exists",
+        "At least 6 skill files: intent-parser, spec-clarifier, guardian-angel, git-delivery, context-compaction, self-audit",
+        "Each skill file has: trigger, instructions, output schema, constraints, failure behavior",
+        "skills/router.js loads full skill content dynamically"
+      ]
+    },
+    {
+      "id": "F44", "phase": 44, "title": "Intent parser — phi4-mini JSON normalization",
+      "status": "planned", "priority": "high",
+      "acceptance_criteria": [
+        "Runs only on tasks >15 words or no clear keyword match",
+        "Output is valid JSON: task_type, complexity, key_requirements, suggested_model",
+        "Does not run on simple short tasks",
+        "Uses phi4-mini or Groq — independent from main Gemini quota"
+      ]
+    },
+    {
+      "id": "F45", "phase": 45, "title": "Per-model skill files + task-aware local router",
+      "status": "planned", "priority": "critical",
+      "acceptance_criteria": [
+        "OLLAMA_MAX_LOADED_MODELS=1 enforced",
+        "coding → qwen2.5-coder:7b",
+        "code review → deepseek-coder:6.7b",
+        "general reasoning → qwen2.5:7b",
+        "research/writing → gemma3:4b",
+        "intent parsing → phi4-mini",
+        "Online cascade triggers only on local model failure or --online flag"
+      ]
+    },
+    {
+      "id": "F46", "phase": 46, "title": "Per-model context budget",
+      "status": "planned", "priority": "high",
+      "acceptance_criteria": [
+        "Each model has max_prompt_tokens in adapter.json",
+        "Prompt measured before every engine call",
+        "Compression triggers in order: memory → skill context → prior agent output",
+        "No model receives prompt over its budget"
+      ]
+    },
+    {
+      "id": "F47", "phase": 47, "title": "Spec-clarifier + guardian-angel skills",
+      "status": "planned", "priority": "high",
+      "acceptance_criteria": [
+        "Spec-clarifier runs before negotiator on complex tasks",
+        "Lists all non-obvious assumptions for user confirmation",
+        "Guardian-angel audits output against constitution.md before saving",
+        "Guardian-angel blocks save on violation with specific rule cited"
+      ]
+    },
+    {
+      "id": "F48", "phase": 48, "title": "sdd session-end command",
+      "status": "planned", "priority": "medium",
+      "acceptance_criteria": [
+        "sdd session-end command exists",
+        "Generates structured summary: tasks completed, decisions, issues",
+        "Appends to history.md in standard format",
+        "Calls backup.sh automatically"
+      ]
+    },
+    {
+      "id": "F49", "phase": 49, "title": "Semantic memory retrieval — nomic-embed-text",
+      "status": "planned", "priority": "high",
+      "acceptance_criteria": [
+        "nomic-embed-text running via Ollama",
+        "Top-5 semantically relevant memory entries retrieved per task",
+        "Memory injection reduced from full file to targeted entries",
+        "Token reduction >80% vs flat file injection"
+      ]
+    },
+    {
+      "id": "F50", "phase": 50, "title": "sdd audit — system self-audit command",
+      "status": "planned", "priority": "high",
+      "acceptance_criteria": [
+        "sdd audit 'capability' searches CAPABILITIES.md",
+        "Checks if responsible files exist on disk",
+        "Reports status from featurelist.json",
+        "Generates improvement proposal if gap found",
+        "Proposal flows through existing proposal manager"
+      ]
+    },
+    {
+      "id": "F51", "phase": 51, "title": "Full verification pass — all phases 0-51",
+      "status": "planned", "priority": "critical",
+      "acceptance_criteria": [
+        "verify.sh passes with 0 failures",
+        "All 51 capability verification tests pass",
+        "SPEC.md and CAPABILITIES.md match actual system state",
+        "sdd check-engines shows accurate provider status",
+        "All local models route correctly by task type"
+      ]
+    }
+  ]
+}

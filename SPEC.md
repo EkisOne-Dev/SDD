@@ -626,6 +626,17 @@ cd ~/sdd && npm install @google/generative-ai
 | 38 | Autocomplete + UX improvements — bash completion, welcome banner, help redesign | 🔲 Planned |
 | 39 | Verified RAG researcher — confidence check + tiered web research + cross-verification | 🔲 Planned |
 | 40 | Multi-language support — language detection + per-session language config | 🔲 Planned |
+| 41 | Harness foundation — constitution.md, featurelist.json, history.md | 🔲 Planned |
+| 42 | Auto-update protocol + start.sh calibration upgrade | 🔲 Planned |
+| 43 | skills/library/ — markdown skill files replacing flat JSON triggers | 🔲 Planned |
+| 44 | Intent parser — phi4-mini JSON normalization of ambiguous tasks | 🔲 Planned |
+| 45 | Per-model skill files + task-aware local model router | 🔲 Planned |
+| 46 | Per-model context budget — prompt length enforcement per model | 🔲 Planned |
+| 47 | Spec-clarifier + guardian-angel skills | 🔲 Planned |
+| 48 | sdd session-end — structured session summary appended to history.md | 🔲 Planned |
+| 49 | Semantic memory retrieval — nomic-embed-text replaces keyword injection | 🔲 Planned |
+| 50 | sdd audit — self-audit with gap detection and improvement proposals | 🔲 Planned |
+| 51 | Full verification pass — all phases 0-51 confirmed | 🔲 Planned |
 
 ---
 
