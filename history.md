@@ -58,3 +58,11 @@
 **Reason:** Qwen3:4b entered 30-minute deliberation loop on a typo due to reasoning-first architecture
 **Impact:** All Qwen3 skill files must include /no_think prefix. Documented in constitution.md rule 6.
 **Commit:** d6d194f
+
+### 2026-05-24 — Tiered Reasoning Pipeline (Future Review)
+**Concept:** Use small fast local models for preliminary preprocessing, then pass structured output to a higher-capability model for architectural decisions and final reasoning.
+**How it works:** Small model (phi4-mini or qwen3.5:0.8b) receives raw task, extracts key facts, structures the problem into clean JSON. Large model (Gemini, Groq 70B, or Cerebras 235B) receives only the clean structured input — not verbose raw context. Large model makes the decision or architectural suggestion.
+**Why this matters:** Large models produce better output when given structured precise input vs raw verbose text. Token cost to large model is reduced significantly. Small model preprocessing is fast and free (local). The pattern separates "information extraction" (small model strength) from "reasoning over structured information" (large model strength).
+**SDD application:** Architect and strategist chains could run phi4-mini first to extract constraints, dependencies, and requirements into structured JSON, then pass that to Gemini or Groq 70B for the actual architectural recommendation. The guardian-angel skill could use this pattern for constitution auditing.
+**Status:** Concept documented — to be designed as part of Phase 44 (intent parser) or a dedicated Phase 52.
+**Commit:** e424379
