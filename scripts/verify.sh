@@ -95,3 +95,10 @@ echo "  ⚠️  Warnings: $WARN"
 echo "─────────────────────────────────────────"
 [ $FAIL -eq 0 ] && echo "  🎯 System verified — ready to build" || echo "  🔧 Fix failures before proceeding"
 echo ""
+
+echo ""
+echo "📋 Harness Files (Phase 41-42)"
+for f in constitution.md featurelist.json history.md; do
+  [ -f "$HOME/sdd/$f" ] && pass "$f" || fail "$f MISSING"
+done
+[ -f "$HOME/sdd/scripts/verify.sh" ] && pass "scripts/verify.sh" || fail "scripts/verify.sh MISSING"

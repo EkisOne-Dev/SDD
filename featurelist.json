@@ -63,7 +63,7 @@
     },
     {
       "id": "F41", "phase": 41, "title": "Harness foundation — constitution.md, featurelist.json, history.md",
-      "status": "in_progress", "priority": "critical",
+      "status": "done", "priority": "critical",
       "acceptance_criteria": [
         "constitution.md exists with 7 rule sections",
         "featurelist.json exists with all F35-F51 entries",

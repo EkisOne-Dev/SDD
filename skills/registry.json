@@ -3,15 +3,117 @@
     {
       "id": "self-research",
       "name": "Self Research",
-      "description": "Scans memory, knowledge map, and past projects for context relevant to the current task. Optionally uses AI to synthesize findings.",
+      "description": "Scans memory, knowledge map, and past projects for context relevant to the current task.",
       "file": "tools/self-research.js",
+      "library_file": null,
       "triggers": [
-        "research", "find", "look up", "what is", "explain",
-        "summarize", "how does", "why does", "background", "history",
-        "overview", "fact", "compare", "difference", "source"
+        "research",
+        "find",
+        "look up",
+        "what is",
+        "explain",
+        "summarize",
+        "how does",
+        "why does",
+        "background",
+        "history",
+        "overview",
+        "fact",
+        "compare",
+        "difference",
+        "source"
       ],
-      "inputs": ["task"],
       "enabled": true
+    },
+    {
+      "id": "intent-parser",
+      "name": "Intent Parser",
+      "description": "Normalizes ambiguous user input into structured JSON before agent execution.",
+      "file": "tools/intent-parser.js",
+      "library_file": "library/intent-parser.md",
+      "triggers": [
+        "help me with",
+        "something",
+        "maybe",
+        "kind of",
+        "not sure",
+        "i want to",
+        "can you"
+      ],
+      "enabled": false,
+      "note": "Enabled in Phase 44"
+    },
+    {
+      "id": "spec-clarifier",
+      "name": "Spec Clarifier",
+      "description": "Validates assumptions before executing complex tasks.",
+      "file": "tools/spec-clarifier.js",
+      "library_file": "library/spec-clarifier.md",
+      "triggers": [
+        "build",
+        "create",
+        "implement",
+        "design",
+        "make me",
+        "develop"
+      ],
+      "enabled": false,
+      "note": "Enabled in Phase 47"
+    },
+    {
+      "id": "guardian-angel",
+      "name": "Guardian Angel",
+      "description": "Audits output against constitution.md before saving.",
+      "file": "tools/guardian-angel.js",
+      "library_file": "library/guardian-angel.md",
+      "triggers": [],
+      "enabled": false,
+      "note": "Enabled in Phase 47 — triggered by pipeline not keywords"
+    },
+    {
+      "id": "git-delivery",
+      "name": "Git Delivery",
+      "description": "Standardizes commit messages, staging decisions, and backup triggers.",
+      "file": null,
+      "library_file": "library/git-delivery.md",
+      "triggers": [
+        "commit",
+        "push",
+        "backup",
+        "save",
+        "deploy"
+      ],
+      "enabled": true,
+      "note": "Library only — used as reference by agents"
+    },
+    {
+      "id": "context-compaction",
+      "name": "Context Compaction",
+      "description": "Generates structured session summaries for history.md.",
+      "file": "tools/session-end.js",
+      "library_file": "library/context-compaction.md",
+      "triggers": [
+        "session-end",
+        "summarize session",
+        "end session"
+      ],
+      "enabled": false,
+      "note": "Enabled in Phase 48"
+    },
+    {
+      "id": "self-audit",
+      "name": "Self Audit",
+      "description": "Inspects system files to audit capabilities and generate improvement proposals.",
+      "file": "tools/self-audit.js",
+      "library_file": "library/self-audit.md",
+      "triggers": [
+        "audit",
+        "does my system have",
+        "is implemented",
+        "capability check"
+      ],
+      "enabled": false,
+      "note": "Enabled in Phase 50"
     }
   ]
 }

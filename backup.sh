@@ -21,6 +21,11 @@ git add \
   meta/scores/scores.jsonl \
   meta/baselines/baseline.json \
   engine/adapter.json \
+  SPEC.md \
+  CAPABILITIES.md \
+  constitution.md \
+  featurelist.json \
+  history.md \
   2>/dev/null || true
 
 # Only commit if there are staged changes

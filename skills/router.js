@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
@@ -15,6 +15,15 @@ function loadRegistry() {
   } catch {
     return null;
   }
+}
+
+function loadSkillContent(skill) {
+  if (!skill.library_file) return null;
+  try {
+    const filePath = join(__dirname, skill.library_file);
+    if (!existsSync(filePath)) return null;
+    return readFileSync(filePath, 'utf-8');
+  } catch { return null; }
 }
 
 export function routeSkill(task) {
@@ -34,5 +43,6 @@ export function routeSkill(task) {
     }
   }
 
+  if (bestSkill) bestSkill.content = loadSkillContent(bestSkill);
   return bestSkill;
 }
