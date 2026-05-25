@@ -1424,3 +1424,6 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
 | 2026-05-25 | 3.8.0 | Phase 41 complete — constitution.md, featurelist.json, history.md created | Harness foundation established |
 | 2026-05-25 | 3.8.0 | Phase 42 complete — start.sh calibration upgrade, backup.sh extended | Calibration checks Node.js, git, required files, Ollama. Backup now stages SPEC.md, CAPABILITIES.md, constitution.md, featurelist.json, history.md |
+| 2026-05-25 | 3.9.0 | Phase 43 complete — skills/library/ created with 6 markdown skill files | intent-parser, spec-clarifier, guardian-angel, git-delivery, context-compaction, self-audit |
+| 2026-05-25 | 3.9.0 | registry.json expanded to 7 skills with library_file references | Future skills load full markdown instructions dynamically |
+| 2026-05-25 | 3.9.0 | router.js extended — loadSkillContent() loads markdown when skill matched | Skills now carry full instruction content alongside metadata |
