@@ -85,5 +85,17 @@
     "base_url": "https://api.cerebras.ai/v1",
     "max_tokens": 8192,
     "timeout_ms": 15000
+  },
+  "local_first": true,
+  "local_model_routing": {
+    "basic": "phi4-mini:latest",
+    "creative": "qwen2.5:7b",
+    "strategy": "qwen3.5:4b",
+    "architecture": "qwen2.5:7b",
+    "development": "qwen2.5-coder:7b",
+    "research": "qwen2.5:7b",
+    "analysis": "qwen2.5:7b",
+    "review": "deepseek-coder:6.7b",
+    "default": "qwen2.5:7b"
   }
 }

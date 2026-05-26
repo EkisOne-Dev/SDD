@@ -188,7 +188,7 @@ export function logExecution(entry) {
 
 // ── AI engine runner ──────────────────────────────────────────────────────────
 
-export async function runEngine(prompt, adapter, agentName = null, complexity = "simple") {
+export async function runEngine(prompt, adapter, agentName = null, complexity = "simple", chainType = null) {
   let active = { ...adapter[adapter.active] };
   if (agentName && adapter.agent_models && adapter.agent_models[agentName] && active.provider === "gemini") {
     const modelMap = adapter.agent_models[agentName];
@@ -230,7 +230,45 @@ export async function runEngine(prompt, adapter, agentName = null, complexity = 
     }
   }
 
+  if (adapter.local_first && chainType) {
+    const localResult = await tryLocalFirst(prompt, adapter, chainType);
+    if (localResult) {
+      logExecution(`LOCAL MODEL: ${adapter.local_model_routing?.[chainType] || 'default'} used for ${chainType}`);
+      return localResult;
+    }
+  }
+
   return tryWithFallback(providerChain);
+}
+
+
+async function tryLocalFirst(prompt, adapter, chainType) {
+  if (!adapter.local_first || !adapter.local_model_routing) return null;
+  const localModel = adapter.local_model_routing[chainType] || adapter.local_model_routing.default;
+  if (!localModel) return null;
+
+  try { await fetch('http://localhost:11434', { signal: AbortSignal.timeout(3000) }); }
+  catch { return null; }
+
+  const modelSlug = localModel.split(':')[0].replace(/[^a-z0-9.]/g, '-');
+  const skillPath = path.join(ROOT, 'skills/library/model-' + modelSlug + '.md');
+  const skillPrefix = (skillPath && fs.existsSync(skillPath))
+    ? fs.readFileSync(skillPath, 'utf-8') + '\n\n'
+    : '';
+
+  const localConfig = {
+    provider: 'ollama',
+    model: localModel,
+    base_url: adapter.local_fallback?.base_url || 'http://localhost:11434/api',
+    api_key_env: null,
+    timeout_ms: 90000
+  };
+
+  try {
+    const result = await executeEngine(skillPrefix + prompt, localConfig);
+    if (result && result.trim().length > 10) return result;
+    return null;
+  } catch { return null; }
 }
 
 async function executeEngine(prompt, active) {

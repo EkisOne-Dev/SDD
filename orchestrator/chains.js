@@ -226,7 +226,7 @@ export async function runChain(task, chain, config, adapter, skillContext) {
 
     totalPromptChars += prompt.length;
 
-    const result = await runEngine(prompt, adapter, agentName, complexity);
+    const result = await runEngine(prompt, adapter, agentName, complexity, chain?.type || null);
 
     previousOutput = result;
     finalResult = result;
