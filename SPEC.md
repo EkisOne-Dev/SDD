@@ -1429,3 +1429,6 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 | 2026-05-25 | 3.9.0 | router.js extended — loadSkillContent() loads markdown when skill matched | Skills now carry full instruction content alongside metadata |
 | 2026-05-25 | 3.9.1 | Phase 44 complete — intent parser wired | phi4-mini normalizes ambiguous tasks (>15 words or vague language) to structured JSON before agent execution |
 | 2026-05-25 | 3.9.1 | intent_parser_enabled flag added to system.json | Default false — enabled true after verification |
+| 2026-05-25 | 4.0.0 | Phase 45 complete — task-aware local model router live | local_first routes by chain type: development→qwen2.5-coder, creative→qwen2.5, strategy→qwen3.5, review→deepseek-coder, others→qwen2.5 |
+| 2026-05-25 | 4.0.0 | Per-model skill files created — 5 model-specific instruction files in skills/library/ | phi4-mini, qwen2.5-coder, deepseek-coder, qwen2.5, qwen3.5 |
+| 2026-05-25 | 4.0.0 | OLLAMA_MAX_LOADED_MODELS=1 set — single model in RAM at a time for peak performance | tryLocalFirst falls through to online cascade on failure |

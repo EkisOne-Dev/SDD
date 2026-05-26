@@ -103,7 +103,7 @@
     },
     {
       "id": "F45", "phase": 45, "title": "Per-model skill files + task-aware local router",
-      "status": "planned", "priority": "critical",
+      "status": "done", "priority": "critical",
       "acceptance_criteria": [
         "OLLAMA_MAX_LOADED_MODELS=1 enforced",
         "coding → qwen2.5-coder:7b",
