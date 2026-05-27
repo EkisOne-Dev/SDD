@@ -5,7 +5,8 @@
     "api_key_env": "GEMINI_API_KEY",
     "base_url": "https://generativelanguage.googleapis.com",
     "max_tokens": 8192,
-    "timeout_ms": 15000
+    "timeout_ms": 15000,
+    "context_limit": 32000
   },
   "fallback": {
     "provider": "openrouter",
@@ -13,7 +14,8 @@
     "api_key_env": "OPENROUTER_API_KEY",
     "base_url": "https://openrouter.ai/api/v1",
     "max_tokens": 8192,
-    "timeout_ms": 15000
+    "timeout_ms": 15000,
+    "context_limit": 16000
   },
   "local_fallback": {
     "provider": "ollama",
@@ -21,7 +23,8 @@
     "api_key_env": null,
     "base_url": "http://localhost:11434/api",
     "max_tokens": 2048,
-    "timeout_ms": 30000
+    "timeout_ms": 30000,
+    "context_limit": 2000
   },
   "active": "primary",
   "agent_models": {
@@ -68,7 +71,8 @@
     "api_key_env": "OPENROUTER_API_KEY",
     "base_url": "https://openrouter.ai/api/v1",
     "max_tokens": 8192,
-    "timeout_ms": 15000
+    "timeout_ms": 15000,
+    "context_limit": 16000
   },
   "fallback3": {
     "provider": "groq",
@@ -76,7 +80,8 @@
     "api_key_env": "GROQ_API_KEY",
     "base_url": "https://api.groq.com/openai/v1",
     "max_tokens": 8192,
-    "timeout_ms": 15000
+    "timeout_ms": 15000,
+    "context_limit": 16000
   },
   "fallback4": {
     "provider": "cerebras",
@@ -84,7 +89,8 @@
     "api_key_env": "CEREBRAS_API_KEY",
     "base_url": "https://api.cerebras.ai/v1",
     "max_tokens": 8192,
-    "timeout_ms": 15000
+    "timeout_ms": 15000,
+    "context_limit": 16000
   },
   "local_first": true,
   "local_model_routing": {

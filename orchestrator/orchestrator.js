@@ -188,7 +188,38 @@ export function logExecution(entry) {
 
 // ── AI engine runner ──────────────────────────────────────────────────────────
 
+
+// Phase 46 — per-model context budget enforcement
+function estimateTokens(text) {
+  return Math.ceil((text || '').length / 4);
+}
+
+function trimToContextBudget(prompt, contextLimit) {
+  if (!contextLimit) return prompt;
+  const estimated = estimateTokens(prompt);
+  if (estimated <= contextLimit) return prompt;
+  const overBy = estimated - contextLimit;
+  const trimChars = overBy * 4;
+  const memStart = prompt.indexOf('## MEMORY');
+  const memEnd   = prompt.indexOf('## TASK');
+  if (memStart !== -1 && memEnd !== -1 && memEnd > memStart) {
+    const memBlock = prompt.slice(memStart, memEnd);
+    const trimmed  = memBlock.length > trimChars
+      ? memBlock.slice(trimChars)
+      : '[Memory trimmed to fit context budget]\n';
+    console.log('  ⚠️  Context budget: trimmed ~' + overBy + ' tokens from memory block');
+    return prompt.slice(0, memStart) + trimmed + prompt.slice(memEnd);
+  }
+  console.log('  ⚠️  Context budget: trimmed ~' + overBy + ' tokens (fallback mode)');
+  return prompt.slice(trimChars);
+}
+
 export async function runEngine(prompt, adapter, agentName = null, complexity = "simple", chainType = null) {
+  // Phase 46 — enforce per-model context budget
+  const _activeKey = adapter.active || 'primary';
+  const _limit = adapter[_activeKey] && adapter[_activeKey].context_limit;
+  prompt = trimToContextBudget(prompt, _limit);
+
   let active = { ...adapter[adapter.active] };
   if (agentName && adapter.agent_models && adapter.agent_models[agentName] && active.provider === "gemini") {
     const modelMap = adapter.agent_models[agentName];

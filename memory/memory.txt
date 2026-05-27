@@ -535,3 +535,6 @@ function isValidEmail(email) {
 ```
 
 This function uses a regular expression to validate email addresses. It trims whitespace and checks if the input matches a pattern that includes alphanumeric characters, dots, underscores, percent signs, plus signs, and hyphens before and after an `@` symbol followed by domain name components and a top-level domain.
+
+User: what is a hash table
+Assistant: A hash table is a data structure that implements an associative array abstract data type, a collection of keys mapped to values using hash functions. It provides average-case constant time complexity O(1) for search, insert, and delete operations.

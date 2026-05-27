@@ -1432,3 +1432,4 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 | 2026-05-25 | 4.0.0 | Phase 45 complete — task-aware local model router live | local_first routes by chain type: development→qwen2.5-coder, creative→qwen2.5, strategy→qwen3.5, review→deepseek-coder, others→qwen2.5 |
 | 2026-05-25 | 4.0.0 | Per-model skill files created — 5 model-specific instruction files in skills/library/ | phi4-mini, qwen2.5-coder, deepseek-coder, qwen2.5, qwen3.5 |
 | 2026-05-25 | 4.0.0 | OLLAMA_MAX_LOADED_MODELS=1 set — single model in RAM at a time for peak performance | tryLocalFirst falls through to online cascade on failure |
+| 2026-05-27 | 4.1.0 | Phase 46 complete — per-model context budget active | context_limit added to all providers in adapter.json; trimToContextBudget() trims oldest memory first; silent when under limit, warns when trim fires |
