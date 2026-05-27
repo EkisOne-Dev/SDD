@@ -9,9 +9,9 @@
 
 | Field | Value |
 |---|---|
-| Document Version | 3.8.0 |
-| System Version | MVP → Phase 42 Complete |
-| Last Updated | 2026-05-25 |
+| Document Version | 4.1.0 |
+| System Version | v4.1.0 — Phase 46 Complete |
+| Last Updated | 2026-05-27 |
 | Status | Active Development |
 | Platform | Android / Termux |
 | Runtime | Node.js |
@@ -1433,3 +1433,45 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 | 2026-05-25 | 4.0.0 | Per-model skill files created — 5 model-specific instruction files in skills/library/ | phi4-mini, qwen2.5-coder, deepseek-coder, qwen2.5, qwen3.5 |
 | 2026-05-25 | 4.0.0 | OLLAMA_MAX_LOADED_MODELS=1 set — single model in RAM at a time for peak performance | tryLocalFirst falls through to online cascade on failure |
 | 2026-05-27 | 4.1.0 | Phase 46 complete — per-model context budget active | context_limit added to all providers in adapter.json; trimToContextBudget() trims oldest memory first; silent when under limit, warns when trim fires |
+
+---
+
+## PHASE 47–47c ROADMAP: COGNITIVE UPGRADE SUITE
+
+### Phase 47 — Skill Architecture Rebuild
+| Item | Description |
+|---|---|
+| spec-clarifier.md | Schema Alpha — pre-chain: forces assumption surfacing, ranked clarifying questions, stated working intent before execution |
+| guardian-angel.md | Schema Alpha — post-chain: checks output answers actual task, flags unverified claims, identifies failure modes. Never rewrites — flags only |
+| assumption-extractor.md | Schema Beta sub-skill — atomic: extracts every unstated assumption from a task statement, returns structured list |
+| failure-mode-scanner.md | Schema Beta sub-skill — atomic: identifies top 3 failure modes in a proposed solution, returns ranked list |
+| registry.json upgrade | Add priority, conflict_resolution, dependencies fields to all entries |
+| router.js Alpha/Beta composition | System-layer skill composition — router assembles Alpha + Beta content before buildPrompt(); no model token-emission required |
+| Wire spec-clarifier | main.js — triggers pre-chain on complex/ambiguous tasks |
+| Wire guardian-angel | post-chain.js — triggers post-result before display |
+
+### Phase 47b — Agent Cognitive Upgrades
+| Item | Description |
+|---|---|
+| architect/strategy.txt | Explicit decomposition algorithm: component isolation → dependency mapping → failure surface analysis |
+| developer/strategy.txt | Root-cause protocol: symptom → cause chain → side-cause scan → solution ranked by risk |
+| reviewer/strategy.txt | Assumption audit + failure mode analysis: list assumptions → invert each → identify what breaks |
+| strategist/strategy.txt | Multi-dimensional evaluation: feasibility × risk × resource × timeline × second-order effects |
+| All agents | Add confidence/uncertainty declaration: rate every factual claim HIGH/MEDIUM/LOW, flag MEDIUM and LOW explicitly |
+| All skill library files | Enforce imperative voice (YOU MUST / NEVER) and ≤1500 char cap across all 11 files |
+
+### Phase 47c — Context and Hallucination Hardening
+| Item | Description |
+|---|---|
+| num_ctx per model | Add num_ctx to adapter.json per Ollama model; pass in runOllama() API call — unlocks full model context (currently defaults to 2048) |
+| qwen3.5:0.8b budget fix | Correct context_limit from 32000 → 4000 in adapter.json |
+| compressPrompt() | Strip redundant whitespace and markdown formatting from injected blocks before buildPrompt(); recovers ~10-15% context budget |
+| Uncertainty enforcement | Guardian-angel explicitly checks for unverified MEDIUM/LOW confidence claims and routes them to self-research |
+
+### Design Principles Anchored by This Suite
+- Alpha skills own a full execution phase. Beta skills do one atomic thing and return clean output.
+- System layer composes Alpha+Beta — models never emit structural routing tokens.
+- Hallucination defense is layered: confidence declaration (agent) → claim flagging (guardian-angel) → grounding (self-research).
+- Context budget is enforced at three levels: per-model limit (Phase 46), prompt compression (Phase 47c), semantic retrieval (Phase 49).
+- Every strategy.txt file uses hard imperatives — no conversational guidance.
+

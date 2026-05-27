@@ -1222,3 +1222,169 @@ These rules apply across all capabilities. Any capability that violates one of t
 ---
 
 *End of CAPABILITIES.md — Update after every phase that adds, modifies, or removes a capability.*
+
+---
+
+## PLANNED CAPABILITIES — Phase 47–47c
+
+| # | Capability | Status | Phase |
+|---|---|---|---|
+| 36 | Spec-Clarifier Skill (Alpha) | 🔲 Planned | 47 |
+| 37 | Guardian-Angel Skill (Alpha) | 🔲 Planned | 47 |
+| 38 | Assumption-Extractor Sub-Skill (Beta) | 🔲 Planned | 47 |
+| 39 | Failure-Mode-Scanner Sub-Skill (Beta) | 🔲 Planned | 47 |
+| 40 | Alpha/Beta System-Layer Composition | 🔲 Planned | 47 |
+| 41 | Registry Priority + Conflict Resolution | 🔲 Planned | 47 |
+| 42 | Agent Cognitive Algorithm Upgrades | 🔲 Planned | 47b |
+| 43 | Confidence/Uncertainty Declaration Protocol | 🔲 Planned | 47b |
+| 44 | Skill File Imperative Voice + 1500 Char Cap | 🔲 Planned | 47b |
+| 45 | Ollama num_ctx Per-Model Config | 🔲 Planned | 47c |
+| 46 | Prompt Compression (compressPrompt) | 🔲 Planned | 47c |
+| 47 | qwen3.5:0.8b Context Budget Fix | 🔲 Planned | 47c |
+
+---
+
+### 36 — Spec-Clarifier Skill (Alpha)
+
+**What it does:**
+Schema Alpha skill. Triggers pre-chain on complex or ambiguous tasks. Forces the model to identify what is underspecified, surface unstated assumptions, generate ranked clarifying questions, and state its working intent explicitly before execution proceeds. Prevents wasted chain execution on a wrong interpretation.
+
+**Trigger:** Tasks classified as complex or containing vague language — injected by router.js into buildPrompt() before chain selection.
+
+**Files responsible:**
+- `skills/library/spec-clarifier.md` — cognitive algorithm (≤1500 chars, imperative voice)
+- `skills/router.js` — matches and injects pre-chain
+- `orchestrator/main.js` — wiring point
+
+**Config flag:** `spec_clarifier_enabled` in `config/system.json`
+
+**Known limitations:** Adds one reasoning pass before execution — small latency cost on simple tasks (mitigated by complexity gate).
+
+---
+
+### 37 — Guardian-Angel Skill (Alpha)
+
+**What it does:**
+Schema Alpha skill. Triggers post-chain, after result is produced but before display. Forces the model to check whether the output actually answers the stated task, flag any unverified factual claims (MEDIUM/LOW confidence), identify the top failure mode of the answer, and surface issues without rewriting output. User sees both result and guardian report.
+
+**Trigger:** Automatic post-chain. Always active when enabled.
+
+**Files responsible:**
+- `skills/library/guardian-angel.md` — cognitive algorithm (≤1500 chars, imperative voice)
+- `orchestrator/post-chain.js` — wiring point
+
+**Config flag:** `guardian_angel_enabled` in `config/system.json`
+
+**Known limitations:** Adds one engine call post-chain. Uses local model when available to minimize cost.
+
+---
+
+### 38 — Assumption-Extractor Sub-Skill (Beta)
+
+**What it does:**
+Schema Beta atomic sub-skill. Single responsibility: extracts every unstated assumption embedded in a task statement. Returns a structured list consumed by the spec-clarifier Alpha skill. Never produces final output — feeds parent skill only.
+
+**Files responsible:**
+- `skills/library/assumption-extractor.md`
+- `skills/registry.json` — dependency of spec-clarifier
+
+---
+
+### 39 — Failure-Mode-Scanner Sub-Skill (Beta)
+
+**What it does:**
+Schema Beta atomic sub-skill. Single responsibility: given a proposed solution, identifies the top 3 failure modes ranked by likelihood × impact. Returns structured list consumed by guardian-angel Alpha skill.
+
+**Files responsible:**
+- `skills/library/failure-mode-scanner.md`
+- `skills/registry.json` — dependency of guardian-angel
+
+---
+
+### 40 — Alpha/Beta System-Layer Composition
+
+**What it does:**
+router.js assembles composed skill blocks before buildPrompt() is called. When an Alpha skill is matched, router checks its registry dependencies array, loads each Beta sub-skill file, and concatenates them into a single injected block. Models receive pre-assembled instructions — no structural token emission required. Composition is deterministic and hallucination-proof.
+
+**Files responsible:**
+- `skills/router.js` — composition logic
+- `skills/registry.json` — dependencies field per skill entry
+
+---
+
+### 41 — Registry Priority + Conflict Resolution
+
+**What it does:**
+Adds `priority` (integer) and `conflict_resolution` (`compose` | `exclusive`) fields to all registry.json skill entries. Priority determines execution order when multiple skills match the same task. conflict_resolution determines whether matched skills run alongside each other (compose) or only the highest-priority one runs (exclusive).
+
+**Files responsible:**
+- `skills/registry.json`
+- `skills/router.js` — reads and applies priority/conflict_resolution on match
+
+---
+
+### 42 — Agent Cognitive Algorithm Upgrades
+
+**What it does:**
+Replaces vague guidance in all specialist agent strategy.txt files with explicit step-by-step cognitive algorithms. architect: decomposition → dependency mapping → failure surface. developer: symptom → cause chain → side-cause scan → ranked solutions. reviewer: assumption audit → inversion → failure mode identification. strategist: feasibility × risk × resource × timeline × second-order effects.
+
+**Files responsible:**
+- `agents/architect/strategy.txt`
+- `agents/developer/strategy.txt`
+- `agents/reviewer/strategy.txt`
+- `agents/strategist/strategy.txt`
+
+---
+
+### 43 — Confidence/Uncertainty Declaration Protocol
+
+**What it does:**
+All agent strategy.txt files enforce explicit confidence declaration. Before any factual claim, the agent must rate confidence HIGH/MEDIUM/LOW and flag MEDIUM and LOW claims explicitly. Guardian-angel routes flagged claims to self-research for grounding. Reduces confident hallucination across all chain types.
+
+**Files responsible:**
+- All `agents/*/strategy.txt` files
+- `skills/library/guardian-angel.md` — flag routing logic
+
+---
+
+### 44 — Skill File Imperative Voice + 1500 Char Cap
+
+**What it does:**
+All 11 existing skill library files audited and rewritten to use hard imperative voice (YOU MUST / NEVER) and trimmed to ≤1500 characters. Imperative voice measurably improves local model adherence. 1500 char cap preserves context budget on mobile hardware.
+
+**Files responsible:**
+- All files in `skills/library/`
+
+---
+
+### 45 — Ollama num_ctx Per-Model Config
+
+**What it does:**
+Adds `num_ctx` field to each Ollama model entry in adapter.json. runOllama() passes num_ctx in the API body. Unlocks each model's full context window — without this, Ollama defaults all models to 2048 tokens regardless of actual capability (qwen2.5 is capable of 32768 but defaults to 2048).
+
+**Files responsible:**
+- `engine/adapter.json` — num_ctx per model
+- `orchestrator/orchestrator.js` → `runOllama()`
+
+---
+
+### 46 — Prompt Compression (compressPrompt)
+
+**What it does:**
+A lightweight compressPrompt() utility strips redundant blank lines, repeated markdown headers, and excess whitespace from injected skill and memory blocks before buildPrompt() assembles the final prompt. Recovers approximately 10–15% of context budget on every call at zero quality cost.
+
+**Files responsible:**
+- `orchestrator/orchestrator.js` → `compressPrompt()`
+- `orchestrator/orchestrator.js` → `buildPrompt()` — calls compressPrompt on injected blocks
+
+---
+
+### 47 — qwen3.5:0.8b Context Budget Fix
+
+**What it does:**
+Corrects the Phase 46 context_limit for qwen3.5:0.8b from 32000 to 4000 tokens in adapter.json. The model's actual context window is ~4K; the incorrect limit means trimToContextBudget() never fires for this model when it should.
+
+**Files responsible:**
+- `engine/adapter.json` — local_first models array
+
+*End of CAPABILITIES.md — Update after every phase that adds, modifies, or removes a capability.*
