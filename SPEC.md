@@ -1475,3 +1475,7 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 - Context budget is enforced at three levels: per-model limit (Phase 46), prompt compression (Phase 47c), semantic retrieval (Phase 49).
 - Every strategy.txt file uses hard imperatives — no conversational guidance.
 
+| 2026-05-27 | 4.1.0 | Phase 47 complete — skill architecture rebuild live | spec-clarifier + guardian-angel wired (Alpha); assumption-extractor + failure-mode-scanner (Beta); registry.json upgraded with priority/conflict_resolution/dependencies; composeSkillBlock() active in router.js |
+| 2026-05-27 | 4.2.0 | Phase 47b complete — agent cognitive upgrades live | architect/developer/reviewer/strategist strategy.txt rewritten with explicit algorithms: decomposition, root-cause, assumption-inversion, 5-dimension evaluation |
+| 2026-05-27 | 4.2.0 | Confidence declaration added to all 9 agent strategy.txt files | HIGH/MEDIUM/LOW rating required before every factual claim; MEDIUM and LOW must be flagged explicitly |
+| 2026-05-27 | 4.2.0 | Imperative voice enforced across all 13 skill library files | YOU MUST / NEVER conventions applied; all files verified ≤1500 chars |

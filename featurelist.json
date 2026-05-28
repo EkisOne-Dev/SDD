@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "4.2.0",
   "last_updated": "2026-05-27",
   "completed_phases": [
     0,
@@ -37,7 +37,8 @@
     32,
     33,
     34,
-    46
+    46,
+    47
   ],
   "features": [
     {
@@ -202,13 +203,29 @@
       "id": "F47",
       "phase": 47,
       "title": "Spec-clarifier + guardian-angel skills",
-      "status": "planned",
+      "status": "done",
       "priority": "high",
       "acceptance_criteria": [
         "Spec-clarifier runs before negotiator on complex tasks",
         "Lists all non-obvious assumptions for user confirmation",
         "Guardian-angel audits output against constitution.md before saving",
         "Guardian-angel blocks save on violation with specific rule cited"
+      ]
+    },
+    {
+      "id": "F47b",
+      "phase": "47b",
+      "title": "Agent cognitive upgrades — algorithmic strategies + confidence declaration",
+      "status": "done",
+      "priority": "high",
+      "acceptance_criteria": [
+        "architect/strategy.txt uses 3-step decomposition algorithm",
+        "developer/strategy.txt uses 4-step root-cause protocol",
+        "reviewer/strategy.txt uses 3-step assumption-inversion audit",
+        "strategist/strategy.txt uses 5-dimension evaluation framework",
+        "All 9 agent strategy.txt files include confidence declaration",
+        "All 13 skill library files use imperative voice (YOU MUST / NEVER)",
+        "All skill library files verified ≤1500 chars"
       ]
     },
     {
