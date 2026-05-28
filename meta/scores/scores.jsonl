@@ -70,3 +70,8 @@
 {"timestamp":"2026-05-26T03:59:17.911Z","task":"what is a variable","scores":{"clarity":70,"usefulness":70,"efficiency":70,"redundancy":80,"overall":73}}
 {"timestamp":"2026-05-26T10:06:57.948Z","task":"write a function to validate an email address in javascript","scores":{"clarity":70,"usefulness":83,"efficiency":70,"redundancy":80,"overall":76}}
 {"timestamp":"2026-05-27T15:04:45.794Z","task":"what is a hash table","scores":{"clarity":70,"usefulness":77,"efficiency":70,"redundancy":80,"overall":74}}
+{"timestamp":"2026-05-27T22:27:53.871Z","task":"what is recursion","scores":{"clarity":60,"usefulness":70,"efficiency":70,"redundancy":80,"overall":70}}
+{"timestamp":"2026-05-27T22:40:12.879Z","task":"explain the risks of using global variables in Node.js","scores":{"clarity":85,"usefulness":90,"efficiency":70,"redundancy":65,"overall":78}}
+{"timestamp":"2026-05-28T02:29:22.232Z","task":"explain the risks of using global variables in Node.js","scores":{"clarity":85,"usefulness":90,"efficiency":70,"redundancy":50,"overall":74}}
+{"timestamp":"2026-05-28T02:41:57.130Z","task":"what are the main risks of technical debt","scores":{"clarity":70,"usefulness":66,"efficiency":70,"redundancy":80,"overall":72}}
+{"timestamp":"2026-05-28T03:03:43.448Z","task":"design a caching system","scores":{"clarity":85,"usefulness":90,"efficiency":55,"redundancy":0,"overall":58}}

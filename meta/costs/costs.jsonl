@@ -58,3 +58,8 @@
 {"timestamp":"2026-05-26T03:59:17.928Z","task":"what is a variable","api_calls":2,"input_tokens":987,"output_tokens":51,"total_tokens":1038}
 {"timestamp":"2026-05-26T10:06:57.955Z","task":"write a function to validate an email address in javascript","api_calls":2,"input_tokens":1333,"output_tokens":119,"total_tokens":1452}
 {"timestamp":"2026-05-27T15:04:45.802Z","task":"what is a hash table","api_calls":2,"input_tokens":1049,"output_tokens":62,"total_tokens":1111}
+{"timestamp":"2026-05-27T22:27:53.879Z","task":"what is recursion","api_calls":2,"input_tokens":1132,"output_tokens":86,"total_tokens":1218}
+{"timestamp":"2026-05-27T22:40:12.900Z","task":"explain the risks of using global variables in Node.js","api_calls":2,"input_tokens":4525,"output_tokens":1752,"total_tokens":6277}
+{"timestamp":"2026-05-28T02:29:22.244Z","task":"explain the risks of using global variables in Node.js","api_calls":2,"input_tokens":3780,"output_tokens":963,"total_tokens":4743}
+{"timestamp":"2026-05-28T02:41:57.137Z","task":"what are the main risks of technical debt","api_calls":1,"input_tokens":1300,"output_tokens":137,"total_tokens":1437}
+{"timestamp":"2026-05-28T03:03:43.456Z","task":"design a caching system","api_calls":3,"input_tokens":6510,"output_tokens":3894,"total_tokens":10404}

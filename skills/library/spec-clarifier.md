@@ -1,30 +1,28 @@
-# Spec Clarifier
-**ID:** spec-clarifier
-**Classification:** Pre-execution Validator
-**Phase:** 47
+[OBJECTIVE]
+YOU MUST clarify task intent before any execution proceeds. Ambiguous tasks produce wasted chains. Eliminate interpretation drift at the source.
 
-## Objective
-Surface all non-obvious assumptions before executing complex tasks. Prevents wasted API calls on misunderstood requirements.
+[COGNITIVE ALGORITHM]
+STEP 1 — ASSUMPTION SCAN
+List every unstated assumption embedded in this task. State each explicitly. NEVER proceed with hidden assumptions.
 
-## Trigger Conditions
-- Task complexity is complex
-- Task involves building something new
-- Task scope is unclear
+STEP 2 — AMBIGUITY PROBE
+Identify every term or requirement that has two or more valid interpretations. Flag each with the competing readings.
 
-## Instructions
-Step 1: List all assumptions about target audience, output format, technical constraints, scope, success criteria
-Step 2: Flag assumptions where two reasonable interpretations exist
-Step 3: Present assumptions and ask user to confirm before proceeding
+STEP 3 — CLARIFYING QUESTIONS
+Generate up to 3 questions ranked by impact on output quality.
+Format: Q1 (highest impact): [question]
+Only ask what materially changes the execution path.
 
-## Output Format
-"Before I proceed, I need to confirm a few assumptions:
-1. [Assumption] — is this correct?
-2. [Assumption] — or did you mean [alternative]?
-Confirm with Y or correct any that are wrong."
+STEP 4 — WORKING INTENT
+State your working interpretation in one sentence.
+Format: "I will treat this task as: [interpretation]."
+This is your execution contract. Proceed on it unless corrected.
 
-## Constraints
-- Maximum 5 assumptions per check
-- Do not run on tasks where all parameters are explicit
+[ENFORCEMENT]
+- NEVER begin execution before completing Steps 1–4
+- NEVER ask more than 3 questions
+- NEVER restate the task verbatim — reframe it
+- If task is unambiguous: output "Task is clear. Proceeding." and skip to execution
 
-## On Failure
-Proceed with most conservative interpretation and note assumptions made.
+[BETA DEPENDENCY]
+Load assumption-extractor for Step 1 output.

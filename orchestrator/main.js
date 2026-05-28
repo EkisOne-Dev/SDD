@@ -185,16 +185,39 @@ async function run(injectedTask = null) {
     }
   }
 
-  // ── Skills check ─────────────────────────────────────────────────────────
+  // ── Skills check — Phase 47 ─────────────────────────────────────────────
   let skillContext = null;
-  if (config.self_research_enabled) {
-    const matchedSkill = routeSkill(task);
-    if (matchedSkill) {
-      console.log(c.skill(`\n🔍 Skill: ${matchedSkill.name}`));
-      logExecution(`SKILL MATCHED: ${matchedSkill.id}`);
+  const matchedSkill = routeSkill(task);
+
+  if (matchedSkill) {
+    console.log(c.skill(`\n🔍 Skill: ${matchedSkill.name}`));
+    logExecution(`SKILL MATCHED: ${matchedSkill.id}`);
+    // Inject composed Alpha+Beta skill content as base context
+    if (matchedSkill.content) skillContext = matchedSkill.content;
+  }
+
+  // Spec-clarifier pre-chain pass
+  if (config.spec_clarifier_enabled && matchedSkill && matchedSkill.phase === 'pre-chain') {
+    try {
+      console.log(c.skill(`\n🔍 Spec Clarifier running...`));
+      const clarifyPrompt = `${matchedSkill.content}\n\n## TASK\n${task}`;
+      const clarification = await runEngine(clarifyPrompt, adapter);
+      console.log(c.result(`\n📋 SPEC CLARIFIER\n`) + clarification + '\n');
+      logExecution('SPEC CLARIFIER COMPLETE');
+    } catch (err) {
+      console.log(c.dim('  ⚠️  Spec clarifier skipped: ' + err.message));
     }
-    skillContext = await runSelfResearch(task, config, adapter);
-    if (skillContext) logExecution(`SKILL CONTEXT INJECTED`);
+  }
+
+  // Self-research appended on top of skill context
+  if (config.self_research_enabled) {
+    const researchContext = await runSelfResearch(task, config, adapter);
+    if (researchContext) {
+      skillContext = skillContext
+        ? skillContext + '\n\n' + researchContext
+        : researchContext;
+      logExecution(`SKILL CONTEXT INJECTED`);
+    }
   }
 
   // ── Chain selection and execution ────────────────────────────────────────

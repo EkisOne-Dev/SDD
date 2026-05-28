@@ -43,6 +43,25 @@ export async function runPostChain({ task, result, complexity, chain, promptChar
     }
   }
 
+  // ── Guardian Angel — Phase 47 ──────────────────────────────────────────
+  if (config.guardian_angel_enabled) {
+    try {
+      const { routeSkill } = await import('../skills/router.js');
+      const ga = routeSkill('__post_chain__');
+      if (ga && ga.content) {
+        console.log(c.status('\n👼 Guardian Angel auditing...'));
+        const gaPrompt = ga.content + '\n\n## ORIGINAL TASK\n' + task + '\n\n## OUTPUT TO AUDIT\n' + finalResult;
+        const gaReport = await runEngine(gaPrompt, adapter);
+        console.log(c.dim('\n─── GUARDIAN REPORT ───'));
+        console.log(c.dim(gaReport));
+        console.log(c.dim('───────────────────────'));
+        logExecution('GUARDIAN ANGEL COMPLETE');
+      }
+    } catch (err) {
+      console.log(c.dim('  ⚠️  Guardian angel skipped: ' + err.message));
+    }
+  }
+
   // ── Display result ────────────────────────────────────────────────────
   console.log(c.result('\n=== RESULT ===\n'));
   console.log(finalResult);

@@ -15,5 +15,7 @@
   "meta_observation_enabled": true,
   "cost_tracking_enabled": true,
   "self_research_mode": "web",
-  "intent_parser_enabled": true
+  "intent_parser_enabled": true,
+  "spec_clarifier_enabled": true,
+  "guardian_angel_enabled": true
 }

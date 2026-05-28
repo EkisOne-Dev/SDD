@@ -23,7 +23,10 @@
         "difference",
         "source"
       ],
-      "enabled": true
+      "enabled": true,
+      "priority": 5,
+      "conflict_resolution": "compose",
+      "dependencies": []
     },
     {
       "id": "intent-parser",
@@ -41,34 +44,55 @@
         "can you"
       ],
       "enabled": false,
-      "note": "Enabled in Phase 44"
+      "note": "Enabled in Phase 44",
+      "priority": 5,
+      "conflict_resolution": "compose",
+      "dependencies": []
     },
     {
       "id": "spec-clarifier",
       "name": "Spec Clarifier",
       "description": "Validates assumptions before executing complex tasks.",
       "file": "tools/spec-clarifier.js",
-      "library_file": "library/spec-clarifier.md",
+      "library_file": "skills/library/spec-clarifier.md",
       "triggers": [
-        "build",
-        "create",
-        "implement",
+        "clarify",
+        "ambiguous",
+        "unclear",
+        "not sure",
+        "complex task",
         "design",
-        "make me",
-        "develop"
+        "architect",
+        "plan",
+        "build",
+        "create system"
       ],
-      "enabled": false,
-      "note": "Enabled in Phase 47"
+      "enabled": true,
+      "note": "Enabled in Phase 47",
+      "priority": 10,
+      "conflict_resolution": "compose",
+      "dependencies": [
+        "assumption-extractor"
+      ],
+      "phase": "pre-chain"
     },
     {
       "id": "guardian-angel",
       "name": "Guardian Angel",
       "description": "Audits output against constitution.md before saving.",
       "file": "tools/guardian-angel.js",
-      "library_file": "library/guardian-angel.md",
-      "triggers": [],
-      "enabled": false,
-      "note": "Enabled in Phase 47 — triggered by pipeline not keywords"
+      "library_file": "skills/library/guardian-angel.md",
+      "triggers": [
+        "__post_chain__"
+      ],
+      "enabled": true,
+      "note": "Enabled in Phase 47 — triggered by pipeline not keywords",
+      "priority": 10,
+      "conflict_resolution": "compose",
+      "dependencies": [
+        "failure-mode-scanner"
+      ],
+      "phase": "post-chain"
     },
     {
       "id": "git-delivery",
@@ -84,7 +108,10 @@
         "deploy"
       ],
       "enabled": true,
-      "note": "Library only — used as reference by agents"
+      "note": "Library only — used as reference by agents",
+      "priority": 5,
+      "conflict_resolution": "compose",
+      "dependencies": []
     },
     {
       "id": "context-compaction",
@@ -98,7 +125,10 @@
         "end session"
       ],
       "enabled": false,
-      "note": "Enabled in Phase 48"
+      "note": "Enabled in Phase 48",
+      "priority": 5,
+      "conflict_resolution": "compose",
+      "dependencies": []
     },
     {
       "id": "self-audit",
@@ -113,7 +143,36 @@
         "capability check"
       ],
       "enabled": false,
-      "note": "Enabled in Phase 50"
+      "note": "Enabled in Phase 50",
+      "priority": 5,
+      "conflict_resolution": "compose",
+      "dependencies": []
+    },
+    {
+      "id": "assumption-extractor",
+      "name": "Assumption Extractor",
+      "triggers": [
+        "__beta__"
+      ],
+      "library_file": "skills/library/assumption-extractor.md",
+      "priority": 1,
+      "conflict_resolution": "compose",
+      "dependencies": [],
+      "phase": "sub-skill",
+      "enabled": true
+    },
+    {
+      "id": "failure-mode-scanner",
+      "name": "Failure Mode Scanner",
+      "triggers": [
+        "__beta__"
+      ],
+      "library_file": "skills/library/failure-mode-scanner.md",
+      "priority": 1,
+      "conflict_resolution": "compose",
+      "dependencies": [],
+      "phase": "sub-skill",
+      "enabled": true
     }
   ]
 }

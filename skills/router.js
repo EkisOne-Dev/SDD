@@ -26,6 +26,36 @@ function loadSkillContent(skill) {
   } catch { return null; }
 }
 
+
+// Phase 47 — Alpha/Beta system-layer composition
+function composeSkillBlock(skill, allSkills, sddRoot) {
+  const lines = [];
+
+  // Load Alpha skill content
+  if (skill.library_file) {
+    const alphaPath = join(sddRoot, skill.library_file);
+    if (existsSync(alphaPath)) {
+      lines.push(readFileSync(alphaPath, 'utf8').trim());
+    }
+  }
+
+  // Load and append Beta sub-skill dependencies
+  if (skill.dependencies && skill.dependencies.length > 0) {
+    for (const depId of skill.dependencies) {
+      const dep = allSkills.find(s => s.id === depId);
+      if (dep && dep.library_file) {
+        const betaPath = join(sddRoot, dep.library_file);
+        if (existsSync(betaPath)) {
+          lines.push('\n--- SUB-SKILL: ' + dep.name + ' ---');
+          lines.push(readFileSync(betaPath, 'utf8').trim());
+        }
+      }
+    }
+  }
+
+  return lines.join('\n');
+}
+
 export function routeSkill(task) {
   const registry = loadRegistry();
   if (!registry) return null;
@@ -43,6 +73,6 @@ export function routeSkill(task) {
     }
   }
 
-  if (bestSkill) bestSkill.content = loadSkillContent(bestSkill);
+  if (bestSkill) bestSkill.content = composeSkillBlock(bestSkill, registry.skills, join(__dirname, '..'));
   return bestSkill;
 }
