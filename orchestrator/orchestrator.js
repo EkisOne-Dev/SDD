@@ -146,6 +146,20 @@ export function loadPhase(phaseName, chainType = null) {
 
 // ── Prompt builder ────────────────────────────────────────────────────────────
 
+// Phase 47c — strip redundant whitespace + markdown from injected blocks
+export function compressPrompt(text) {
+  if (!text) return text;
+  return text
+    .replace(/\r\n/g, '\n')
+    .replace(/[ \t]+$/gm, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/^-{3,}$/gm, '')
+    .replace(/^={3,}$/gm, '')
+    .trim();
+}
+
 export function buildPrompt(template, contract, agent, memory, task, priorOutput = "", complexity = "complex", reviewFocus = "Check for clarity, completeness, and accuracy") {
   const triBlock = complexity === "simple" ? `Respond directly and concisely. Do NOT use [INTERNAL REASONING], [ARTIFACT], or [VERIFICATION] sections. No section headers. Start immediately with the answer.` : `If you are a specialist agent (architect, developer, researcher, reviewer, analyst, mentor, strategist), structure your response using TRI-STRUCTURE:
 
@@ -163,15 +177,20 @@ export function buildPrompt(template, contract, agent, memory, task, priorOutput
 - List 3 specific criteria proving this output is correct
 
 If you are the basic agent, respond directly without TRI-STRUCTURE.`;
+  const _mem   = compressPrompt(memory)      || "No memory context yet.";
+  const _prior  = compressPrompt(priorOutput) || "(none — first agent in chain)";
+  const _ident  = compressPrompt(agent.identity);
+  const _strat  = compressPrompt(agent.strategy);
+
   return template
     .replace("{goal}", contract.goal)
     .replace("{constraints}", contract.constraints.join(", "))
     .replace("{success_criteria}", contract.success_criteria)
     .replace("{output_format}", contract.output_format)
-    .replace("{memory}", memory || "No memory context yet.")
-    .replace("{prior_output}", priorOutput || "(none — first agent in chain)")
-    .replace("{identity}", agent.identity)
-    .replace("{strategy}", agent.strategy)
+    .replace("{memory}", _mem)
+    .replace("{prior_output}", _prior)
+    .replace("{identity}", _ident)
+    .replace("{strategy}", _strat)
     .replace("{tri_structure}", triBlock)
     .replace("{task}", task)
     .replace("{review_focus}", reviewFocus);
@@ -391,13 +410,21 @@ async function runOpenRouter(prompt, config) {
 }
 
 async function runOllama(prompt, config) {
+  let num_ctx = 2048;
+  try {
+    const adapterRaw = fs.readFileSync(path.join(ROOT, 'engine/adapter.json'), 'utf-8');
+    const adapterCfg = JSON.parse(adapterRaw);
+    num_ctx = adapterCfg.ollama_model_config?.[config.model]?.num_ctx ?? 2048;
+  } catch {}
+
   const response = await fetch(`${config.base_url}/generate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       model: config.model,
       prompt: prompt,
-      stream: false
+      stream: false,
+      options: { num_ctx }
     })
   });
 
