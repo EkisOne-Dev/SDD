@@ -66,3 +66,10 @@
 **SDD application:** Architect and strategist chains could run phi4-mini first to extract constraints, dependencies, and requirements into structured JSON, then pass that to Gemini or Groq 70B for the actual architectural recommendation. The guardian-angel skill could use this pattern for constitution auditing.
 **Status:** Concept documented — to be designed as part of Phase 44 (intent parser) or a dedicated Phase 52.
 **Commit:** e424379
+
+
+### 2026-05-29 — Implemented Phase 47c routing and context compression
+**Decision:** Implemented `num_ctx` parameter for context window management and `compressPrompt` function for optimizing prompt length, along with online-first routing logic for agent selection. The `47c-prime` scoped models were also integrated.
+**Reason:** To improve efficiency, reduce latency, and enhance the model's ability to handle longer conversations by dynamically adjusting context and prompt sizes.
+**Impact:** The system can now dynamically manage context window sizes for different models and compress prompts to fit within those windows, leading to more efficient and potentially faster responses. Online-first routing ensures the most appropriate agent is selected quickly.
+**Commit:** dac6194

@@ -310,7 +310,19 @@
       "version": null,
       "date": null,
       "description": "Universal Thinking Protocol — harness-engineered model-agnostic analytical scaffold injected into all buildPrompt() calls regardless of provider or agent role"
+    },
+    "phase_48_session_end": {
+      "status": "complete",
+      "version": "4.4.0",
+      "date": "2026-05-29",
+      "items": [
+        "sdd session-end command wired in main.js",
+        "skills/tools/session-end.js created",
+        "Collects git log (last 12h) + SPEC changelog tail",
+        "AI generates structured history.md entry",
+        "Appended to history.md with date + commit hash"
+      ]
     }
   },
-  "system_version": "4.3.0"
+  "system_version": "4.4.0"
 }
