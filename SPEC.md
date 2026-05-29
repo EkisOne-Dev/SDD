@@ -9,9 +9,9 @@
 
 | Field | Value |
 |---|---|
-| Document Version | 4.1.0 |
-| System Version | v4.1.0 — Phase 46 Complete |
-| Last Updated | 2026-05-27 |
+| Document Version | 4.3.0 |
+| System Version | v4.3.0 — Phase 47c Complete |
+| Last Updated | 2026-05-29 |
 | Status | Active Development |
 | Platform | Android / Termux |
 | Runtime | Node.js |
@@ -632,7 +632,9 @@ cd ~/sdd && npm install @google/generative-ai
 | 44 | Intent parser — phi4-mini JSON normalization of ambiguous tasks | 🔲 Planned |
 | 45 | Per-model skill files + task-aware local model router | 🔲 Planned |
 | 46 | Per-model context budget — prompt length enforcement per model | 🔲 Planned |
-| 47 | Spec-clarifier + guardian-angel skills | 🔲 Planned |
+| 47 | Spec-clarifier + guardian-angel skills | ✅ Complete |
+| 47c | Context + hallucination hardening — num_ctx, compressPrompt, qwen3.5 budget fix | ✅ Complete |
+| 47c-prime | Universal Thinking Protocol — harness-engineered reasoning scaffold for all models | 🔲 Planned |
 | 48 | sdd session-end — structured session summary appended to history.md | 🔲 Planned |
 | 49 | Semantic memory retrieval — nomic-embed-text replaces keyword injection | 🔲 Planned |
 | 50 | sdd audit — self-audit with gap detection and improvement proposals | 🔲 Planned |
@@ -1476,6 +1478,9 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 - Every strategy.txt file uses hard imperatives — no conversational guidance.
 
 | 2026-05-27 | 4.1.0 | Phase 47 complete — skill architecture rebuild live | spec-clarifier + guardian-angel wired (Alpha); assumption-extractor + failure-mode-scanner (Beta); registry.json upgraded with priority/conflict_resolution/dependencies; composeSkillBlock() active in router.js |
+| 2026-05-29 | 4.3.0 | Routing: online-first architecture adopted | local_first: false; Groq + tinyllama removed; Cerebras model string corrected; local_fallback → qwen2.5:7b; ollama_model_config added with num_ctx per model |
+| 2026-05-29 | 4.3.0 | Phase 47c complete — context + hallucination hardening live | num_ctx per Ollama model in adapter.json; runOllama() passes num_ctx via options{}; compressPrompt() strips markdown/whitespace from memory/strategy/identity/prior_output blocks before buildPrompt(); qwen3.5:0.8b context_limit corrected 32000→4000 |
+| 2026-05-29 | 4.3.0 | Phase 47c-prime scoped — Universal Thinking Protocol | Harness-engineering approach: model-agnostic analytical scaffold injected into all buildPrompt() calls regardless of provider. Deferred to dedicated phase. |
 | 2026-05-27 | 4.2.0 | Phase 47b complete — agent cognitive upgrades live | architect/developer/reviewer/strategist strategy.txt rewritten with explicit algorithms: decomposition, root-cause, assumption-inversion, 5-dimension evaluation |
 | 2026-05-27 | 4.2.0 | Confidence declaration added to all 9 agent strategy.txt files | HIGH/MEDIUM/LOW rating required before every factual claim; MEDIUM and LOW must be flagged explicitly |
 | 2026-05-27 | 4.2.0 | Imperative voice enforced across all 13 skill library files | YOU MUST / NEVER conventions applied; all files verified ≤1500 chars |

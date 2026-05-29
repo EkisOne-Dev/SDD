@@ -1,4 +1,5 @@
 {
+  "_note": "Routing: online-first (Gemini → Gemma4 31B → GPT-OSS-120B → Cerebras) → Ollama local fallback only. local_model_routing preserved for Phase 49 semantic retrieval + future 47c-prime harness work. Groq and tinyllama removed — not used in agent roles.",
   "primary": {
     "provider": "gemini",
     "model": "gemini-2.5-flash-lite",
@@ -17,14 +18,32 @@
     "timeout_ms": 15000,
     "context_limit": 16000
   },
+  "fallback2": {
+    "provider": "openrouter",
+    "model": "openai/gpt-oss-120b:free",
+    "api_key_env": "OPENROUTER_API_KEY",
+    "base_url": "https://openrouter.ai/api/v1",
+    "max_tokens": 8192,
+    "timeout_ms": 15000,
+    "context_limit": 16000
+  },
+  "fallback3": {
+    "provider": "cerebras",
+    "model": "qwen3-235b-a22b",
+    "api_key_env": "CEREBRAS_API_KEY",
+    "base_url": "https://api.cerebras.ai/v1",
+    "max_tokens": 8192,
+    "timeout_ms": 15000,
+    "context_limit": 16000
+  },
   "local_fallback": {
     "provider": "ollama",
-    "model": "tinyllama",
+    "model": "qwen2.5:7b",
     "api_key_env": null,
     "base_url": "http://localhost:11434/api",
-    "max_tokens": 2048,
-    "timeout_ms": 30000,
-    "context_limit": 2000
+    "max_tokens": 4096,
+    "timeout_ms": 60000,
+    "context_limit": 8192
   },
   "active": "primary",
   "agent_models": {
@@ -65,34 +84,7 @@
       "complex": "gemini-2.5-flash-lite"
     }
   },
-  "fallback2": {
-    "provider": "openrouter",
-    "model": "openai/gpt-oss-120b:free",
-    "api_key_env": "OPENROUTER_API_KEY",
-    "base_url": "https://openrouter.ai/api/v1",
-    "max_tokens": 8192,
-    "timeout_ms": 15000,
-    "context_limit": 16000
-  },
-  "fallback3": {
-    "provider": "groq",
-    "model": "llama-3.3-70b-versatile",
-    "api_key_env": "GROQ_API_KEY",
-    "base_url": "https://api.groq.com/openai/v1",
-    "max_tokens": 8192,
-    "timeout_ms": 15000,
-    "context_limit": 16000
-  },
-  "fallback4": {
-    "provider": "cerebras",
-    "model": "qwen-3-235b-a22b-instruct-2507",
-    "api_key_env": "CEREBRAS_API_KEY",
-    "base_url": "https://api.cerebras.ai/v1",
-    "max_tokens": 8192,
-    "timeout_ms": 15000,
-    "context_limit": 16000
-  },
-  "local_first": true,
+  "local_first": false,
   "local_model_routing": {
     "basic": "phi4-mini:3.8b-q4_K_M",
     "architecture": "qwen3:8b",
@@ -104,5 +96,35 @@
     "validation": "phi4-mini:3.8b-q4_K_M",
     "creative": "gemma3:4b",
     "default": "qwen2.5:7b"
+  },
+  "ollama_model_config": {
+    "qwen3:8b": {
+      "num_ctx": 32768,
+      "context_limit": 32768
+    },
+    "qwen2.5-coder:7b": {
+      "num_ctx": 32768,
+      "context_limit": 32768
+    },
+    "qwen2.5:7b": {
+      "num_ctx": 32768,
+      "context_limit": 32768
+    },
+    "phi4-mini:3.8b-q4_K_M": {
+      "num_ctx": 16384,
+      "context_limit": 16384
+    },
+    "gemma3:4b": {
+      "num_ctx": 8192,
+      "context_limit": 8192
+    },
+    "qwen3.5:0.8b": {
+      "num_ctx": 4000,
+      "context_limit": 4000
+    },
+    "nomic-embed-text": {
+      "num_ctx": 512,
+      "context_limit": 512
+    }
   }
 }

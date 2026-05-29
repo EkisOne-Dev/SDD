@@ -413,3 +413,6 @@ VALID WITH FLAGS
 
 The Reviewer's output is an audit. It correctly identifies specific technical flaws in a hypothetical prior output. However, the initial summary statement creates a contradiction with the detailed findings.CONTRADICTION: The Reviewer states "The core design is sound and implementable" while simultaneously identifying "CRITICAL" and "MAJOR" issues that directly impact implementability and correctness. The existence of critical and major issues negates the claim of a sound and implementable core design.
 VALIDATOR: VALID WITH FLAGS
+
+User: what is 2 + 2
+Assistant: 4

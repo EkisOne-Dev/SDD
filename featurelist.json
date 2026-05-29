@@ -1,6 +1,6 @@
 {
   "version": "4.2.0",
-  "last_updated": "2026-05-27",
+  "last_updated": "2026-05-29",
   "completed_phases": [
     0,
     1,
@@ -41,8 +41,8 @@
     47,
     471
   ],
-  "features": [
-    {
+  "features": {
+    "0": {
       "id": "F35",
       "phase": 35,
       "title": "sdd chat — interactive conversation mode",
@@ -55,7 +55,7 @@
         "History preserved across exchanges within session"
       ]
     },
-    {
+    "1": {
       "id": "F36",
       "phase": 36,
       "title": "File reading — --file flag",
@@ -68,7 +68,7 @@
         "File too large produces clear error"
       ]
     },
-    {
+    "2": {
       "id": "F37",
       "phase": 37,
       "title": "sdd skills — AI-described skill list",
@@ -80,7 +80,7 @@
         "Output is formatted and scannable"
       ]
     },
-    {
+    "3": {
       "id": "F38",
       "phase": 38,
       "title": "Autocomplete + UX improvements",
@@ -92,7 +92,7 @@
         "sdd help is formatted with columns"
       ]
     },
-    {
+    "4": {
       "id": "F39",
       "phase": 39,
       "title": "Verified RAG researcher",
@@ -105,7 +105,7 @@
         "Hallucination rate measurably reduced"
       ]
     },
-    {
+    "5": {
       "id": "F40",
       "phase": 40,
       "title": "Multi-language support",
@@ -118,7 +118,7 @@
         "Mentor teaches in user's language"
       ]
     },
-    {
+    "6": {
       "id": "F41",
       "phase": 41,
       "title": "Harness foundation — constitution.md, featurelist.json, history.md",
@@ -131,7 +131,7 @@
         "verify.sh checks for all three files and passes"
       ]
     },
-    {
+    "7": {
       "id": "F42",
       "phase": 42,
       "title": "Auto-update protocol + start.sh calibration",
@@ -144,7 +144,7 @@
         "sdd backup command triggers full protocol"
       ]
     },
-    {
+    "8": {
       "id": "F43",
       "phase": 43,
       "title": "skills/library/ — markdown skill files",
@@ -157,7 +157,7 @@
         "skills/router.js loads full skill content dynamically"
       ]
     },
-    {
+    "9": {
       "id": "F44",
       "phase": 44,
       "title": "Intent parser — phi4-mini JSON normalization",
@@ -170,7 +170,7 @@
         "Uses phi4-mini or Groq — independent from main Gemini quota"
       ]
     },
-    {
+    "10": {
       "id": "F45",
       "phase": 45,
       "title": "Per-model skill files + task-aware local router",
@@ -186,7 +186,7 @@
         "Online cascade triggers only on local model failure or --online flag"
       ]
     },
-    {
+    "11": {
       "id": "F46",
       "phase": 46,
       "title": "Per-Model Context Budget",
@@ -200,7 +200,7 @@
         "Silent when prompt is within budget"
       ]
     },
-    {
+    "12": {
       "id": "F47",
       "phase": 47,
       "title": "Spec-clarifier + guardian-angel skills",
@@ -213,7 +213,7 @@
         "Guardian-angel blocks save on violation with specific rule cited"
       ]
     },
-    {
+    "13": {
       "id": "F47b",
       "phase": "47b",
       "title": "Cognitive Fit Model Architecture + Validator Agent",
@@ -228,7 +228,7 @@
         "full chain confirmed: researcher → architect → reviewer → validator [complex]"
       ]
     },
-    {
+    "14": {
       "id": "F48",
       "phase": 48,
       "title": "sdd session-end command",
@@ -241,7 +241,7 @@
         "Calls backup.sh automatically"
       ]
     },
-    {
+    "15": {
       "id": "F49",
       "phase": 49,
       "title": "Semantic memory retrieval — nomic-embed-text",
@@ -254,7 +254,7 @@
         "Token reduction >80% vs flat file injection"
       ]
     },
-    {
+    "16": {
       "id": "F50",
       "phase": 50,
       "title": "sdd audit — system self-audit command",
@@ -268,7 +268,7 @@
         "Proposal flows through existing proposal manager"
       ]
     },
-    {
+    "17": {
       "id": "F51",
       "phase": 51,
       "title": "Full verification pass — all phases 0-51",
@@ -281,6 +281,36 @@
         "sdd check-engines shows accurate provider status",
         "All local models route correctly by task type"
       ]
+    },
+    "phase_47c_context_hardening": {
+      "status": "complete",
+      "version": "4.3.0",
+      "date": "2026-05-29",
+      "items": [
+        "ollama_model_config with num_ctx per model in adapter.json",
+        "runOllama() passes num_ctx via options block",
+        "compressPrompt() strips markdown + whitespace from injected blocks",
+        "qwen3.5:0.8b context_limit corrected 32000 → 4000"
+      ]
+    },
+    "online_first_routing": {
+      "status": "complete",
+      "version": "4.3.0",
+      "date": "2026-05-29",
+      "items": [
+        "local_first: false — all agents route to online models",
+        "Groq and tinyllama removed from cascade",
+        "Cerebras model string corrected to qwen3-235b-a22b",
+        "local_fallback updated to qwen2.5:7b with correct context limits",
+        "local_model_routing preserved for Phase 49 + 47c-prime"
+      ]
+    },
+    "phase_47c_prime_scoped": {
+      "status": "planned",
+      "version": null,
+      "date": null,
+      "description": "Universal Thinking Protocol — harness-engineered model-agnostic analytical scaffold injected into all buildPrompt() calls regardless of provider or agent role"
     }
-  ]
+  },
+  "system_version": "4.3.0"
 }
