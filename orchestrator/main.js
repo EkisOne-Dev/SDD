@@ -23,6 +23,7 @@ import { showHelp, showStatus, showProjects, showPostmortems, runMenu } from './
 import { summarizeMemoryIfNeeded } from '../skills/tools/memory-summarizer.js';
 import { runEngineCheck } from '../skills/tools/engine-check.js';
 import { runLearnCommand } from '../skills/tools/learn-command.js';
+import { runSessionEnd } from '../skills/tools/session-end.js';
 import { generateImage } from '../skills/tools/image-gen.js';
 import { runProposalManager } from "../skills/tools/proposal-manager.js";
 import { runPostChain } from "./post-chain.js";
@@ -76,6 +77,12 @@ async function run(injectedTask = null) {
 
   if (task.toLowerCase() === 'check-engines') {
     await runEngineCheck();
+    return;
+  }
+
+  if (task.toLowerCase() === 'session-end') {
+    const adapter = loadEngineAdapter();
+    await runSessionEnd(adapter);
     return;
   }
 
