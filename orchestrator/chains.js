@@ -183,6 +183,13 @@ export async function runChain(task, chain, config, adapter, skillContext) {
     ? ['basic']
     : agents;
 
+  // Phase 47b — inject validator after reviewer on complex chains
+  // phi4-mini handles both reviewer and validator — zero extra model swap
+  if (complexity === 'complex' && effectiveAgents.includes('reviewer')) {
+    const idx = effectiveAgents.indexOf('reviewer');
+    effectiveAgents.splice(idx + 1, 0, 'validator');
+  }
+
   const reviewFocus = REVIEW_FOCUS[type] || REVIEW_FOCUS.basic;
 
   for (let i = 0; i < effectiveAgents.length; i++) {

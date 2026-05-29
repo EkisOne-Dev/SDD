@@ -38,7 +38,8 @@
     33,
     34,
     46,
-    47
+    47,
+    471
   ],
   "features": [
     {
@@ -215,17 +216,16 @@
     {
       "id": "F47b",
       "phase": "47b",
-      "title": "Agent cognitive upgrades — algorithmic strategies + confidence declaration",
-      "status": "done",
+      "title": "Cognitive Fit Model Architecture + Validator Agent",
+      "status": "complete",
       "priority": "high",
       "acceptance_criteria": [
-        "architect/strategy.txt uses 3-step decomposition algorithm",
-        "developer/strategy.txt uses 4-step root-cause protocol",
-        "reviewer/strategy.txt uses 3-step assumption-inversion audit",
-        "strategist/strategy.txt uses 5-dimension evaluation framework",
-        "All 9 agent strategy.txt files include confidence declaration",
-        "All 13 skill library files use imperative voice (YOU MUST / NEVER)",
-        "All skill library files verified ≤1500 chars"
+        "local_model_routing updated to cognitive fit table in adapter.json",
+        "qwen3:8b pulled and assigned to architect/strategy chains",
+        "phi4-mini assigned to review/validate/analysis roles",
+        "validator agent created with analytical decomposition strategy",
+        "validator injected after reviewer on complex chains only",
+        "full chain confirmed: researcher → architect → reviewer → validator [complex]"
       ]
     },
     {

@@ -94,14 +94,15 @@
   },
   "local_first": true,
   "local_model_routing": {
-    "basic": "phi4-mini:latest",
-    "creative": "qwen2.5:7b",
-    "strategy": "qwen3.5:4b",
-    "architecture": "qwen2.5:7b",
+    "basic": "phi4-mini:3.8b-q4_K_M",
+    "architecture": "qwen3:8b",
+    "strategy": "qwen3:8b",
     "development": "qwen2.5-coder:7b",
     "research": "qwen2.5:7b",
-    "analysis": "qwen2.5:7b",
-    "review": "deepseek-coder:6.7b",
+    "analysis": "phi4-mini:3.8b-q4_K_M",
+    "review": "phi4-mini:3.8b-q4_K_M",
+    "validation": "phi4-mini:3.8b-q4_K_M",
+    "creative": "gemma3:4b",
     "default": "qwen2.5:7b"
   }
 }

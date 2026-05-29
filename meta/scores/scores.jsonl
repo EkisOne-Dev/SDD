@@ -75,3 +75,6 @@
 {"timestamp":"2026-05-28T02:29:22.232Z","task":"explain the risks of using global variables in Node.js","scores":{"clarity":85,"usefulness":90,"efficiency":70,"redundancy":50,"overall":74}}
 {"timestamp":"2026-05-28T02:41:57.130Z","task":"what are the main risks of technical debt","scores":{"clarity":70,"usefulness":66,"efficiency":70,"redundancy":80,"overall":72}}
 {"timestamp":"2026-05-28T03:03:43.448Z","task":"design a caching system","scores":{"clarity":85,"usefulness":90,"efficiency":55,"redundancy":0,"overall":58}}
+{"timestamp":"2026-05-29T03:16:05.484Z","task":"what is memoizationsdd what is memoization","scores":{"clarity":85,"usefulness":63,"efficiency":70,"redundancy":80,"overall":75}}
+{"timestamp":"2026-05-29T03:45:12.591Z","task":"design and architect a rate limiting system for a REST API","scores":{"clarity":85,"usefulness":83,"efficiency":70,"redundancy":0,"overall":60}}
+{"timestamp":"2026-05-29T04:21:03.319Z","task":"design architect and implement a distributed rate limiting system with Redis for a high-traffic REST","scores":{"clarity":85,"usefulness":90,"efficiency":70,"redundancy":50,"overall":74}}

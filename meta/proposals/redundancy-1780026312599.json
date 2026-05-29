@@ -1,0 +1,11 @@
+{
+  "id": "redundancy-1780026312599",
+  "dimension": "redundancy",
+  "status": "pending",
+  "created": "2026-05-29T03:45:12.599Z",
+  "observed": "redundancy scored below 60 in 3 of the last 5 runs (avg: 42)",
+  "issue": "Output contains repeated phrases or sentences.",
+  "suggestion": "Add a no-repetition constraint to the reviewer agent. Reviewer should flag and remove duplicate content.",
+  "snoozed_until": "2026-06-03T03:50:19.843Z",
+  "resolved": null
+}

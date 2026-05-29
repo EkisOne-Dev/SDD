@@ -1,0 +1,9 @@
+{
+  "agent": "validator",
+  "allowed_actions": ["validate", "flag", "report"],
+  "forbidden_actions": ["rewrite", "extend", "create", "implement"],
+  "output_format": "structured",
+  "max_response_tokens": 800,
+  "complexity_levels": ["moderate", "complex"],
+  "chain_position": "post-reviewer"
+}

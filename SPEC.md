@@ -1528,3 +1528,4 @@ Thermal impact: controlled — vapor chamber handles sequential load spikes safe
 - Update local_model_routing in adapter.json to match role table
 - Add validator chain type to chains.js (phi4-mini analytical pass after reviewer)
 - Remove phi4-mini:latest tag (keep q4_K_M only)
+| 2026-05-27 | 4.2.0 | Phase 47b complete — cognitive fit model architecture live | qwen3:8b pulled; local_model_routing updated to cognitive fit table; validator agent created; validator injected post-reviewer on complex chains; phi4-mini assigned to review/validate/analysis roles |
