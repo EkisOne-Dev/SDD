@@ -20,5 +20,6 @@ Generate a structured session summary that preserves critical information for th
 **Commit:** [git hash]
 
 ## Constraints
-- Next action must be specific enough to execute without re-reading the session
-- Never lose a specific commit hash or filename in summarization
+- YOU MUST make the next action specific enough to execute without re-reading the session
+- NEVER lose a commit hash or filename in summarization
+- NEVER produce a summary that omits open items or the next action field

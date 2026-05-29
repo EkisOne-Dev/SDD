@@ -1388,3 +1388,62 @@ Corrects the Phase 46 context_limit for qwen3.5:0.8b from 32000 to 4000 tokens i
 - `engine/adapter.json` — local_first models array
 
 *End of CAPABILITIES.md — Update after every phase that adds, modifies, or removes a capability.*
+
+---
+
+## COGNITIVE FIT MODEL ARCHITECTURE (Phase 47b)
+
+### 48 — Cognitive Role Routing
+
+**What it does:**
+Local model routing in adapter.json assigns each chain type to the model whose behavioral
+profile best matches the cognitive requirement of that role. Priority: cognitive fit →
+RAM economy → swap minimization. Same-model agents are grouped to minimize load events.
+
+**Status:** 🔲 Planned — Phase 47b
+
+**Target local_model_routing (adapter.json):**
+| Chain type | Model | Swap group |
+|---|---|---|
+| basic | phi4-mini:3.8b-q4_K_M | A |
+| architecture | qwen3:8b | B |
+| strategy | qwen3:8b | B |
+| development | qwen2.5-coder:7b | C |
+| research | qwen2.5:7b | D |
+| analysis | phi4-mini:3.8b-q4_K_M | A |
+| review | phi4-mini:3.8b-q4_K_M | A |
+| validation | phi4-mini:3.8b-q4_K_M | A |
+| creative | gemma3:4b | E |
+| default | qwen2.5:7b | D |
+
+**Files responsible:**
+- `engine/adapter.json` → `local_model_routing`
+- `orchestrator/chains.js` → validator pass added to complex chains
+- `engine/adapter.json` → `local_first.models` array updated
+
+**Known limitations:**
+- qwen3:8b pending pull — architecture/strategy chains fall back to qwen2.5:7b until available
+- Swap cost (~15–30s) unavoidable between different swap groups
+
+---
+
+### 49 — Validator Agent Pass (Phase 47b)
+
+**What it does:**
+Adds a phi4-mini analytical validation pass after the reviewer agent on complex chains.
+phi4-mini checks logical coherence, specification consistency, and contradiction detection.
+Shares the same loaded model as the reviewer — zero additional swap cost.
+Produces a structured validation report before output reaches post-chain processing.
+
+**Status:** 🔲 Planned — Phase 47b
+
+**Trigger:** complexity === 'complex' and chain includes reviewer agent
+
+**Files responsible:**
+- `orchestrator/chains.js` → validator pass added to complex chain definitions
+- `agents/validator/` → new agent folder (identity.txt, strategy.txt, constraints.json)
+- `engine/adapter.json` → validation chain type mapped to phi4-mini
+
+**Known limitations:**
+- Adds one additional agent call on complex chains — latency tradeoff for quality gain
+- phi4-mini analytical depth sufficient for validation; does not replace cloud-quality review

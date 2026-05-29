@@ -24,9 +24,9 @@ Step 5: Suggest best local model
 { "interpreted_task": "string", "task_type": "string", "complexity": "string", "key_requirements": [], "suggested_model": "string", "confidence": "high|medium|low" }
 
 ## Constraints
-- Output ONLY the JSON object
-- Never invent requirements not implied by the task
-- If confidence is low, use most conservative interpretation
+- YOU MUST output ONLY the JSON object — no preamble, no markdown, no explanation
+- NEVER invent requirements not implied by the task
+- If confidence is low, YOU MUST use the most conservative interpretation
 
 ## On Failure
 Return: { "interpreted_task": "[original]", "task_type": "general", "complexity": "simple", "key_requirements": [], "suggested_model": "qwen2.5:7b", "confidence": "low" }

@@ -22,6 +22,7 @@ Assessment: [honest description]
 [If gap]: Proposed fix + Generate proposal? Y/N
 
 ## Constraints
-- Never fabricate file existence — always check filesystem
-- If CAPABILITIES.md has no entry, say so
-- Proposals must go through proposal-manager.js — never self-apply
+- NEVER fabricate file existence — YOU MUST check the filesystem directly
+- NEVER claim a capability is complete if its verification test fails
+- If CAPABILITIES.md has no entry, YOU MUST say so explicitly
+- Proposals MUST go through proposal-manager.js — NEVER self-apply

@@ -1479,3 +1479,52 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 | 2026-05-27 | 4.2.0 | Phase 47b complete — agent cognitive upgrades live | architect/developer/reviewer/strategist strategy.txt rewritten with explicit algorithms: decomposition, root-cause, assumption-inversion, 5-dimension evaluation |
 | 2026-05-27 | 4.2.0 | Confidence declaration added to all 9 agent strategy.txt files | HIGH/MEDIUM/LOW rating required before every factual claim; MEDIUM and LOW must be flagged explicitly |
 | 2026-05-27 | 4.2.0 | Imperative voice enforced across all 13 skill library files | YOU MUST / NEVER conventions applied; all files verified ≤1500 chars |
+
+---
+
+## COGNITIVE FIT MODEL ARCHITECTURE (Established Phase 47b)
+
+### Design Priority Order
+1. Cognitive fit — model behavioral profile matched to agent's reasoning requirement
+2. RAM economy — model size relative to 12GB device RAM
+3. Swap minimization — same-model agents grouped to reduce load events
+
+### Model Roster (Cleaned)
+| Model | Size | Cognitive Profile |
+|---|---|---|
+| qwen3:8b | ~5GB | Strong reasoner, agentic, complex synthesis — pending pull |
+| qwen2.5-coder:7b | ~4.5GB | Code-specific, deterministic, strict formatting |
+| qwen2.5:7b | ~4.5GB | Stable, factual, low creative drift — research/fallback |
+| gemma3:4b | ~2.6GB | Fluent, natural language, ideation |
+| phi4-mini:3.8b-q4_K_M | ~2.4GB | Analytical decomposition, logical coherence, contradiction detection |
+| qwen3.5:0.8b | ~0.6GB | Fast classifier, routing, intent parsing only |
+| nomic-embed-text | ~0.3GB | Embeddings only — Phase 49 semantic retrieval |
+
+### Cognitive Role Assignments
+| Role | Model | Reason |
+|---|---|---|
+| Router / classifier | qwen3.5:0.8b | Speed + classification only |
+| Architect | qwen3:8b | Best local reasoner, multi-step planning |
+| Strategist | qwen3:8b | Same profile as architect — zero swap |
+| Developer | qwen2.5-coder:7b | Code-trained, deterministic output |
+| Researcher | qwen2.5:7b | Stable, factual, minimal drift |
+| Reviewer | phi4-mini:3.8b-q4_K_M | Logical coherence, assumption detection |
+| Validator | phi4-mini:3.8b-q4_K_M | Same model as reviewer — zero swap |
+| Creator | gemma3:4b | Fluency and natural language generation |
+| Embeddings | nomic-embed-text | Purpose-built, no substitution |
+
+### Swap Minimization Strategy
+- Architect + Strategist: both qwen3:8b — no swap between passes
+- Reviewer + Validator: both phi4-mini — no swap between passes
+- Net swap events per complex chain: 2–3 (down from 4–5)
+
+### OLLAMA_MAX_LOADED_MODELS=1 Policy
+One model loaded in RAM at a time. Models swap sequentially between agent calls.
+Swap cost: ~15–30 seconds load spike per model change. Acceptable tradeoff for cognitive quality.
+Thermal impact: controlled — vapor chamber handles sequential load spikes safely.
+
+### Pending Changes (Phase 47b)
+- Pull qwen3:8b — replaces qwen2.5:7b in architect/strategist slots
+- Update local_model_routing in adapter.json to match role table
+- Add validator chain type to chains.js (phi4-mini analytical pass after reviewer)
+- Remove phi4-mini:latest tag (keep q4_K_M only)

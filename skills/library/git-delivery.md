@@ -10,9 +10,9 @@ Standardize all git operations across SDD.
 Types: Phase N, Fix, Improve, Docs, Backup, Refactor, Add
 
 ## Staging Rules
-- Always stage after phase completion: SPEC.md, CAPABILITIES.md, featurelist.json
-- Always stage after session-end: history.md
-- Never stage: node_modules/, *.log, temporary patch files
+- YOU MUST stage after phase completion: SPEC.md, CAPABILITIES.md, featurelist.json
+- YOU MUST stage after session-end: history.md
+- NEVER stage: node_modules/, *.log, temporary patch files
 
 ## Backup Trigger Protocol
 After every completed phase:
@@ -23,6 +23,6 @@ After every completed phase:
 5. Confirm commit hash
 
 ## Constraints
-- Never use "backup: runtime snapshot" format for code changes
-- Never force push to master
-- Delete all patch scripts after use
+- NEVER use "backup: runtime snapshot" format for code changes
+- NEVER force push to master
+- YOU MUST delete all patch scripts after use
