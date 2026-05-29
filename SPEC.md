@@ -1529,3 +1529,28 @@ Thermal impact: controlled — vapor chamber handles sequential load spikes safe
 - Add validator chain type to chains.js (phi4-mini analytical pass after reviewer)
 - Remove phi4-mini:latest tag (keep q4_K_M only)
 | 2026-05-27 | 4.2.0 | Phase 47b complete — cognitive fit model architecture live | qwen3:8b pulled; local_model_routing updated to cognitive fit table; validator agent created; validator injected post-reviewer on complex chains; phi4-mini assigned to review/validate/analysis roles |
+
+---
+
+## KNOWN ISSUES — Pending Phase 51 Review
+
+| ID | Issue | Discovered | Fix Scope |
+|---|---|---|---|
+| KI-001 | Validator receives reviewer's audit output rather than synthesized design — context handoff passes critique not final artifact | Phase 47b test | Phase 51 verification pass |
+
+### KI-001 Detail
+**Symptom:** On complex chains, the validator agent receives the reviewer's critique/audit
+as its input rather than the final synthesized design artifact. Guardian-angel flagged this
+as TASK MISALIGNMENT — "the output is an audit of a design, not the design itself."
+
+**Root cause:** extractHandoff() passes the reviewer's full output to the next agent.
+The reviewer produces a structured audit (INTERNAL REASONING + ARTIFACT + VERIFICATION)
+but the handoff summary captures the critique layer, not the clean ARTIFACT block.
+
+**Expected behavior:** Validator should receive the ARTIFACT section of the reviewer's
+output only — the synthesized, corrected design — not the surrounding audit commentary.
+
+**Fix direction:** extractHandoff() should extract [ARTIFACT] block specifically when
+handing off to validator, rather than passing the full reviewer output summary.
+
+**Files to inspect:** orchestrator/chains.js → extractHandoff()
