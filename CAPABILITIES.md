@@ -4,10 +4,10 @@
 > Intended audience: technical reviewers, external auditors, and the system owner.
 
 **System:** Structured Development System (SDD)
-**Version:** 3.7.4
+**Version:** 4.5.0
 **Platform:** Android / Termux
 **Runtime:** Node.js
-**Last Updated:** 2026-04-30 (rev 2)
+**Last Updated:** 2026-05-30
 
 ---
 
@@ -64,6 +64,23 @@ To verify the full system: run each verification test in order and compare outpu
 | 33 | TRI-STRUCTURE Suppression | ✅ Active | 16 |
 | 34 | Score Drift ASCII Chart | ✅ Active | 17 |
 | 35 | Memory Summarization | ✅ Active | 18 |
+| 36 | Spec-Clarifier Skill (Alpha) | ✅ Active | 47 |
+| 37 | Guardian-Angel Skill (Alpha) | ✅ Active | 47 |
+| 38 | Assumption-Extractor Sub-Skill (Beta) | ✅ Active | 47 |
+| 39 | Failure-Mode-Scanner Sub-Skill (Beta) | ✅ Active | 47 |
+| 40 | Alpha/Beta System-Layer Composition | ✅ Active | 47 |
+| 41 | Registry Priority + Conflict Resolution | ✅ Active | 47 |
+| 42 | Agent Cognitive Algorithm Upgrades | ✅ Active | 47b |
+| 43 | Confidence/Uncertainty Declaration Protocol | ✅ Active | 47b |
+| 44 | Skill File Imperative Voice + 1500 Char Cap | ✅ Active | 47b |
+| 45 | Ollama num_ctx Per-Model Config | ✅ Active | 47c |
+| 46 | Prompt Compression (compressPrompt) | ✅ Active | 47c |
+| 47 | qwen3.5:0.8b Context Budget Fix | ✅ Active | 47c |
+| 48 | Cognitive Role Routing | ✅ Active | 47b |
+| 49 | Validator Agent Pass | ✅ Active | 47b |
+| 50 | Online-First Cascade Routing | ✅ Active | v4.5.0 |
+| 51 | Mistral Codestral Developer Override | ✅ Active | v4.5.0 |
+| 52 | Session-End Command | ✅ Active | 48 |
 
 ---
 
@@ -1221,7 +1238,7 @@ These rules apply across all capabilities. Any capability that violates one of t
 
 ---
 
-*End of CAPABILITIES.md — Update after every phase that adds, modifies, or removes a capability.*
+
 
 ---
 
@@ -1229,18 +1246,6 @@ These rules apply across all capabilities. Any capability that violates one of t
 
 | # | Capability | Status | Phase |
 |---|---|---|---|
-| 36 | Spec-Clarifier Skill (Alpha) | 🔲 Planned | 47 |
-| 37 | Guardian-Angel Skill (Alpha) | 🔲 Planned | 47 |
-| 38 | Assumption-Extractor Sub-Skill (Beta) | 🔲 Planned | 47 |
-| 39 | Failure-Mode-Scanner Sub-Skill (Beta) | 🔲 Planned | 47 |
-| 40 | Alpha/Beta System-Layer Composition | 🔲 Planned | 47 |
-| 41 | Registry Priority + Conflict Resolution | 🔲 Planned | 47 |
-| 42 | Agent Cognitive Algorithm Upgrades | 🔲 Planned | 47b |
-| 43 | Confidence/Uncertainty Declaration Protocol | 🔲 Planned | 47b |
-| 44 | Skill File Imperative Voice + 1500 Char Cap | 🔲 Planned | 47b |
-| 45 | Ollama num_ctx Per-Model Config | 🔲 Planned | 47c |
-| 46 | Prompt Compression (compressPrompt) | 🔲 Planned | 47c |
-| 47 | qwen3.5:0.8b Context Budget Fix | 🔲 Planned | 47c |
 
 ---
 
@@ -1400,7 +1405,7 @@ Local model routing in adapter.json assigns each chain type to the model whose b
 profile best matches the cognitive requirement of that role. Priority: cognitive fit →
 RAM economy → swap minimization. Same-model agents are grouped to minimize load events.
 
-**Status:** 🔲 Planned — Phase 47b
+**Status:** ✅ Active — Phase 47b
 
 **Target local_model_routing (adapter.json):**
 | Chain type | Model | Swap group |
@@ -1435,7 +1440,7 @@ phi4-mini checks logical coherence, specification consistency, and contradiction
 Shares the same loaded model as the reviewer — zero additional swap cost.
 Produces a structured validation report before output reaches post-chain processing.
 
-**Status:** 🔲 Planned — Phase 47b
+**Status:** ✅ Active — Phase 47b
 
 **Trigger:** complexity === 'complex' and chain includes reviewer agent
 
@@ -1447,3 +1452,72 @@ Produces a structured validation report before output reaches post-chain process
 **Known limitations:**
 - Adds one additional agent call on complex chains — latency tradeoff for quality gain
 - phi4-mini analytical depth sufficient for validation; does not replace cloud-quality review
+
+---
+
+### 50 — Online-First Cascade Routing
+
+**What it does:**
+All agents route through a 7-provider online cascade when local_first is false. Order: Gemini Flash-Lite → Gemini Flash → Groq Llama 3.3 70B → OpenRouter Gemma4 31B → OpenRouter GPT-OSS 120B → Cerebras GPT-OSS 120B → Ollama (emergency local fallback). Each provider is tried in sequence on failure. runEngine() performs a full provider config swap for agent overrides — not model-only.
+
+**Trigger:** local_first: false in engine/adapter.json.
+
+**Files responsible:**
+- engine/adapter.json — provider cascade config
+- orchestrator/orchestrator.js → runEngine() — cascade loop + full provider config swap
+
+**Config flag:** local_first in engine/adapter.json. false = online cascade active. true = local model routing (dormant, preserved for Phase 49).
+
+**Verification test:**
+```bash
+cat ~/sdd/engine/adapter.json | grep local_first
+```
+Expected: "local_first": false
+
+**Known limitations:** Ollama fires only after all 6 online providers fail. GROQ_API_KEY, MISTRAL_API_KEY, OPENROUTER_API_KEY, CEREBRAS_API_KEY, GEMINI_API_KEY all required in .bashrc.
+
+---
+
+### 51 — Mistral Codestral Developer Override
+
+**What it does:**
+The developer agent uses Mistral Codestral (codestral-latest) as its primary model for all complexity tiers. runEngine() performs a full provider config swap to the mistral_codestral block when agent role is developer. Falls through to main cascade on Mistral failure.
+
+**Trigger:** Agent role === 'developer' in any chain.
+
+**Files responsible:**
+- orchestrator/orchestrator.js → runEngine() — agent override config swap
+- engine/adapter.json → mistral_codestral provider block
+
+**Verification test:**
+```bash
+grep -A3 "mistral_codestral" ~/sdd/engine/adapter.json
+```
+Expected: provider block with model: codestral-latest
+
+**Known limitations:** Mistral free tier subject to rate limits. Cascade fallback activates automatically on limit hit.
+
+---
+
+### 52 — Session-End Command
+
+**What it does:**
+sdd session-end generates an AI-written structured session summary and appends it to history.md at ~/sdd/history.md. Collects git log from the last 12 hours and the SPEC changelog tail as source material. Produces a structured entry: tasks completed, decisions made, open issues. Appends with date and commit hash. Triggers sdd backup automatically after write.
+
+**Trigger:** sdd session-end
+
+**Files responsible:**
+- skills/tools/session-end.js — implementation
+- orchestrator/main.js — command wiring
+
+**Config flag:** None. Always active.
+
+**Verification test:**
+```bash
+tail -20 ~/sdd/history.md
+```
+Expected: Structured session entry with date header and AI-generated summary.
+
+**Known limitations:** Requires at least one git commit in the session for meaningful output.
+
+*End of CAPABILITIES.md — Update after every phase that adds, modifies, or removes a capability.*

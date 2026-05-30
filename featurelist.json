@@ -37,9 +37,20 @@
     32,
     33,
     34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
     46,
     47,
-    471
+    48
   ],
   "features": {
     "0": {
@@ -232,7 +243,7 @@
       "id": "F48",
       "phase": 48,
       "title": "sdd session-end command",
-      "status": "planned",
+      "status": "complete",
       "priority": "medium",
       "acceptance_criteria": [
         "sdd session-end command exists",
@@ -340,5 +351,10 @@
       ]
     }
   },
-  "system_version": "4.5.0"
+  "system_version": "4.5.0",
+  "completed_phases_named": [
+    "47b",
+    "47c",
+    "47c-prime-scoped"
+  ]
 }
