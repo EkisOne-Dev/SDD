@@ -256,7 +256,7 @@
       "id": "F49",
       "phase": 49,
       "title": "Semantic memory retrieval — nomic-embed-text",
-      "status": "planned",
+      "status": "complete",
       "priority": "high",
       "acceptance_criteria": [
         "nomic-embed-text running via Ollama",

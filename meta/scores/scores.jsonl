@@ -79,3 +79,5 @@
 {"timestamp":"2026-05-29T03:45:12.591Z","task":"design and architect a rate limiting system for a REST API","scores":{"clarity":85,"usefulness":83,"efficiency":70,"redundancy":0,"overall":60}}
 {"timestamp":"2026-05-29T04:21:03.319Z","task":"design architect and implement a distributed rate limiting system with Redis for a high-traffic REST","scores":{"clarity":85,"usefulness":90,"efficiency":70,"redundancy":50,"overall":74}}
 {"timestamp":"2026-05-29T22:53:15.650Z","task":"what is 2 + 2","scores":{"clarity":70,"usefulness":30,"efficiency":70,"redundancy":80,"overall":63}}
+{"timestamp":"2026-05-30T18:00:57.855Z","task":"what did we discuss about caching","scores":{"clarity":85,"usefulness":70,"efficiency":70,"redundancy":80,"overall":76}}
+{"timestamp":"2026-05-30T18:18:53.592Z","task":"explain recursion briefly","scores":{"clarity":85,"usefulness":90,"efficiency":45,"redundancy":77,"overall":74}}
