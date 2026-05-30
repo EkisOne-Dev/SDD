@@ -122,12 +122,14 @@ export async function runEngineCheck() {
   console.log('\n🔌 SDD Engine Status Check\n');
 
   const checks = [
-    { role: 'primary',        label: 'Gemini',      config: adapter.primary,        fn: checkGemini },
-    { role: 'fallback',       label: 'Fallback 1',  config: adapter.fallback,       fn: checkOpenRouter },
-    { role: 'fallback2',      label: 'Fallback 2',  config: adapter.fallback2,      fn: checkOpenRouter },
-    { role: 'fallback3',      label: 'Groq',         config: adapter.fallback3,      fn: checkOpenAICompatible },
-    { role: 'fallback4',      label: 'Cerebras',     config: adapter.fallback4,      fn: checkOpenAICompatible },
-    { role: 'local_fallback', label: 'Ollama',       config: adapter.local_fallback, fn: checkOllama }
+    { role: 'primary',           label: 'Gemini Flash-Lite', config: adapter.primary,           fn: checkGemini },
+    { role: 'fallback',          label: 'Gemini Flash',      config: adapter.fallback,          fn: checkGemini },
+    { role: 'fallback2',         label: 'Groq',              config: adapter.fallback2,         fn: checkOpenAICompatible },
+    { role: 'fallback3',         label: 'OR Gemma 4 31B',    config: adapter.fallback3,         fn: checkOpenRouter },
+    { role: 'fallback4',         label: 'OR GPT-OSS 120B',   config: adapter.fallback4,         fn: checkOpenRouter },
+    { role: 'fallback5',         label: 'Cerebras',          config: adapter.fallback5,         fn: checkOpenAICompatible },
+    { role: 'mistral_codestral', label: 'Codestral',         config: adapter.mistral_codestral, fn: checkOpenAICompatible },
+    { role: 'local_fallback',    label: 'Ollama',            config: adapter.local_fallback,    fn: checkOllama }
   ].filter(c => c.config);
 
   for (const { role, label, config, fn } of checks) {

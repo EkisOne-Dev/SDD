@@ -240,19 +240,29 @@ export async function runEngine(prompt, adapter, agentName = null, complexity = 
   prompt = trimToContextBudget(prompt, _limit);
 
   let active = { ...adapter[adapter.active] };
-  if (agentName && adapter.agent_models && adapter.agent_models[agentName] && active.provider === "gemini") {
+  let agentOverrideKey = null;
+
+  // Agent-specific full provider override (e.g. developer → mistral_codestral)
+  if (agentName && adapter.agent_models && adapter.agent_models[agentName]) {
     const modelMap = adapter.agent_models[agentName];
-    const chosenModel = modelMap[complexity] || modelMap["simple"];
-    if (chosenModel) {
-      active.model = chosenModel;
+    const chosenSlot = modelMap[complexity] || modelMap['simple'];
+    if (chosenSlot && adapter[chosenSlot] && adapter[chosenSlot].provider !== undefined) {
+      // Full config swap — different provider entirely (e.g. mistral)
+      active = { ...adapter[chosenSlot] };
+      agentOverrideKey = chosenSlot;
+      // Re-enforce context budget against override provider's tighter limit
+      if (active.context_limit) prompt = trimToContextBudget(prompt, active.context_limit);
+    } else if (chosenSlot && active.provider === 'gemini') {
+      // Legacy path: model-only swap within gemini
+      active.model = chosenSlot;
     }
   }
 
-  // Cascade fallback chain on failure
-  const providerChain = [
-    adapter.active,
-    ...['fallback', 'fallback2', 'fallback3', 'fallback4', 'local_fallback'].filter(k => adapter[k])
-  ];
+  // Cascade fallback chain on failure — fallback5 added; override starts chain
+  const _cascadeKeys = ['fallback', 'fallback2', 'fallback3', 'fallback4', 'fallback5', 'local_fallback'];
+  const providerChain = agentOverrideKey
+    ? [agentOverrideKey, ..._cascadeKeys.filter(k => adapter[k])]
+    : [adapter.active, ..._cascadeKeys.filter(k => adapter[k])];
 
   async function tryWithFallback(providers, idx = 0) {
     if (idx >= providers.length) throw new Error('All providers exhausted');
@@ -341,6 +351,10 @@ async function executeEngine(prompt, active) {
 
   if (active.provider === "ollama") {
     return await runOllama(prompt, active);
+  }
+
+  if (active.provider === "mistral") {
+    return await runOpenAICompatible(prompt, active);
   }
 
   throw new Error(`Unknown provider: ${active.provider}`);
