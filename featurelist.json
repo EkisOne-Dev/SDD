@@ -1,6 +1,6 @@
 {
-  "version": "4.2.0",
-  "last_updated": "2026-05-29",
+  "version": "4.5.0",
+  "last_updated": "2026-05-30",
   "completed_phases": [
     0,
     1,
@@ -295,13 +295,15 @@
     },
     "online_first_routing": {
       "status": "complete",
-      "version": "4.3.0",
-      "date": "2026-05-29",
+      "version": "4.5.0",
+      "date": "2026-05-30",
       "items": [
         "local_first: false — all agents route to online models",
-        "Groq and tinyllama removed from cascade",
-        "Cerebras model string corrected to qwen3-235b-a22b",
-        "local_fallback updated to qwen2.5:7b with correct context limits",
+        "7-provider cascade: Gemini Flash-Lite → Gemini Flash → Groq → OR Gemma4 → OR GPT-OSS → Cerebras → Ollama",
+        "mistral_codestral: developer agent override — all complexity tiers → codestral-latest",
+        "runEngine() full provider config swap for agent overrides (not model-only)",
+        "fallback5 added to providerChain (was missing — Cerebras now reachable)",
+        "GROQ_API_KEY + MISTRAL_API_KEY active in .bashrc",
         "local_model_routing preserved for Phase 49 + 47c-prime"
       ]
     },
@@ -322,7 +324,21 @@
         "AI generates structured history.md entry",
         "Appended to history.md with date + commit hash"
       ]
+    },
+    "cascade_restructure_v450": {
+      "status": "complete",
+      "version": "4.5.0",
+      "date": "2026-05-30",
+      "items": [
+        "Gemini Flash added as fallback — higher capability tier for complex agents",
+        "Groq restored as fallback2 — llama-3.3-70b-versatile, 1000 RPD permanent free",
+        "OpenRouter providers shifted to fallback3 (Gemma4) + fallback4 (GPT-OSS)",
+        "Cerebras fallback5 — model corrected to gpt-oss-120b (qwen3-235b-a22b unavailable)",
+        "engine-check.js rebuilt — 8 providers, correct labels + routing functions",
+        "Gemini base_url corrected — removed double /v1beta (checkGemini appends it)",
+        "Cerebras model string verified via /v1/models endpoint — gpt-oss-120b confirmed"
+      ]
     }
   },
-  "system_version": "4.4.0"
+  "system_version": "4.5.0"
 }

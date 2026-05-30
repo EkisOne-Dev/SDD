@@ -73,3 +73,9 @@
 **Reason:** To improve efficiency, reduce latency, and enhance the model's ability to handle longer conversations by dynamically adjusting context and prompt sizes.
 **Impact:** The system can now dynamically manage context window sizes for different models and compress prompts to fit within those windows, leading to more efficient and potentially faster responses. Online-first routing ensures the most appropriate agent is selected quickly.
 **Commit:** dac6194
+
+### 2026-05-29 — Implemented SDD session termination command
+**Decision:** Implemented the `sdd session-end` command, allowing for graceful termination of active orchestration sessions. This command triggers a clean shutdown sequence, including saving runtime state and releasing resources.
+**Reason:** To provide a robust mechanism for managing the lifecycle of long-running AI orchestration sessions.
+**Impact:** Users can now cleanly end SDD sessions, preventing resource leaks and ensuring state is preserved for potential future resumption. This enhances system stability and manageability.
+**Commit:** b466f6f

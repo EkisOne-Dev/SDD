@@ -1,102 +1,6 @@
 {
-  "_note": "Routing: online-first (Gemini → Gemma4 31B → GPT-OSS-120B → Cerebras) → Ollama local fallback only. local_model_routing preserved for Phase 49 semantic retrieval + future 47c-prime harness work. Groq and tinyllama removed — not used in agent roles.",
-  "primary": {
-    "provider": "gemini",
-    "model": "gemini-2.5-flash-lite",
-    "api_key_env": "GEMINI_API_KEY",
-    "base_url": "https://generativelanguage.googleapis.com",
-    "max_tokens": 8192,
-    "timeout_ms": 15000,
-    "context_limit": 32000
-  },
-  "fallback": {
-    "provider": "openrouter",
-    "model": "google/gemma-4-31b-it:free",
-    "api_key_env": "OPENROUTER_API_KEY",
-    "base_url": "https://openrouter.ai/api/v1",
-    "max_tokens": 8192,
-    "timeout_ms": 15000,
-    "context_limit": 16000
-  },
-  "fallback2": {
-    "provider": "openrouter",
-    "model": "openai/gpt-oss-120b:free",
-    "api_key_env": "OPENROUTER_API_KEY",
-    "base_url": "https://openrouter.ai/api/v1",
-    "max_tokens": 8192,
-    "timeout_ms": 15000,
-    "context_limit": 16000
-  },
-  "fallback3": {
-    "provider": "cerebras",
-    "model": "qwen3-235b-a22b",
-    "api_key_env": "CEREBRAS_API_KEY",
-    "base_url": "https://api.cerebras.ai/v1",
-    "max_tokens": 8192,
-    "timeout_ms": 15000,
-    "context_limit": 16000
-  },
-  "local_fallback": {
-    "provider": "ollama",
-    "model": "qwen2.5:7b",
-    "api_key_env": null,
-    "base_url": "http://localhost:11434/api",
-    "max_tokens": 4096,
-    "timeout_ms": 60000,
-    "context_limit": 8192
-  },
-  "active": "primary",
-  "agent_models": {
-    "basic": {
-      "simple": "gemini-2.5-flash-lite",
-      "complex": "gemini-2.5-flash-lite"
-    },
-    "researcher": {
-      "simple": "gemini-2.5-flash-lite",
-      "complex": "gemini-2.5-flash"
-    },
-    "reviewer": {
-      "simple": "gemini-2.5-flash-lite",
-      "complex": "gemini-2.5-flash-lite"
-    },
-    "developer": {
-      "simple": "gemini-2.5-flash",
-      "complex": "gemini-2.5-flash"
-    },
-    "architect": {
-      "simple": "gemini-2.5-flash",
-      "complex": "gemini-2.5-flash"
-    },
-    "analyst": {
-      "simple": "gemini-2.5-flash",
-      "complex": "gemini-2.5-flash"
-    },
-    "mentor": {
-      "simple": "gemini-2.5-flash",
-      "complex": "gemini-2.5-flash"
-    },
-    "strategist": {
-      "simple": "gemini-2.5-flash",
-      "complex": "gemini-2.5-flash"
-    },
-    "creator": {
-      "simple": "gemini-2.5-flash-lite",
-      "complex": "gemini-2.5-flash-lite"
-    }
-  },
   "local_first": false,
-  "local_model_routing": {
-    "basic": "phi4-mini:3.8b-q4_K_M",
-    "architecture": "qwen3:8b",
-    "strategy": "qwen3:8b",
-    "development": "qwen2.5-coder:7b",
-    "research": "qwen2.5:7b",
-    "analysis": "phi4-mini:3.8b-q4_K_M",
-    "review": "phi4-mini:3.8b-q4_K_M",
-    "validation": "phi4-mini:3.8b-q4_K_M",
-    "creative": "gemma3:4b",
-    "default": "qwen2.5:7b"
-  },
+  "active": "primary",
   "ollama_model_config": {
     "qwen3:8b": {
       "num_ctx": 32768,
@@ -125,6 +29,106 @@
     "nomic-embed-text": {
       "num_ctx": 512,
       "context_limit": 512
+    }
+  },
+  "_note": "Routing: online-first (Gemini → Gemma4 31B → GPT-OSS-120B → Cerebras) → Ollama local fallback only. local_model_routing preserved for Phase 49 semantic retrieval + future 47c-prime harness work. Groq and tinyllama removed — not used in agent roles.",
+  "primary": {
+    "provider": "gemini",
+    "model": "gemini-2.5-flash-lite",
+    "api_key_env": "GEMINI_API_KEY",
+    "base_url": "https://generativelanguage.googleapis.com",
+    "context_limit": 100000,
+    "_note": "1000 RPD, 15 RPM"
+  },
+  "fallback": {
+    "provider": "gemini",
+    "model": "gemini-2.5-flash",
+    "api_key_env": "GEMINI_API_KEY",
+    "base_url": "https://generativelanguage.googleapis.com",
+    "context_limit": 100000,
+    "_note": "250 RPD, 10 RPM — higher capability for complex agents"
+  },
+  "fallback2": {
+    "provider": "groq",
+    "model": "llama-3.3-70b-versatile",
+    "api_key_env": "GROQ_API_KEY",
+    "base_url": "https://api.groq.com/openai/v1",
+    "context_limit": 128000,
+    "_note": "1000 RPD, 30 RPM — permanent free tier"
+  },
+  "fallback3": {
+    "provider": "openrouter",
+    "model": "google/gemma-4-31b-it:free",
+    "api_key_env": "OPENROUTER_API_KEY",
+    "base_url": "https://openrouter.ai/api/v1",
+    "context_limit": 131072
+  },
+  "fallback4": {
+    "provider": "openrouter",
+    "model": "openai/gpt-oss-120b:free",
+    "api_key_env": "OPENROUTER_API_KEY",
+    "base_url": "https://openrouter.ai/api/v1",
+    "context_limit": 131072
+  },
+  "fallback5": {
+    "provider": "cerebras",
+    "model": "gpt-oss-120b",
+    "api_key_env": "CEREBRAS_API_KEY",
+    "base_url": "https://api.cerebras.ai/v1",
+    "context_limit": 8192,
+    "_cerebras_note": "8192 token context cap on free tier — same model as OR fallback4, independent rate limit pool on LPU"
+  },
+  "mistral_codestral": {
+    "provider": "mistral",
+    "model": "codestral-latest",
+    "api_key_env": "MISTRAL_API_KEY",
+    "base_url": "https://codestral.mistral.ai/v1",
+    "context_limit": 32000,
+    "_note": "1B tokens/month free, 2 RPM — developer agent only"
+  },
+  "local_fallback": {
+    "provider": "ollama",
+    "model": "qwen2.5:7b",
+    "base_url": "http://localhost:11434",
+    "context_limit": 32768
+  },
+  "agent_models": {
+    "basic": {
+      "simple": "gemini-2.5-flash-lite",
+      "complex": "gemini-2.5-flash-lite"
+    },
+    "researcher": {
+      "simple": "gemini-2.5-flash-lite",
+      "complex": "gemini-2.5-flash"
+    },
+    "reviewer": {
+      "simple": "gemini-2.5-flash-lite",
+      "complex": "gemini-2.5-flash-lite"
+    },
+    "developer": {
+      "simple": "mistral_codestral",
+      "moderate": "mistral_codestral",
+      "complex": "mistral_codestral"
+    },
+    "architect": {
+      "simple": "gemini-2.5-flash",
+      "complex": "gemini-2.5-flash"
+    },
+    "analyst": {
+      "simple": "gemini-2.5-flash",
+      "complex": "gemini-2.5-flash"
+    },
+    "mentor": {
+      "simple": "gemini-2.5-flash",
+      "complex": "gemini-2.5-flash"
+    },
+    "strategist": {
+      "simple": "gemini-2.5-flash",
+      "complex": "gemini-2.5-flash"
+    },
+    "creator": {
+      "simple": "gemini-2.5-flash-lite",
+      "complex": "gemini-2.5-flash-lite"
     }
   }
 }

@@ -9,9 +9,9 @@
 
 | Field | Value |
 |---|---|
-| Document Version | 4.4.0 |
-| System Version | v4.4.0 — Phase 48 Complete |
-| Last Updated | 2026-05-29 |
+| Document Version | 4.5.0 |
+| System Version | v4.5.0 — Cascade Restructured |
+| Last Updated | 2026-05-30 |
 | Status | Active Development |
 | Platform | Android / Termux |
 | Runtime | Node.js |
@@ -456,10 +456,15 @@ Every session is logged to `learning/sessions/` with topic, explanation given, q
 **Path:** `engine/adapter.json`
 **Status:** ✅ Active
 
-**Provider priority:**
-1. `primary` — Gemini 2.5 Flash Lite (default)
-2. `fallback` — OpenRouter / Llama 4 Scout (free)
-3. `local_fallback` — Ollama / TinyLlama (offline, install when needed)
+**Provider priority (7-provider online cascade):**
+1. `primary` — Gemini 2.5 Flash-Lite · 1000 RPD, 15 RPM
+2. `fallback` — Gemini 2.5 Flash · 250 RPD, 10 RPM · complex agents
+3. `fallback2` — Groq / Llama 3.3 70B · 1000 RPD, 30 RPM · permanent free
+4. `fallback3` — OpenRouter / Gemma 4 31B · free model
+5. `fallback4` — OpenRouter / GPT-OSS 120B · free model
+6. `fallback5` — Cerebras / GPT-OSS 120B · 8192 token cap · simple tasks only
+7. `local_fallback` — Ollama / qwen2.5:7b · emergency offline only
+8. `mistral_codestral` — Mistral Codestral · 1B tokens/month · developer agent override (not in main cascade)
 
 **To switch provider:** Change `"active"` value in `engine/adapter.json` — no code changes needed.
 **RULE:** No hardcoded API references anywhere in code. Always read from this file.
@@ -1422,6 +1427,15 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 | 2026-04-29 | 3.3.2 | runOpenAICompatible() added to orchestrator.js | Single runner for all OpenAI-compatible providers |
 | 2026-04-29 | 3.3.2 | sdd check-engines updated to show all 6 providers | Groq and Cerebras rows added |
 | 2026-04-29 | 3.3.2 | 6-provider cascade active — Gemini → Gemma 4 31B → gpt-oss-120b → Groq → Cerebras → Ollama | Auto-cascades on 429/503, displays model name on switch |
+
+| 2026-05-30 | 4.5.0 | Cascade restructure — 7-provider online cascade live | Gemini Flash-Lite (primary) → Gemini Flash → Groq → OR Gemma4 → OR GPT-OSS → Cerebras → Ollama |
+| 2026-05-30 | 4.5.0 | Groq restored as fallback2 — llama-3.3-70b-versatile | Independent rate limit pool from OpenRouter |
+| 2026-05-30 | 4.5.0 | Gemini Flash added as fallback — complex agent tier | 250 RPD, 10 RPM — higher capability than Flash-Lite |
+| 2026-05-30 | 4.5.0 | Mistral Codestral added — developer agent override | mistral_codestral key in adapter.json; agent_models.developer all tiers → codestral-latest |
+| 2026-05-30 | 4.5.0 | runEngine() agent override logic upgraded | Full provider config swap (not model-only); agentOverrideKey starts providerChain at override slot |
+| 2026-05-30 | 4.5.0 | fallback5 added to providerChain — was missing from cascade | Cerebras now reachable; gpt-oss-120b used (qwen3-235b-a22b not available on account) |
+| 2026-05-30 | 4.5.0 | engine-check.js rebuilt for 8-provider display | All providers correctly labeled and routed to matching check function |
+| 2026-05-30 | 4.5.0 | GROQ_API_KEY + MISTRAL_API_KEY added to .bashrc | Both keys loaded and verified active |
 
 *End of SPEC.md — Update this document before ending any session that produces a structural or design decision.*
 | 2026-05-25 | 3.8.0 | Phase 41 complete — constitution.md, featurelist.json, history.md created | Harness foundation established |
