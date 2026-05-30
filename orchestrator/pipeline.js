@@ -4,6 +4,7 @@ import readline from 'readline';
 
 import { fileURLToPath } from 'url';
 import { generatePostmortem } from '../skills/tools/postmortem.js';
+import { loadMemoryWithSemantics } from './orchestrator.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const SDD_ROOT = path.resolve(__dirname, '..');
@@ -151,7 +152,7 @@ async function runStage(state, stage, deps) {
 
   const { contract, prompt: promptTemplate } = loadPipelinePhase(stage);
   const agent    = loadAgentSafe(STAGE_AGENTS[stage], loadAgent, logExecution);
-  const memory   = loadMemory(config, state.original_task);
+  const memory   = await loadMemoryWithSemantics(config, state.original_task);
 
   // Load prior artifact (previous stage output)
   const stagesIdx   = STAGES.indexOf(stage);

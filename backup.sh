@@ -51,6 +51,12 @@ echo "   ✅ Saved to $BACKUP_DIR/.bashrc.backup"
 cp "$SDD_DIR/backup.sh" "$BACKUP_DIR/backup.sh"
 echo "   ✅ Script saved to $BACKUP_DIR/backup.sh"
 
+# ── Step 4b: Copy files to Downloads ─────────────────────
+cd ~/sdd
+cp SPEC.md CAPABILITIES.md featurelist.json ~/storage/downloads/TERMUX-SDD/
+cp README.md history.md ~/storage/downloads/TERMUX-SDD/
+echo "   ✅ Downloads folder files updated "
+
 # ── Step 5: Write restore instructions ───────────────────
 cat > "$BACKUP_DIR/RESTORE.md" << 'EOF'
 # SDD Restore Instructions

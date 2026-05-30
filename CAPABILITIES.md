@@ -81,6 +81,7 @@ To verify the full system: run each verification test in order and compare outpu
 | 50 | Online-First Cascade Routing | ✅ Active | v4.5.0 |
 | 51 | Mistral Codestral Developer Override | ✅ Active | v4.5.0 |
 | 52 | Session-End Command | ✅ Active | 48 |
+| 53 | Semantic Memory Retrieval | ✅ Active | 49 |
 
 ---
 
@@ -1391,6 +1392,37 @@ Corrects the Phase 46 context_limit for qwen3.5:0.8b from 32000 to 4000 tokens i
 
 **Files responsible:**
 - `engine/adapter.json` — local_first models array
+
+---
+
+### 53 — Semantic Memory Retrieval
+
+**What it does:**
+Replaces flat-file keyword memory injection with semantic similarity retrieval using nomic-embed-text embeddings. On each task, the query is embedded and compared via cosine similarity against all stored memory entries. Top 5 most relevant entries are injected into the prompt instead of the full memory.txt file. New entries are automatically embedded after each task via fire-and-forget call in saveMemory(). Falls back to keyword-based retrieval silently if Ollama is unavailable.
+
+**Trigger:** Automatic on every task when semantic_memory_enabled: true. sdd index-memory batch-embeds all existing entries on first run.
+
+**Files responsible:**
+- skills/tools/semantic-memory.js — embed, store, retrieve, indexMemory, embedNewEntry
+- orchestrator/orchestrator.js → loadMemoryWithSemantics() — semantic retrieval wrapper
+- orchestrator/orchestrator.js → saveMemory() — fire-and-forget embedNewEntry call
+- orchestrator/chains.js — call site updated to loadMemoryWithSemantics
+- orchestrator/pipeline.js — call site updated to loadMemoryWithSemantics
+- orchestrator/main.js — sdd index-memory command
+- memory/embeddings.json — embedding store (hash-based IDs, 768-dim vectors)
+
+**Config flag:** semantic_memory_enabled in config/system.json. Default: true.
+
+**Verification test:**
+```bash
+node -e "const d=JSON.parse(require('fs').readFileSync(process.env.HOME+'/sdd/memory/embeddings.json','utf8')); console.log('entries:',d.length,'dims:',d[0].embedding.length);"
+```
+Expected: entries: N dims: 768
+
+**Known limitations:**
+- Embedding store grows unbounded — no pruning yet
+- nomic-embed-text must be available via Ollama; no online embedding fallback
+- First run requires sdd index-memory to back-fill existing memory.txt entries
 
 *End of CAPABILITIES.md — Update after every phase that adds, modifies, or removes a capability.*
 

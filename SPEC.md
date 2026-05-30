@@ -91,14 +91,16 @@
 │       ├── cost-tracker.js         ← ✅ Active — Phase 10
 │       ├── image-gen.js            ← ✅ Active — Phase 11
 │       ├── learner.js              ← ✅ Active — Phase 12 (mentorship)
-│       └── learn-command.js        ← ✅ Active — Phase 12 (mentorship)
+│       ├── learn-command.js        ← ✅ Active — Phase 12 (mentorship)
+│       └── semantic-memory.js       ← ✅ Active — Phase 49 (semantic retrieval)
 ├── memory/
 │   ├── core/
 │   ├── patterns/
 │   ├── projects/
 │   ├── temporary/
 │   ├── summaries/
-│   └── memory.txt                 ← Active flat file memory
+│   ├── memory.txt                 ← Active flat file memory
+│   └── embeddings.json            ← Phase 49 — semantic embedding store (768-dim, nomic-embed-text)
 ├── projects/
 │   └── <project-name>/
 │       ├── context/

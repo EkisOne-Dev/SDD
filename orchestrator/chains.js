@@ -1,6 +1,7 @@
 import {
   loadAgent,
   loadMemory,
+  loadMemoryWithSemantics,
   loadPhase,
   buildPrompt,
   logExecution,
@@ -205,7 +206,7 @@ export async function runChain(task, chain, config, adapter, skillContext) {
     // Subsequent agents already have context from prior agent output — memory adds noise not signal
     let rawMemory = '';
     if (i === 0) {
-      rawMemory = loadMemory(config, task);
+      rawMemory = await loadMemoryWithSemantics(config, task);
       if (skillContext) {
         rawMemory += "\n\n[SKILL CONTEXT — Self Research]\n" + skillContext;
       }

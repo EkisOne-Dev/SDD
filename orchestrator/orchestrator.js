@@ -90,9 +90,30 @@ export function loadMemory(config, task = "") {
   }
 }
 
+export async function loadMemoryWithSemantics(config, task) {
+  if (config.semantic_memory_enabled && task) {
+    try {
+      const { retrieveMemory } = await import('../skills/tools/semantic-memory.js');
+      const result = await retrieveMemory(task);
+      if (result) return result;
+    } catch { /* Ollama unavailable — fall through to keyword retrieval */ }
+  }
+  return loadMemory(config, task);
+}
+
 export function saveMemory(config, entry) {
   const memPath = path.join(ROOT, config.memory_file);
   fs.appendFileSync(memPath, entry + "\n");
+  // Semantic memory: fire-and-forget embed of new entry
+  if (config && config.semantic_memory_enabled) {
+    const userMatch = entry.match(/User:\s*(.+?)(?=\nAssistant:|$)/s);
+    const asstMatch = entry.match(/\nAssistant:\s*([\s\S]+)/);
+    if (userMatch && asstMatch) {
+      import('../skills/tools/semantic-memory.js')
+        .then(({ embedNewEntry }) => embedNewEntry(userMatch[1], asstMatch[1]))
+        .catch(() => {});
+    }
+  }
   try {
     const stats = fs.statSync(memPath);
     if (stats.size > 50 * 1024) {
