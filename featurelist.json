@@ -269,7 +269,7 @@
       "id": "F50",
       "phase": 50,
       "title": "sdd audit — system self-audit command",
-      "status": "planned",
+      "status": "complete",
       "priority": "high",
       "acceptance_criteria": [
         "sdd audit 'capability' searches CAPABILITIES.md",

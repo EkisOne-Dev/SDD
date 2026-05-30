@@ -92,7 +92,8 @@
 │       ├── image-gen.js            ← ✅ Active — Phase 11
 │       ├── learner.js              ← ✅ Active — Phase 12 (mentorship)
 │       ├── learn-command.js        ← ✅ Active — Phase 12 (mentorship)
-│       └── semantic-memory.js       ← ✅ Active — Phase 49 (semantic retrieval)
+│       ├── semantic-memory.js       ← ✅ Active — Phase 49 (semantic retrieval)
+│       └── audit.js                   ← ✅ Active — Phase 50 (self-audit command)
 ├── memory/
 │   ├── core/
 │   ├── patterns/

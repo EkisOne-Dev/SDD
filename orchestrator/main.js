@@ -25,6 +25,7 @@ import { runEngineCheck } from '../skills/tools/engine-check.js';
 import { runLearnCommand } from '../skills/tools/learn-command.js';
 import { runSessionEnd } from '../skills/tools/session-end.js';
 import { indexMemory } from '../skills/tools/semantic-memory.js';
+import { runAudit } from '../skills/tools/audit.js';
 import { generateImage } from '../skills/tools/image-gen.js';
 import { runProposalManager } from "../skills/tools/proposal-manager.js";
 import { runPostChain } from "./post-chain.js";
@@ -91,6 +92,16 @@ async function run(injectedTask = null) {
     console.log('\n🧠 Indexing memory entries with nomic-embed-text...\n');
     const { added, total } = await indexMemory();
     console.log(`✅ Done. ${added} new entries indexed. ${total} total in store.\n`);
+    return;
+  }
+
+  if (task.toLowerCase().startsWith('audit')) {
+    const query = task.slice(5).trim();
+    if (!query) {
+      console.log('\nUsage: sdd audit <capability name or keyword>\n');
+    } else {
+      await runAudit(query);
+    }
     return;
   }
 

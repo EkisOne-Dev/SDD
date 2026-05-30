@@ -82,6 +82,7 @@ To verify the full system: run each verification test in order and compare outpu
 | 51 | Mistral Codestral Developer Override | ✅ Active | v4.5.0 |
 | 52 | Session-End Command | ✅ Active | 48 |
 | 53 | Semantic Memory Retrieval | ✅ Active | 49 |
+| 54 | Self-Audit Command | ✅ Active | 50 |
 
 ---
 
@@ -1423,6 +1424,29 @@ Expected: entries: N dims: 768
 - Embedding store grows unbounded — no pruning yet
 - nomic-embed-text must be available via Ollama; no online embedding fallback
 - First run requires sdd index-memory to back-fill existing memory.txt entries
+
+---
+
+### 54 — Self-Audit Command
+
+**What it does:**
+sdd audit <query> searches CAPABILITIES.md for capabilities matching a keyword or number. For each match, extracts the Files responsible section, checks every listed path against disk, and cross-references featurelist.json for status. If any files are missing, writes a structured proposal JSON to meta/proposals/ for the proposal manager to process. No AI call required for the audit itself.
+
+**Trigger:** sdd audit <keyword|number>
+
+**Files responsible:**
+- skills/tools/audit.js — audit logic, file checker, proposal writer
+- orchestrator/main.js — command wiring
+
+**Config flag:** None. Always active.
+
+**Verification test:**
+```bash
+sdd audit session-end
+```
+Expected: Capability #52 found, both files ✅, no gaps detected.
+
+**Known limitations:** File path extraction relies on CAPABILITIES.md formatting being consistent. Paths with inline → function() refs are stripped automatically.
 
 *End of CAPABILITIES.md — Update after every phase that adds, modifies, or removes a capability.*
 
