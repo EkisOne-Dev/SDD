@@ -95,6 +95,18 @@ async function run(injectedTask = null) {
     return;
   }
 
+  if (task.toLowerCase().startsWith('release')) {
+    const version = task.slice(7).trim();
+    if (!version) {
+      console.log('\nUsage: sdd release <version>  (e.g. sdd release 4.10.0)\n');
+    } else {
+      const { execSync } = await import('child_process');
+      execSync(`node ${process.env.HOME}/sdd/scripts/sync-version.js ${version}`,
+        { stdio: 'inherit' });
+    }
+    return;
+  }
+
   if (task.toLowerCase().startsWith('audit')) {
     const query = task.slice(5).trim();
     if (!query) {

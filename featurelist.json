@@ -1,6 +1,6 @@
 {
-  "version": "4.5.0",
-  "last_updated": "2026-05-30",
+  "version": "4.9.0",
+  "last_updated": "2026-05-31",
   "completed_phases": [
     0,
     1,
@@ -388,7 +388,7 @@
       ]
     }
   },
-  "system_version": "4.5.0",
+  "system_version": "4.9.0",
   "completed_phases_named": [
     "47b",
     "47c",
