@@ -1,8 +1,8 @@
 {
   "name": "sdd",
-  "version": "3.7.5",
+  "version": "4.8.0",
   "type": "module",
-  "description": "Structured Development Dispatcher",
+  "description": "Structured Development System",
   "main": "orchestrator/main.js",
   "scripts": {
     "start": "node orchestrator/main.js"

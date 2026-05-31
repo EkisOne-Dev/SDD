@@ -1605,15 +1605,15 @@ The `agent_models` block in `engine/adapter.json` maps specific agent roles to p
 
 | ID | Issue | Discovered | Fix Scope |
 |---|---|---|---|
-| C-001 | registry.json: intent-parser has enabled:false but system.json has intent_parser_enabled:true — router never fires intent parser despite config | Audit 2026-05-30 | Fix registry.json |
-| C-002 | registry.json: context-compaction has enabled:false — Phase 48 complete and active, session-end never skill-routed | Audit 2026-05-30 | Fix registry.json |
-| C-003 | registry.json: self-audit entry points to tools/self-audit.js — actual file is tools/audit.js | Audit 2026-05-30 | Fix registry.json |
-| C-004 | registry.json: semantic-memory (Phase 49) not registered — router cannot match or compose it | Audit 2026-05-30 | Add to registry.json |
-| C-006 | Pre-commit hook exists at hooks/pre-commit but not installed to .git/hooks/ — never fires on commits | Audit 2026-05-30 | Copy/symlink to .git/hooks/pre-commit |
-| I-005 | engine/adapter.json: agent_models key present but undocumented in SPEC.md or CAPABILITIES.md | Audit 2026-05-30 | Document in SPEC.md engine adapter section |
-| I-006 | mode.json: active_mode is fast — disables validation, evaluation, multi-agent chains. Not documented as active system behavior | Audit 2026-05-30 | Document in System Behaviors section |
-| I-007 | skills/library/: model-gemma3.md missing — gemma3:4b assigned to creator agent but has no per-model skill file | Audit 2026-05-30 | Create model-gemma3.md |
-| M-001 | skills/registry.json: spec-clarifier + guardian-angel library_file paths use inconsistent prefix format | Audit 2026-05-30 | Normalize paths |
+| C-001 | ~~registry.json: intent-parser has enabled:false~~ | Audit 2026-05-30 | ✅ Fixed — registry.json enabled: true but system.json has intent_parser_enabled:true — router never fires intent parser despite config | Audit 2026-05-30 | Fix registry.json |
+| C-002 | ~~registry.json: context-compaction has enabled:false~~ | Audit 2026-05-30 | ✅ Fixed — registry.json enabled: true — Phase 48 complete and active, session-end never skill-routed | Audit 2026-05-30 | Fix registry.json |
+| C-003 | ~~registry.json: self-audit entry points to tools/self-audit.js~~ | Audit 2026-05-30 | ✅ Fixed — corrected to tools/audit.js — actual file is tools/audit.js | Audit 2026-05-30 | Fix registry.json |
+| C-004 | ~~registry.json: semantic-memory (Phase 49) not registered~~ | Audit 2026-05-30 | ✅ Fixed — entry added to registry.json — router cannot match or compose it | Audit 2026-05-30 | Add to registry.json |
+| C-006 | ~~Pre-commit hook exists at hooks/pre-commit but not installed~~ | Audit 2026-05-30 | ✅ Fixed — installed to .git/hooks/pre-commit to .git/hooks/ — never fires on commits | Audit 2026-05-30 | Copy/symlink to .git/hooks/pre-commit |
+| I-005 | ~~engine/adapter.json: agent_models key present but undocumented~~ | Audit 2026-05-30 | ✅ Fixed — documented in ENGINE ADAPTER section in SPEC.md or CAPABILITIES.md | Audit 2026-05-30 | Document in SPEC.md engine adapter section |
+| I-006 | ~~mode.json: active_mode is fast~~ | Audit 2026-05-30 | ✅ Fixed — documented in System Behaviors — disables validation, evaluation, multi-agent chains. Not documented as active system behavior | Audit 2026-05-30 | Document in System Behaviors section |
+| I-007 | ~~skills/library/: model-gemma3.md missing~~ | Audit 2026-05-30 | ✅ Fixed — model-gemma3.md created — gemma3:4b assigned to creator agent but has no per-model skill file | Audit 2026-05-30 | Create model-gemma3.md |
+| M-001 | ~~skills/registry.json: spec-clarifier + guardian-angel library_file paths~~ | Audit 2026-05-30 | ✅ Fixed — paths normalized use inconsistent prefix format | Audit 2026-05-30 | Normalize paths |
 | KI-001 | ~~Validator receives reviewer's audit output rather than synthesized design~~ | Phase 47b test | ✅ Fixed Phase 51 — preReviewerOutput tracker + structured [DESIGN TO VALIDATE] handoff |
 
 ### KI-001 Detail
