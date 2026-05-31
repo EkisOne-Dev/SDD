@@ -283,7 +283,7 @@
       "id": "F51",
       "phase": 51,
       "title": "Full verification pass — all phases 0-51",
-      "status": "planned",
+      "status": "complete",
       "priority": "critical",
       "acceptance_criteria": [
         "verify.sh passes with 0 failures",

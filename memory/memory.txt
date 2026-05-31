@@ -237,3 +237,6 @@ The output provided by the prior agent is accurate, logically structured, and fu
 1.  **Factual Accuracy Verification:** The core concepts of recursion (self-calling function, subproblems, base case, stack overflow) are standard computer science definitions, verifiable in any introductory programming or data structures text.
 2.  **Completeness (for brevity) Verification:** The output covers the essential elements required for a brief explanation without introducing unnecessary complexity.
 3.  **Constraint Adherence Verification:** The output avoids speculation and presents verified programming concepts. No external citations are strictly necessary for this fundamental definition within the domain of computer science.
+
+User: --help
+Assistant: HIGH - Recursion is a programming technique where a function solves a problem by calling itself. This is achieved by breaking down the problem into smaller, identical subproblems. A crucial element is the "base case," which acts as the stopping condition for the recursion. Without a base case, the function would call itself indefinitely, leading to a stack overflow error.

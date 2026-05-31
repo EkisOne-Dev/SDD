@@ -193,8 +193,11 @@ export async function runChain(task, chain, config, adapter, skillContext) {
 
   const reviewFocus = REVIEW_FOCUS[type] || REVIEW_FOCUS.basic;
 
+  let preReviewerOutput = null; // KI-001: capture design before reviewer pass
   for (let i = 0; i < effectiveAgents.length; i++) {
     const agentName = effectiveAgents[i];
+    // KI-001: save pre-reviewer design so validator receives artifact not audit
+    if (agentName === 'reviewer' && previousOutput) preReviewerOutput = previousOutput;
     const isLast = i === effectiveAgents.length - 1;
 
     console.log(c.status(`\n🤖 Agent: ${agentName} [${complexity}]`));
@@ -213,9 +216,15 @@ export async function runChain(task, chain, config, adapter, skillContext) {
     }
 
     // Compress and inject prior agent output
-    const compressedPrior = previousOutput
-      ? extractHandoff(previousOutput, effectiveAgents[i - 1])
-      : null;
+    // KI-001 fix: validator receives design artifact + reviewer findings, not audit alone
+    let compressedPrior = null;
+    if (agentName === 'validator' && preReviewerOutput) {
+      const designHandoff  = extractHandoff(preReviewerOutput, effectiveAgents[i - 2] || 'prior');
+      const reviewFindings = extractHandoff(previousOutput, 'reviewer');
+      compressedPrior = `[DESIGN TO VALIDATE]\n${designHandoff}\n\n[REVIEWER FINDINGS]\n${reviewFindings}`;
+    } else if (previousOutput) {
+      compressedPrior = extractHandoff(previousOutput, effectiveAgents[i - 1]);
+    }
 
     const memory = compressedPrior
       ? rawMemory + `\n\n[PRIOR AGENT OUTPUT — ${effectiveAgents[i - 1].toUpperCase()}]\n` + compressedPrior

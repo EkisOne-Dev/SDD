@@ -81,3 +81,4 @@
 {"timestamp":"2026-05-29T22:53:15.650Z","task":"what is 2 + 2","scores":{"clarity":70,"usefulness":30,"efficiency":70,"redundancy":80,"overall":63}}
 {"timestamp":"2026-05-30T18:00:57.855Z","task":"what did we discuss about caching","scores":{"clarity":85,"usefulness":70,"efficiency":70,"redundancy":80,"overall":76}}
 {"timestamp":"2026-05-30T18:18:53.592Z","task":"explain recursion briefly","scores":{"clarity":85,"usefulness":90,"efficiency":45,"redundancy":77,"overall":74}}
+{"timestamp":"2026-05-30T18:40:41.012Z","task":"--help","scores":{"clarity":60,"usefulness":50,"efficiency":60,"redundancy":80,"overall":63}}

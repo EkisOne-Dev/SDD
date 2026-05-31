@@ -10,18 +10,18 @@ warn() { echo "  ⚠️  $1"; WARN=$((WARN+1)); }
 
 echo ""
 echo "╔══════════════════════════════════════════╗"
-echo "║       SDD System Verification v3.7.2     ║"
+echo "║       SDD System Verification v4.7.0     ║"
 echo "╚══════════════════════════════════════════╝"
 
 echo ""
 echo "📁 Directory Structure"
-for f in start.sh backup.sh SPEC.md CAPABILITIES.md README.md config/system.json engine/adapter.json orchestrator/main.js orchestrator/orchestrator.js orchestrator/chains.js orchestrator/pipeline.js orchestrator/menu.js orchestrator/post-chain.js orchestrator/validator.js orchestrator/spinner.js orchestrator/colors.js orchestrator/utils.js skills/router.js skills/registry.json skills/tools/capability-check.js skills/tools/negotiator.js skills/tools/self-research.js skills/tools/self-critique.js skills/tools/scorer.js skills/tools/observer.js skills/tools/proposal-manager.js skills/tools/applier.js skills/tools/postmortem.js skills/tools/drift-control.js skills/tools/cost-tracker.js skills/tools/image-gen.js skills/tools/learner.js skills/tools/learn-command.js skills/tools/engine-check.js skills/tools/memory-summarizer.js; do
+for f in start.sh backup.sh SPEC.md CAPABILITIES.md README.md config/system.json engine/adapter.json orchestrator/main.js orchestrator/orchestrator.js orchestrator/chains.js orchestrator/pipeline.js orchestrator/menu.js orchestrator/post-chain.js orchestrator/validator.js orchestrator/spinner.js orchestrator/colors.js orchestrator/utils.js skills/router.js skills/registry.json skills/tools/capability-check.js skills/tools/negotiator.js skills/tools/self-research.js skills/tools/self-critique.js skills/tools/scorer.js skills/tools/observer.js skills/tools/proposal-manager.js skills/tools/applier.js skills/tools/postmortem.js skills/tools/drift-control.js skills/tools/cost-tracker.js skills/tools/image-gen.js skills/tools/learner.js skills/tools/learn-command.js skills/tools/engine-check.js skills/tools/memory-summarizer.js skills/tools/session-end.js skills/tools/intent-parser.js skills/tools/semantic-memory.js skills/tools/audit.js; do
   [ -f "$HOME/sdd/$f" ] && pass "$f" || fail "$f MISSING"
 done
 
 echo ""
 echo "🤖 Agent Roster"
-for agent in basic architect developer analyst researcher reviewer mentor creator strategist; do
+for agent in basic architect developer analyst researcher reviewer mentor creator strategist validator; do
   dir="$HOME/sdd/agents/$agent"
   if [ -f "$dir/identity.txt" ] && [ -f "$dir/strategy.txt" ] && [ -f "$dir/constraints.json" ]; then
     pass "$agent"
@@ -46,7 +46,7 @@ echo "⚙️  Config Flags"
 node --input-type=module << 'JSEOF'
 import { readFileSync } from 'fs';
 const config = JSON.parse(readFileSync(process.env.HOME + '/sdd/config/system.json', 'utf-8'));
-const required = ['capability_check_enabled','negotiation_enabled','self_research_enabled','scoring_enabled','meta_observation_enabled','cost_tracking_enabled','free_only_mode','auto_improvement'];
+const required = ['capability_check_enabled','negotiation_enabled','self_research_enabled','scoring_enabled','meta_observation_enabled','cost_tracking_enabled','free_only_mode','auto_improvement','intent_parser_enabled','spec_clarifier_enabled','guardian_angel_enabled','semantic_memory_enabled'];
 required.forEach(f => {
   if (f in config) process.stdout.write('  ✅ ' + f + ': ' + config[f] + '\n');
   else process.stdout.write('  ❌ ' + f + ': MISSING\n');
@@ -80,6 +80,7 @@ for f in constitution.md featurelist.json history.md; do
   [ -f "$HOME/sdd/$f" ] && pass "$f" || warn "$f — not yet built"
 done
 [ -d "$HOME/sdd/skills/library" ] && pass "skills/library/" || warn "skills/library/ — not yet built"
+[ -f "$HOME/sdd/memory/embeddings.json" ] && pass "memory/embeddings.json" || warn "memory/embeddings.json — run: sdd index-memory"
 
 echo ""
 echo "📦 Git State"

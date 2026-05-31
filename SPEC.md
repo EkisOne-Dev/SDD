@@ -1559,7 +1559,7 @@ Thermal impact: controlled — vapor chamber handles sequential load spikes safe
 
 | ID | Issue | Discovered | Fix Scope |
 |---|---|---|---|
-| KI-001 | Validator receives reviewer's audit output rather than synthesized design — context handoff passes critique not final artifact | Phase 47b test | Phase 51 verification pass |
+| KI-001 | ~~Validator receives reviewer's audit output rather than synthesized design~~ | Phase 47b test | ✅ Fixed Phase 51 — preReviewerOutput tracker + structured [DESIGN TO VALIDATE] handoff |
 
 ### KI-001 Detail
 **Symptom:** On complex chains, the validator agent receives the reviewer's critique/audit
