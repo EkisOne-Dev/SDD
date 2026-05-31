@@ -70,3 +70,5 @@
 {"timestamp":"2026-05-30T18:00:57.871Z","task":"what did we discuss about caching","api_calls":1,"input_tokens":10197,"output_tokens":297,"total_tokens":10494}
 {"timestamp":"2026-05-30T18:18:53.608Z","task":"explain recursion briefly","api_calls":2,"input_tokens":7267,"output_tokens":1233,"total_tokens":8500}
 {"timestamp":"2026-05-30T18:40:41.019Z","task":"--help","api_calls":1,"input_tokens":904,"output_tokens":94,"total_tokens":998}
+{"timestamp":"2026-05-31T12:14:59.527Z","task":"what are the tradeoffs between REST and GraphQL","api_calls":2,"input_tokens":6873,"output_tokens":865,"total_tokens":7738}
+{"timestamp":"2026-05-31T12:24:00.637Z","task":"what are the tradeoffs between REST and GraphQL","api_calls":2,"input_tokens":6557,"output_tokens":302,"total_tokens":6859}

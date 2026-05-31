@@ -5,6 +5,8 @@ import readline from 'readline';
 import { fileURLToPath } from 'url';
 import { generatePostmortem } from '../skills/tools/postmortem.js';
 import { loadMemoryWithSemantics } from './orchestrator.js';
+import { readFileSync as _rfs, existsSync as _ex } from 'fs';
+import { join as _j } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const SDD_ROOT = path.resolve(__dirname, '..');
@@ -152,6 +154,10 @@ async function runStage(state, stage, deps) {
 
   const { contract, prompt: promptTemplate } = loadPipelinePhase(stage);
   const agent    = loadAgentSafe(STAGE_AGENTS[stage], loadAgent, logExecution);
+  // Universal Thinking Protocol
+  const _tpPath = _j(process.env.HOME, 'sdd', 'skills', 'library', 'universal-thinking.md');
+  const thinkingProtocol = (config.universal_thinking_enabled && _ex(_tpPath))
+    ? _rfs(_tpPath, 'utf8') : '';
   const memory   = await loadMemoryWithSemantics(config, state.original_task);
 
   // Load prior artifact (previous stage output)

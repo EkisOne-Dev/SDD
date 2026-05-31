@@ -85,6 +85,7 @@ To verify the full system: run each verification test in order and compare outpu
 | 54 | Self-Audit Command | ✅ Active | 50 |
 | 55 | Cross-Session Pattern Synthesis | 🔲 Planned | 52 |
 | 56 | Versioned System Snapshots | 🔲 Planned | 53 |
+| 57 | Universal Thinking Protocol | ✅ Active | 47c-prime |
 
 ---
 
@@ -1477,6 +1478,31 @@ On each version bump, captures a structured JSON snapshot of the system state: a
 - skills/tools/snapshot.js — snapshot generator
 - versions/ — output directory
 - backup.sh — trigger point on version change
+
+---
+
+### 57 — Universal Thinking Protocol
+
+**What it does:**
+Injects a prose-framed analytical scaffold into every buildPrompt() call regardless of agent, provider, or complexity tier. Forces the model to silently consider sub-problems, unstated assumptions, confidence calibration, failure modes, and task alignment before responding. Confidence calibration surfaces inline in output (HIGH/MEDIUM/LOW claim ratings). Protocol executes invisibly — no structural output is emitted.
+
+**Trigger:** Automatic on every buildPrompt() call when universal_thinking_enabled: true.
+
+**Files responsible:**
+- skills/library/universal-thinking.md — scaffold content (prose, no mirrored structure)
+- orchestrator/orchestrator.js → buildPrompt() — thinkingProtocol parameter, appended post-assembly
+- orchestrator/chains.js — protocol loaded once per chain, passed to all buildPrompt() calls
+- orchestrator/pipeline.js — same pattern
+
+**Config flag:** universal_thinking_enabled in config/system.json. Default: true.
+
+**Verification test:**
+```bash
+sdd "explain recursion" 2>&1 | grep -i "medium\|low\|HIGH"
+```
+Expected: Confidence ratings visible inline. No [THINKING PROTOCOL] headers in output.
+
+**Known limitations:** Prose framing required to prevent model mirroring structured labels. Adds ~370 chars to every prompt — minimal context budget impact.
 
 *End of CAPABILITIES.md — Update after every phase that adds, modifies, or removes a capability.*
 

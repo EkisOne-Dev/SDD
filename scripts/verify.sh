@@ -46,7 +46,7 @@ echo "⚙️  Config Flags"
 node --input-type=module << 'JSEOF'
 import { readFileSync } from 'fs';
 const config = JSON.parse(readFileSync(process.env.HOME + '/sdd/config/system.json', 'utf-8'));
-const required = ['capability_check_enabled','negotiation_enabled','self_research_enabled','scoring_enabled','meta_observation_enabled','cost_tracking_enabled','free_only_mode','auto_improvement','intent_parser_enabled','spec_clarifier_enabled','guardian_angel_enabled','semantic_memory_enabled'];
+const required = ['capability_check_enabled','negotiation_enabled','self_research_enabled','scoring_enabled','meta_observation_enabled','cost_tracking_enabled','free_only_mode','auto_improvement','intent_parser_enabled','spec_clarifier_enabled','guardian_angel_enabled','semantic_memory_enabled','universal_thinking_enabled'];
 required.forEach(f => {
   if (f in config) process.stdout.write('  ✅ ' + f + ': ' + config[f] + '\n');
   else process.stdout.write('  ❌ ' + f + ': MISSING\n');
@@ -81,6 +81,7 @@ for f in constitution.md featurelist.json history.md; do
 done
 [ -d "$HOME/sdd/skills/library" ] && pass "skills/library/" || warn "skills/library/ — not yet built"
 [ -f "$HOME/sdd/memory/embeddings.json" ] && pass "memory/embeddings.json" || warn "memory/embeddings.json — run: sdd index-memory"
+[ -f "$HOME/sdd/skills/library/universal-thinking.md" ] && pass "skills/library/universal-thinking.md" || fail "universal-thinking.md MISSING"
 
 echo ""
 echo "📦 Git State"

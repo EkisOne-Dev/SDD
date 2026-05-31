@@ -1,3 +1,9 @@
+import { readFileSync, existsSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = join(__dirname, '..');
+
 import {
   loadAgent,
   loadMemory,
@@ -193,6 +199,10 @@ export async function runChain(task, chain, config, adapter, skillContext) {
 
   const reviewFocus = REVIEW_FOCUS[type] || REVIEW_FOCUS.basic;
 
+  // Universal Thinking Protocol — load once for all agents in chain
+  const _tpFile = join(ROOT, 'skills', 'library', 'universal-thinking.md');
+  const thinkingProtocol = (config.universal_thinking_enabled && existsSync(_tpFile))
+    ? readFileSync(_tpFile, 'utf8') : '';
   let preReviewerOutput = null; // KI-001: capture design before reviewer pass
   for (let i = 0; i < effectiveAgents.length; i++) {
     const agentName = effectiveAgents[i];
@@ -238,7 +248,8 @@ export async function runChain(task, chain, config, adapter, skillContext) {
       task,
       compressedPrior || "",
       complexity,
-      reviewFocus
+      reviewFocus,
+      thinkingProtocol
     );
 
     totalPromptChars += prompt.length;

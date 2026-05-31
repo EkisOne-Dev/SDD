@@ -6,6 +6,20 @@
       "domain": "financial_advice",
       "confidence": "low",
       "decision": "user_overrode_low_confidence"
+    },
+    {
+      "timestamp": "2026-05-31T12:12:17.480Z",
+      "task": "what are the tradeoffs between REST and GraphQL",
+      "domain": "financial_advice",
+      "confidence": "low",
+      "decision": "user_overrode_low_confidence"
+    },
+    {
+      "timestamp": "2026-05-31T12:20:45.826Z",
+      "task": "what are the tradeoffs between REST and GraphQL",
+      "domain": "financial_advice",
+      "confidence": "low",
+      "decision": "user_overrode_low_confidence"
     }
   ]
 }

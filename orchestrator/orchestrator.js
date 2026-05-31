@@ -181,7 +181,7 @@ export function compressPrompt(text) {
     .trim();
 }
 
-export function buildPrompt(template, contract, agent, memory, task, priorOutput = "", complexity = "complex", reviewFocus = "Check for clarity, completeness, and accuracy") {
+export function buildPrompt(template, contract, agent, memory, task, priorOutput = "", complexity = "complex", reviewFocus = "Check for clarity, completeness, and accuracy", thinkingProtocol = "") {
   const triBlock = complexity === "simple" ? `Respond directly and concisely. Do NOT use [INTERNAL REASONING], [ARTIFACT], or [VERIFICATION] sections. No section headers. Start immediately with the answer.` : `If you are a specialist agent (architect, developer, researcher, reviewer, analyst, mentor, strategist), structure your response using TRI-STRUCTURE:
 
 [INTERNAL REASONING]
@@ -203,7 +203,7 @@ If you are the basic agent, respond directly without TRI-STRUCTURE.`;
   const _ident  = compressPrompt(agent.identity);
   const _strat  = compressPrompt(agent.strategy);
 
-  return template
+  const assembled = template
     .replace("{goal}", contract.goal)
     .replace("{constraints}", contract.constraints.join(", "))
     .replace("{success_criteria}", contract.success_criteria)
@@ -215,6 +215,8 @@ If you are the basic agent, respond directly without TRI-STRUCTURE.`;
     .replace("{tri_structure}", triBlock)
     .replace("{task}", task)
     .replace("{review_focus}", reviewFocus);
+  const _protocol = thinkingProtocol ? '\n\n' + compressPrompt(thinkingProtocol) : '';
+  return assembled + _protocol;
 }
 
 // ── Logger ────────────────────────────────────────────────────────────────────
