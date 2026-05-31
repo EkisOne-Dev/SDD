@@ -37,6 +37,7 @@
 - Task complexity classifier (signals simple vs complex to control model selection and optional steps)
 - Self-critique layer (optional focused quality pass after chain completion)
 - Context compression (caps inter-agent context at 500 tokens for efficiency)
+- Execution mode system (fast/strict/flexible via config/mode.json — current: fast — validation:false, evaluation:false, agents:1; strict enables full multi-agent chains and validator pass)
 
 ---
 
@@ -68,7 +69,8 @@
 │   ├── reviewer/                  ← QA and critique across all outputs
 │   ├── mentor/                    ← Teaching, guidance, learning paths
 │   ├── creator/                   ← Multimedia content, structured prompts
-│   └── strategist/                ← Planning, roadmaps, decisions
+│   ├── strategist/                ← Planning, roadmaps, decisions
+│   └── validator/                 ← ✅ Active — Phase 47b (logical coherence, contradiction detection)
 ├── phases/
 │   └── basic/                     ← MVP execution phase ✅
 │       ├── contract.json
@@ -93,7 +95,12 @@
 │       ├── learner.js              ← ✅ Active — Phase 12 (mentorship)
 │       ├── learn-command.js        ← ✅ Active — Phase 12 (mentorship)
 │       ├── semantic-memory.js       ← ✅ Active — Phase 49 (semantic retrieval)
-│       └── audit.js                   ← ✅ Active — Phase 50 (self-audit command)
+│       ├── audit.js                   ← ✅ Active — Phase 50 (self-audit command)
+│       ├── engine-check.js        ← ✅ Active — Phase 15 (engine health check)
+│       ├── memory-summarizer.js   ← ✅ Active — Phase 18 (memory summarization)
+│       ├── session-end.js         ← ✅ Active — Phase 48 (session-end command)
+│       └── intent-parser.js       ← ✅ Active — Phase 44 (intent normalization)
+│   └── library/                   ← ✅ Active — skill instruction files (Phase 47+)
 ├── memory/
 │   ├── core/
 │   ├── patterns/
@@ -112,6 +119,7 @@
 │       └── objective.md
 ├── meta/
 │   ├── logs/
+│   ├── insights/                  ← 🔲 Planned — Phase 52 (cross-session pattern synthesis)
 │   ├── postmortems/
 │   ├── baselines/
 │   ├── proposals/
@@ -126,6 +134,7 @@
 │   ├── roadmaps/              ← User-provided field roadmaps (JSON)
 │   ├── progress/              ← Per-roadmap learner state and position
 │   └── sessions/              ← Session logs with topic, response, assessment
+├── versions/                      ← 🔲 Planned — Phase 53 (structured version snapshots)
 ├── engine/
 │   └── adapter.json               ← ✅ Active — Gemini / OpenRouter / Ollama
 └── config/
@@ -1506,6 +1515,30 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 
 ---
 
+## PLANNED PHASES — Post-51 Roadmap
+
+### Phase 52 — Cross-Session Pattern Synthesis (meta/insights/)
+| Item | Description |
+|---|---|
+| meta/insights/ | Directory for synthesized cross-session patterns derived from postmortems + score trends |
+| insight-generator.js | Reads meta/logs/ + meta/scores/scores.jsonl; derives patterns: agent underperformance, task-type score trends, cascade failure rates |
+| Wire to meta observer | Observer appends raw insight candidates; generator synthesizes on sdd session-end |
+| Output format | Structured JSON per insight: pattern, evidence, confidence, recommended_action |
+
+**Value:** Makes self-improvement loop data-driven. Currently the meta observer logs events but never synthesizes. Insights directly inform proposal generation.
+
+### Phase 53 — Versioned System Snapshots (versions/)
+| Item | Description |
+|---|---|
+| versions/ | Directory for structured per-version JSON snapshots |
+| snapshot.js | On each version bump: captures active config, agent roster, capability count, score averages, known issues, active flags |
+| Wire to backup.sh | Snapshot generated automatically on sdd backup when version changed |
+| Output format | versions/v4.8.0.json etc — enables structured regression comparison |
+
+**Value:** Not redundant with git. Git stores file diffs; snapshots store processed system state at a point in time. Enables: "compare current behavior to v4.5.0" without parsing git history.
+
+---
+
 ## COGNITIVE FIT MODEL ARCHITECTURE (Established Phase 47b)
 
 ### Design Priority Order
@@ -1556,10 +1589,31 @@ Thermal impact: controlled — vapor chamber handles sequential load spikes safe
 
 ---
 
+## ENGINE ADAPTER — agent_models Key
+
+The `agent_models` block in `engine/adapter.json` maps specific agent roles to provider override configs. When an agent name matches a key in `agent_models`, `runEngine()` performs a full provider config swap before the API call — replacing the cascade default with the agent-specific provider. Currently active override: developer → mistral_codestral (codestral-latest). This is the mechanism that powers the Mistral Codestral developer override (Capability #51).
+
+```json
+"agent_models": {
+  "developer": "mistral_codestral"
+}
+```
+
+---
+
 ## KNOWN ISSUES — Pending Phase 51 Review
 
 | ID | Issue | Discovered | Fix Scope |
 |---|---|---|---|
+| C-001 | registry.json: intent-parser has enabled:false but system.json has intent_parser_enabled:true — router never fires intent parser despite config | Audit 2026-05-30 | Fix registry.json |
+| C-002 | registry.json: context-compaction has enabled:false — Phase 48 complete and active, session-end never skill-routed | Audit 2026-05-30 | Fix registry.json |
+| C-003 | registry.json: self-audit entry points to tools/self-audit.js — actual file is tools/audit.js | Audit 2026-05-30 | Fix registry.json |
+| C-004 | registry.json: semantic-memory (Phase 49) not registered — router cannot match or compose it | Audit 2026-05-30 | Add to registry.json |
+| C-006 | Pre-commit hook exists at hooks/pre-commit but not installed to .git/hooks/ — never fires on commits | Audit 2026-05-30 | Copy/symlink to .git/hooks/pre-commit |
+| I-005 | engine/adapter.json: agent_models key present but undocumented in SPEC.md or CAPABILITIES.md | Audit 2026-05-30 | Document in SPEC.md engine adapter section |
+| I-006 | mode.json: active_mode is fast — disables validation, evaluation, multi-agent chains. Not documented as active system behavior | Audit 2026-05-30 | Document in System Behaviors section |
+| I-007 | skills/library/: model-gemma3.md missing — gemma3:4b assigned to creator agent but has no per-model skill file | Audit 2026-05-30 | Create model-gemma3.md |
+| M-001 | skills/registry.json: spec-clarifier + guardian-angel library_file paths use inconsistent prefix format | Audit 2026-05-30 | Normalize paths |
 | KI-001 | ~~Validator receives reviewer's audit output rather than synthesized design~~ | Phase 47b test | ✅ Fixed Phase 51 — preReviewerOutput tracker + structured [DESIGN TO VALIDATE] handoff |
 
 ### KI-001 Detail

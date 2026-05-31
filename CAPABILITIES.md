@@ -4,7 +4,7 @@
 > Intended audience: technical reviewers, external auditors, and the system owner.
 
 **System:** Structured Development System (SDD)
-**Version:** 4.5.0
+**Version:** 4.8.0
 **Platform:** Android / Termux
 **Runtime:** Node.js
 **Last Updated:** 2026-05-30
@@ -83,6 +83,8 @@ To verify the full system: run each verification test in order and compare outpu
 | 52 | Session-End Command | ✅ Active | 48 |
 | 53 | Semantic Memory Retrieval | ✅ Active | 49 |
 | 54 | Self-Audit Command | ✅ Active | 50 |
+| 55 | Cross-Session Pattern Synthesis | 🔲 Planned | 52 |
+| 56 | Versioned System Snapshots | 🔲 Planned | 53 |
 
 ---
 
@@ -1447,6 +1449,34 @@ sdd audit session-end
 Expected: Capability #52 found, both files ✅, no gaps detected.
 
 **Known limitations:** File path extraction relies on CAPABILITIES.md formatting being consistent. Paths with inline → function() refs are stripped automatically.
+
+---
+
+### 55 — Cross-Session Pattern Synthesis
+
+**What it does:**
+Synthesizes cross-session patterns from accumulated meta/logs/ and meta/scores/scores.jsonl. Derives actionable insights: which agents underperform consistently, which task types score low, which cascade providers fail most often. Writes structured insight entries to meta/insights/ with pattern, evidence, confidence, and recommended_action fields. Feeds the self-improvement proposal loop with data-driven evidence.
+
+**Status:** 🔲 Planned — Phase 52
+
+**Files responsible (planned):**
+- skills/tools/insight-generator.js — pattern synthesis engine
+- meta/insights/ — output directory
+- orchestrator/main.js — wire to sdd session-end
+
+---
+
+### 56 — Versioned System Snapshots
+
+**What it does:**
+On each version bump, captures a structured JSON snapshot of the system state: active config flags, agent roster, capability count, score averages, known issues, active provider cascade. Writes to versions/vX.Y.Z.json. Enables structured regression comparison across versions without parsing git history.
+
+**Status:** 🔲 Planned — Phase 53
+
+**Files responsible (planned):**
+- skills/tools/snapshot.js — snapshot generator
+- versions/ — output directory
+- backup.sh — trigger point on version change
 
 *End of CAPABILITIES.md — Update after every phase that adds, modifies, or removes a capability.*
 

@@ -133,7 +133,7 @@
       "id": "F41",
       "phase": 41,
       "title": "Harness foundation — constitution.md, featurelist.json, history.md",
-      "status": "done",
+      "status": "complete",
       "priority": "critical",
       "acceptance_criteria": [
         "constitution.md exists with 7 rule sections",
@@ -172,7 +172,7 @@
       "id": "F44",
       "phase": 44,
       "title": "Intent parser — phi4-mini JSON normalization",
-      "status": "done",
+      "status": "complete",
       "priority": "high",
       "acceptance_criteria": [
         "Runs only on tasks >15 words or no clear keyword match",
@@ -185,7 +185,7 @@
       "id": "F45",
       "phase": 45,
       "title": "Per-model skill files + task-aware local router",
-      "status": "done",
+      "status": "complete",
       "priority": "critical",
       "acceptance_criteria": [
         "OLLAMA_MAX_LOADED_MODELS=1 enforced",
@@ -215,7 +215,7 @@
       "id": "F47",
       "phase": 47,
       "title": "Spec-clarifier + guardian-angel skills",
-      "status": "done",
+      "status": "complete",
       "priority": "high",
       "acceptance_criteria": [
         "Spec-clarifier runs before negotiator on complex tasks",
@@ -348,6 +348,34 @@
         "engine-check.js rebuilt — 8 providers, correct labels + routing functions",
         "Gemini base_url corrected — removed double /v1beta (checkGemini appends it)",
         "Cerebras model string verified via /v1/models endpoint — gpt-oss-120b confirmed"
+      ]
+    },
+    "phase_52_insights": {
+      "id": "F52",
+      "phase": 52,
+      "title": "Cross-session pattern synthesis — meta/insights/",
+      "status": "planned",
+      "priority": "high",
+      "acceptance_criteria": [
+        "meta/insights/ directory exists",
+        "insight-generator.js reads meta/logs/ + scores.jsonl",
+        "Patterns written as structured JSON with evidence + confidence",
+        "Runs automatically on sdd session-end",
+        "At least 3 insight types: agent performance, task score trends, cascade failures"
+      ]
+    },
+    "phase_53_versions": {
+      "id": "F53",
+      "phase": 53,
+      "title": "Versioned system snapshots — versions/",
+      "status": "planned",
+      "priority": "medium",
+      "acceptance_criteria": [
+        "versions/ directory exists",
+        "snapshot.js captures: config flags, agent roster, capability count, score averages, known issues",
+        "Snapshot written on sdd backup when version changes",
+        "versions/v4.8.0.json readable and structured",
+        "sdd diff v4.5.0 shows delta between snapshots"
       ]
     }
   },
