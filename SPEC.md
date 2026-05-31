@@ -112,11 +112,13 @@
 │       └── objective.md
 ├── meta/
 │   ├── logs/
-│   ├── insights/
 │   ├── postmortems/
 │   ├── baselines/
 │   ├── proposals/
-│   └── costs.json
+│   ├── costs/
+│   │   └── costs.jsonl            ← Cost tracking data
+│   └── scores/
+│       └── scores.jsonl           ← Score history data
 ├── capability/
 │   ├── knowledge-map.json         ← ✅ Active — domain competence index
 │   └── resource-log.json          ← ✅ Active — logs external resource fetches
@@ -124,7 +126,6 @@
 │   ├── roadmaps/              ← User-provided field roadmaps (JSON)
 │   ├── progress/              ← Per-roadmap learner state and position
 │   └── sessions/              ← Session logs with topic, response, assessment
-├── versions/
 ├── engine/
 │   └── adapter.json               ← ✅ Active — Gemini / OpenRouter / Ollama
 └── config/
