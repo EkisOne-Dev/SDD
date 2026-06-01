@@ -91,3 +91,9 @@
 **Reason:** The validator was incorrectly receiving the reviewer's audit commentary instead of the clean design, causing task misalignment.
 **Impact:** The validator agent can now correctly process synthesized design artifacts, enabling accurate evaluation and progression of complex AI orchestration chains.
 **Commit:** a98b276
+
+### 2026-06-01 — Implemented Validator Handoff Fix for KI-001
+**Decision:** Modified `orchestrator/chains.js` within the `extractHandoff()` function to conditionally extract the `[ARTIFACT]` block when passing data to the validator agent, preventing it from receiving extraneous audit commentary.
+**Reason:** To ensure the validator agent receives only the synthesized design artifact, as per the expected behavior defined for KI-001, and not the reviewer's audit output.
+**Impact:** The validator agent will now correctly process synthesized design artifacts, improving the accuracy of the validation stage in complex agent chains and resolving the TASK MISALIGNMENT flagged by the guardian-angel.
+**Commit:** e55127c
