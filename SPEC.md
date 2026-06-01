@@ -1554,6 +1554,18 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 
 ---
 
+### Phase 55 — Postmortem Loop Closure (meta/postmortems/ → insight-generator)
+| Item | Description |
+|---|---|
+| Problem | postmortem.js writes structured failure records to meta/postmortems/ after low-score runs — but nothing reads them back. They are orphaned output. |
+| Fix | Wire insight-generator.js to read meta/postmortems/ as an additional evidence source alongside scores.jsonl. Postmortem patterns (repeated failure types, agent-specific drops) enrich insight evidence[] arrays. |
+| Dedup strategy | Postmortem-sourced insights tagged with source: 'postmortem' — prevents collision with score-threshold insights on the same dimension. |
+| Scope | insight-generator.js only — no new files required. |
+
+**Value:** Closes the second orphaned-output loop. Postmortems currently accumulate with no consumer. Feeding them into insight-generator gives richer, failure-specific evidence for patterns that scores alone cannot explain — e.g. a single catastrophic run vs. a slow drift. Low-priority until Phase 54 signal quality proves insufficient.
+
+---
+
 ## COGNITIVE FIT MODEL ARCHITECTURE (Established Phase 47b)
 
 ### Design Priority Order
