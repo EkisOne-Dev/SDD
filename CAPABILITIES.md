@@ -4,10 +4,10 @@
 > Intended audience: technical reviewers, external auditors, and the system owner.
 
 **System:** Structured Development System (SDD)
-**Version:** 4.9.0
+**Version:** 4.10.0
 **Platform:** Android / Termux
 **Runtime:** Node.js
-**Last Updated:** 2026-05-31
+**Last Updated:** 2026-06-01
 
 ---
 
@@ -83,9 +83,10 @@ To verify the full system: run each verification test in order and compare outpu
 | 52 | Session-End Command | ✅ Active | 48 |
 | 53 | Semantic Memory Retrieval | ✅ Active | 49 |
 | 54 | Self-Audit Command | ✅ Active | 50 |
-| 55 | Cross-Session Pattern Synthesis | 🔲 Planned | 52 |
+| 55 | Cross-Session Pattern Synthesis | ✅ Active | 52 |
 | 56 | Versioned System Snapshots | 🔲 Planned | 53 |
 | 57 | Universal Thinking Protocol | ✅ Active | 47c-prime |
+| 58 | Release Command | ✅ Active | all |
 
 ---
 
@@ -1458,12 +1459,13 @@ Expected: Capability #52 found, both files ✅, no gaps detected.
 **What it does:**
 Synthesizes cross-session patterns from accumulated meta/logs/ and meta/scores/scores.jsonl. Derives actionable insights: which agents underperform consistently, which task types score low, which cascade providers fail most often. Writes structured insight entries to meta/insights/ with pattern, evidence, confidence, and recommended_action fields. Feeds the self-improvement proposal loop with data-driven evidence.
 
-**Status:** 🔲 Planned — Phase 52
+**Status:** ✅ Active — Phase 52
 
 **Files responsible (planned):**
 - skills/tools/insight-generator.js — pattern synthesis engine
 - meta/insights/ — output directory
-- orchestrator/main.js — wire to sdd session-end
+- skills/tools/session-end.js — auto-triggers generateInsights() at end of session
+- orchestrator/main.js — command wiring
 
 ---
 
@@ -1631,5 +1633,29 @@ tail -20 ~/sdd/history.md
 Expected: Structured session entry with date header and AI-generated summary.
 
 **Known limitations:** Requires at least one git commit in the session for meaningful output.
+
+
+### 58 — Release Command
+
+**What it does:**
+Syncs the version string across all 7 architectural design files in a single atomic operation. Updates SPEC.md, CAPABILITIES.md, verify.sh, config/system.json, package.json, README.md, and featurelist.json. Runs verify.sh to confirm 62/62 checks pass, then commits and triggers backup. Invoked via sdd release <version>.
+
+**Trigger:** sdd release <version> (e.g. sdd release 5.0.0)
+
+**Files responsible:**
+- scripts/sync-version.js — version sync implementation
+- orchestrator/main.js — command wiring
+
+**Config flag:** None. Always active.
+
+**Verification test:**
+```bash
+grep -r 'version' ~/sdd/package.json ~/sdd/config/system.json
+```
+Expected: Both files show the same version string.
+
+**Known limitations:** Requires clean working tree. Fails fast if verify.sh does not pass 62/62.
+
+---
 
 *End of CAPABILITIES.md — Update after every phase that adds, modifies, or removes a capability.*

@@ -9,8 +9,8 @@
 
 | Field | Value |
 |---|---|
-| Document Version | 4.9.0 |
-| System Version | v4.9.0 — Fully Verified + Universal Thinking Protocol |
+| Document Version | 4.10.0 |
+| System Version | v4.10.0 — Fully Verified + Universal Thinking Protocol |
 | Last Updated | 2026-05-30 |
 | Status | Active Development |
 | Platform | Android / Termux |
@@ -119,7 +119,7 @@
 │       └── objective.md
 ├── meta/
 │   ├── logs/
-│   ├── insights/                  ← 🔲 Planned — Phase 52 (cross-session pattern synthesis)
+│   ├── insights/                  ← ✅ Active — Phase 52 (cross-session pattern synthesis)
 │   ├── postmortems/
 │   ├── baselines/
 │   ├── proposals/
@@ -134,6 +134,9 @@
 │   ├── roadmaps/              ← User-provided field roadmaps (JSON)
 │   ├── progress/              ← Per-roadmap learner state and position
 │   └── sessions/              ← Session logs with topic, response, assessment
+├── scripts/
+│   ├── verify.sh                  ← ✅ Active — full system verification (62 checks)
+│   └── sync-version.js            ← ✅ Active — version sync across all architectural files
 ├── versions/                      ← 🔲 Planned — Phase 53 (structured version snapshots)
 ├── engine/
 │   └── adapter.json               ← ✅ Active — Gemini / OpenRouter / Ollama
@@ -1259,6 +1262,7 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 
 | Date | Version | Change | Reason |
 |---|---|---|---|
+| 2026-05-31 | 4.10.0 | Phase 52 complete — cross-session pattern synthesis live | insight-generator.js derives dimension weakness, score trend, improvement frequency from scores.jsonl + self-improvements.jsonl; appends structured JSON to meta/insights/insights.jsonl; auto-runs on sdd session-end |
 | 2026-04-04 | 1.0.0 | Initial living spec from ChatGPT-generated design | Review and optimization by Claude Sonnet 4.6 |
 | 2026-04-04 | 1.0.0 | Added `engine/adapter.json` abstraction | Decouple AI engine from orchestrator |
 | 2026-04-04 | 1.0.0 | Added root `logs/` directory | Debug layer before meta system exists |

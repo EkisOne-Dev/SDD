@@ -1,6 +1,6 @@
 {
-  "version": "4.9.0",
-  "last_updated": "2026-05-31",
+  "version": "4.10.0",
+  "last_updated": "2026-06-01",
   "completed_phases": [
     0,
     1,
@@ -363,7 +363,7 @@
       "id": "F52",
       "phase": 52,
       "title": "Cross-session pattern synthesis — meta/insights/",
-      "status": "planned",
+      "status": "complete",
       "priority": "high",
       "acceptance_criteria": [
         "meta/insights/ directory exists",
@@ -388,7 +388,7 @@
       ]
     }
   },
-  "system_version": "4.9.0",
+  "system_version": "4.10.0",
   "completed_phases_named": [
     "47b",
     "47c",

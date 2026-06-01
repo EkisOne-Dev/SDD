@@ -53,8 +53,8 @@ echo "   ✅ Script saved to $BACKUP_DIR/backup.sh"
 
 # ── Step 4b: Copy files to Downloads ─────────────────────
 cd ~/sdd
-cp SPEC.md CAPABILITIES.md featurelist.json ~/storage/downloads/TERMUX-SDD/
-cp README.md history.md ~/storage/downloads/TERMUX-SDD/
+cp SPEC.md CAPABILITIES.md ~/storage/downloads/TERMUX-SDD/
+# cp README.md history.md featurelist.json ~/storage/downloads/TERMUX-SDD/
 echo "   ✅ Downloads folder files updated "
 
 # ── Step 5: Write restore instructions ───────────────────

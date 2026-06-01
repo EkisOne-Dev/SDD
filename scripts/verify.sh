@@ -10,7 +10,7 @@ warn() { echo "  ⚠️  $1"; WARN=$((WARN+1)); }
 
 echo ""
 echo "╔══════════════════════════════════════════╗"
-echo "║       SDD System Verification v4.9.0     ║"
+echo "║       SDD System Verification v4.10.0     ║"
 echo "╚══════════════════════════════════════════╝"
 
 echo ""
@@ -104,3 +104,4 @@ for f in constitution.md featurelist.json history.md; do
   [ -f "$HOME/sdd/$f" ] && pass "$f" || fail "$f MISSING"
 done
 [ -f "$HOME/sdd/scripts/verify.sh" ] && pass "scripts/verify.sh" || fail "scripts/verify.sh MISSING"
+[ -f "$HOME/sdd/scripts/sync-version.js" ] && pass "scripts/sync-version.js" || fail "scripts/sync-version.js MISSING"

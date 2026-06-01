@@ -85,3 +85,9 @@
 **Reason:** To achieve a fully functional and robust AI orchestration system by addressing all outstanding technical debt and implementing core protocols.
 **Impact:** The system can now reliably execute complex AI workflows with improved coherence and error handling. Specifically, the validator agent correctly receives synthesized design artifacts instead of reviewer audits, and all skill library paths and model configurations are properly managed.
 **Commit:** 46e6047
+
+### 2026-05-31 — Validator receives synthesized design, not reviewer audit
+**Decision:** Implemented `preReviewerOutput` tracker and structured `[DESIGN TO VALIDATE]` handoff within `orchestrator/chains.js` to ensure the validator agent receives only the synthesized design artifact.
+**Reason:** The validator was incorrectly receiving the reviewer's audit commentary instead of the clean design, causing task misalignment.
+**Impact:** The validator agent can now correctly process synthesized design artifacts, enabling accurate evaluation and progression of complex AI orchestration chains.
+**Commit:** a98b276

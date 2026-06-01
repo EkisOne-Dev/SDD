@@ -7,9 +7,12 @@ import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { runEngine } from '../../orchestrator/orchestrator.js';
+import { generateInsights } from './insight-generator.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '../..');
+
+const _specCache = (() => { try { return readFileSync(join(ROOT, 'SPEC.md'), 'utf-8'); } catch { return ''; } })();
 
 export async function runSessionEnd(adapter) {
   console.log('\n📋 Generating session summary...\n');
@@ -30,8 +33,7 @@ export async function runSessionEnd(adapter) {
   // 3. Last ~2000 chars of SPEC changelog
   let specChangelog = '';
   try {
-    const spec = readFileSync(join(ROOT, 'SPEC.md'), 'utf-8');
-    const match = spec.match(/## CHANGELOG([\s\S]*)/);
+    const match = _specCache.match(/## CHANGELOG([\s\S]*)/);
     if (match) specChangelog = match[1].slice(-2000).trim();
   } catch {}
 
@@ -71,4 +73,18 @@ Write ONE entry. Be specific and technical. Output only the formatted block — 
 
   console.log('\n✅ Session summary appended to history.md\n');
   console.log(summary.trim());
+
+  // Phase 52 — Cross-session pattern synthesis
+  try {
+    const result = await generateInsights();
+    if (result.count > 0) {
+      console.log(`
+🔍 Pattern synthesis: ${result.count} insight${result.count > 1 ? 's' : ''} written to meta/insights/insights.jsonl`);
+      for (const ins of result.insights) {
+        console.log(`   • [${ins.confidence}] ${ins.pattern}`);
+      }
+    }
+  } catch (e) {
+    console.error('⚠️  Insight generation skipped:', e.message);
+  }
 }
