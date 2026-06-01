@@ -391,7 +391,7 @@
       "id": "F54",
       "phase": 54,
       "title": "sdd insights — active signal display + observer feed",
-      "status": "planned",
+      "status": "complete",
       "priority": "low",
       "acceptance_criteria": [
         "sdd insights prints current signals from meta/insights/insights.jsonl",
@@ -400,12 +400,43 @@
         "Active insights injected into observer proposal context",
         "Active insights injected into sdd session-end AI summary prompt"
       ]
+    },
+    "phase_55_postmortem_closure": {
+      "id": "F55",
+      "phase": 55,
+      "title": "Postmortem loop closure — insight-generator reads meta/postmortems/",
+      "status": "complete",
+      "priority": "medium",
+      "acceptance_criteria": [
+        "insight-generator.js reads all .md files from meta/postmortems/",
+        "Repeated failing stage pattern detected when stage fails in >=30% of projects",
+        "Catastrophic run pattern detected when 3+ stages fail in single project",
+        "All postmortem insights tagged source: postmortem",
+        "Returns empty gracefully when fewer than 2 postmortems exist"
+      ]
+    },
+    "phase_56_auto_mode_pipeline": {
+      "id": "F56",
+      "phase": 56,
+      "title": "Auto mode override + auto pipeline detection",
+      "status": "complete",
+      "priority": "high",
+      "acceptance_criteria": [
+        "detectPipelineIntent() exported from intent-parser.js",
+        "Pipeline verb+noun patterns detect build/develop/implement/create tasks",
+        "Non-pipeline tasks (questions, explanations) correctly rejected",
+        "One-confirmation gate prompts user before launching pipeline",
+        "config.validation + config.evaluation set to true when complexity:complex",
+        "Mode override is per-run only — mode.json never written"
+      ]
     }
   },
   "system_version": "5.4.0",
   "completed_phases_named": [
     "47b",
     "47c",
-    "47c-prime-scoped"
+    "47c-prime-scoped",
+    "55",
+    "56"
   ]
 }

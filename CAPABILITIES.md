@@ -87,7 +87,9 @@ To verify the full system: run each verification test in order and compare outpu
 | 56 | Versioned System Snapshots | ✅ Active | 53 |
 | 57 | Universal Thinking Protocol | ✅ Active | 47c-prime |
 | 58 | Release Command | ✅ Active | all |
-| 59 | Insights Command | 🔲 Planned | 54 |
+| 59 | Insights Command | ✅ Active | 54 |
+| 60 | Auto Mode Override | ✅ Active | 56 |
+| 61 | Auto Pipeline Detection | ✅ Active | 56 |
 
 ---
 
@@ -1677,3 +1679,44 @@ Reads meta/insights/insights.jsonl and prints all active signals to the terminal
 ---
 
 *End of CAPABILITIES.md — Update after every phase that adds, modifies, or removes a capability.*
+---
+
+### 60 — Auto Mode Override
+
+**What it does:**
+When the intent parser classifies a task as complexity: complex, config.validation and config.evaluation are automatically set to true for that execution only. Mode.json is never written — the override is per-run only.
+
+**Trigger:** Intent parser returns complexity: complex on any task.
+
+**Files responsible:** orchestrator/main.js
+
+**Config flag:** intent_parser_enabled (required for intent parse to fire)
+
+**Verification test:**
+```
+Grep main.js for "Auto mode: strict" block and confirm config.validation = true assignment
+```
+
+**Known limitations:** Only fires when intent parser runs (tasks >15 words or vague phrasing). Short complex tasks bypass intent parsing and retain fast mode.
+
+---
+
+### 61 — Auto Pipeline Detection
+
+**What it does:**
+After every task passes through capability check and negotiation, detectPipelineIntent() scans for build/develop/implement/create + project-noun patterns. On a match, the user is prompted once to confirm pipeline launch. If confirmed, runPipeline() is called with the full task. If declined, execution continues as a single-shot task.
+
+**Trigger:** Any task containing a pipeline verb (build, develop, implement, create, make) and a pipeline noun (project, system, app, api, tool, service, etc.).
+
+**Files responsible:** skills/tools/intent-parser.js (detectPipelineIntent), orchestrator/main.js (gate + prompt)
+
+**Config flag:** None — always active after negotiation step.
+
+**Verification test:**
+```
+node --input-type=module --eval "import { detectPipelineIntent } from './skills/tools/intent-parser.js'; console.log(detectPipelineIntent('build a REST API'));"
+```
+Expected: { detected: true, hint: 'api' }
+
+**Known limitations:** Hint extraction uses first matching noun only. Project slug must be refined manually after pipeline launch if hint is too generic.
+
