@@ -1542,6 +1542,16 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 
 **Value:** Not redundant with git. Git stores file diffs; snapshots store processed system state at a point in time. Enables: "compare current behavior to v4.5.0" without parsing git history.
 
+### Phase 54 — Insights Command (sdd insights)
+| Item | Description |
+|---|---|
+| sdd insights | Reads meta/insights/insights.jsonl; prints all active signals with confidence + recommended_action |
+| Stale detection | Flags insights older than 10 sessions as stale — prevents acting on outdated patterns |
+| Observer feed | Observer reads insights.jsonl as additional proposal context — enables pattern-driven proposals instead of single-event reactions |
+| session-end context | Active insights injected as context into the AI session summary prompt |
+
+**Value:** Closes the insight loop. Currently insight-generator writes findings that nothing reads back. This command surfaces signals on demand and feeds them into the proposal generation cycle — turning pattern detection into pattern-driven self-improvement.
+
 ---
 
 ## COGNITIVE FIT MODEL ARCHITECTURE (Established Phase 47b)

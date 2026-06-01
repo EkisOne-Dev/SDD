@@ -386,6 +386,20 @@
         "versions/v4.8.0.json readable and structured",
         "sdd diff v4.5.0 shows delta between snapshots"
       ]
+    },
+    "phase_54_insights_command": {
+      "id": "F54",
+      "phase": 54,
+      "title": "sdd insights — active signal display + observer feed",
+      "status": "planned",
+      "priority": "low",
+      "acceptance_criteria": [
+        "sdd insights prints current signals from meta/insights/insights.jsonl",
+        "Each signal shows pattern, confidence, recommended_action",
+        "Stale insights (older than 10 sessions) flagged",
+        "Active insights injected into observer proposal context",
+        "Active insights injected into sdd session-end AI summary prompt"
+      ]
     }
   },
   "system_version": "5.0.0",

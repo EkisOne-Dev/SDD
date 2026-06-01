@@ -87,6 +87,7 @@ To verify the full system: run each verification test in order and compare outpu
 | 56 | Versioned System Snapshots | ✅ Active | 53 |
 | 57 | Universal Thinking Protocol | ✅ Active | 47c-prime |
 | 58 | Release Command | ✅ Active | all |
+| 59 | Insights Command | 🔲 Planned | 54 |
 
 ---
 
@@ -1655,6 +1656,23 @@ grep -r 'version' ~/sdd/package.json ~/sdd/config/system.json
 Expected: Both files show the same version string.
 
 **Known limitations:** Requires clean working tree. Fails fast if verify.sh does not pass 62/62.
+
+---
+
+
+### 59 — Insights Command
+
+**What it does:**
+Reads meta/insights/insights.jsonl and prints all active signals to the terminal with pattern, confidence level, and recommended_action. Flags insights older than 10 sessions as stale. Feeds active insights into the meta observer as proposal context, enabling pattern-driven proposals rather than single-event reactions. Injects active signals into the sdd session-end AI summary prompt.
+
+**Status:** 🔲 Planned — Phase 54
+
+**Trigger:** sdd insights
+
+**Files responsible (planned):**
+- skills/tools/insights-command.js — command implementation
+- orchestrator/main.js — command wiring
+- skills/tools/observer.js — insight feed for pattern-driven proposals
 
 ---
 
