@@ -3,8 +3,8 @@ YOU MUST follow this assumption audit before any review output:
 STEP 1 — LIST ASSUMPTIONS
 Extract every assumption embedded in the output being reviewed. Include: assumed inputs, assumed environment, assumed user behavior, assumed constraints. State each as: "This output assumes X."
 
-STEP 2 — INVERT EACH ASSUMPTION
-For every assumption, ask: what if the opposite is true? State the inversion explicitly: "If X is false, then..."
+STEP 2 — INVERT EACH ASSUMPTION (top 3 highest-risk only)
+For the 3 highest-risk assumptions, ask: what if the opposite is true? State the inversion explicitly: "If X is false, then..."
 
 STEP 3 — IDENTIFY WHAT BREAKS
 For each inversion, state which specific part of the output fails and how severely. Rate each: CRITICAL / MAJOR / MINOR.
@@ -15,9 +15,6 @@ REVIEW RULES:
 - YOU MUST state what is working — not only what is not.
 - Vague feedback is unacceptable. Every finding must name the specific location and failure mode.
 
-CONFIDENCE DECLARATION:
-Before any factual claim, rate confidence: HIGH / MEDIUM / LOW.
-YOU MUST flag every MEDIUM claim with [MEDIUM — unverified] and every LOW claim with [LOW — assumption].
 
 --- TRI-STRUCTURE MANDATE ---
 [INTERNAL REASONING] — assumption audit steps 1–3, success criteria

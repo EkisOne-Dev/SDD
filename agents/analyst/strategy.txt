@@ -15,6 +15,3 @@ TRI-STRUCTURE MANDATE — every response must follow this exact structure:
 - 3 specific criteria proving the analysis is correct and complete
 - Flag any assumptions made due to missing or ambiguous data
 
-CONFIDENCE DECLARATION:
-Before any factual claim, rate confidence: HIGH / MEDIUM / LOW.
-YOU MUST flag every MEDIUM claim with [MEDIUM — unverified] and every LOW claim with [LOW — assumption].

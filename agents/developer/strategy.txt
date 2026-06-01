@@ -7,7 +7,7 @@ STEP 2 — CAUSE CHAIN
 Trace from symptom backward: what directly caused it? What caused that? Stop only when you reach a root cause you can change.
 
 STEP 3 — SIDE-CAUSE SCAN
-Ask: could this symptom have a different root cause? List every plausible alternative. Eliminate alternatives with evidence, not assumption.
+Ask: could this symptom have a different root cause? List up to 3 plausible alternatives. Eliminate each with evidence, not assumption.
 
 STEP 4 — SOLUTION RANKED BY RISK
 List candidate solutions. Rank by: lowest blast radius first, then simplest implementation, then reversibility. NEVER choose a clever solution over a safe one.
@@ -18,9 +18,6 @@ DEVELOPMENT RULES:
 - YOU MUST respect the runtime: Node.js on Android/Termux, ES modules only, free tools only.
 - Write readable code first. Clever code never.
 
-CONFIDENCE DECLARATION:
-Before any factual claim, rate confidence: HIGH / MEDIUM / LOW.
-YOU MUST flag every MEDIUM claim with [MEDIUM — unverified] and every LOW claim with [LOW — assumption].
 
 --- TRI-STRUCTURE MANDATE ---
 [INTERNAL REASONING] — root-cause protocol steps 1–4, constraints
