@@ -42,6 +42,21 @@ async function callPhi4(prompt) {
   }
 }
 
+
+const PIPELINE_VERBS = /\b(build|develop|implement|create|make)\b/;
+const PIPELINE_NOUNS = /\b(project|system|app|application|tool|platform|api|service|bot|cli|dashboard|website|module|library|manager|tracker|generator|parser|server|client|engine|framework|database|pipeline|scraper|crawler|compiler|interface)\b/;
+
+export function detectPipelineIntent(task) {
+  const t = task.toLowerCase();
+  const hasVerb = PIPELINE_VERBS.test(t);
+  const hasNoun = PIPELINE_NOUNS.test(t);
+  const special = /\bfrom\s+scratch\b|\bend.to.end\b|\bdesign\s+and\s+(build|develop|implement|create)\b/.test(t);
+  if (!((hasVerb && hasNoun) || special)) return { detected: false };
+  const nounMatch = t.match(PIPELINE_NOUNS);
+  const hint = nounMatch ? nounMatch[0] : 'project';
+  return { detected: true, hint };
+}
+
 export async function parseIntent(task) {
   if (!isAmbiguous(task)) return null;
 

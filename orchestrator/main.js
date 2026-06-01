@@ -31,6 +31,7 @@ import { generateImage } from '../skills/tools/image-gen.js';
 import { runProposalManager } from "../skills/tools/proposal-manager.js";
 import { runPostChain } from "./post-chain.js";
 import { c } from "./colors.js";
+import { detectPipelineIntent } from '../skills/tools/intent-parser.js';
 
 // ── Main execution ───────────────────────────────────────────────────────────
 async function run(injectedTask = null) {
@@ -219,9 +220,10 @@ async function run(injectedTask = null) {
   }
 
   // ── Intent Parser ────────────────────────────────────────────────────────
+  let parsed = null;
   if (config.intent_parser_enabled) {
     const { parseIntent } = await import('../skills/tools/intent-parser.js');
-    const parsed = await parseIntent(task);
+    parsed = await parseIntent(task);
     if (parsed) {
       console.log(`\n🎯 Intent parsed [${parsed.task_type}|${parsed.complexity}] confidence:${parsed.confidence}`);
       if (parsed.interpreted_task) task = parsed.interpreted_task;
@@ -230,6 +232,32 @@ async function run(injectedTask = null) {
   }
 
   // ── Skills check — Phase 47 ─────────────────────────────────────────────
+  // Pipeline intent detection
+  const pipelineHit = detectPipelineIntent(task);
+  if (pipelineHit.detected) {
+    console.log('\n\u{1F50D} Pipeline intent detected \u2014 looks like a multi-stage project.');
+    process.stdout.write('   Launch pipeline? [y/N]: ');
+    const answer = await new Promise(resolve => {
+      process.stdin.resume();
+      process.stdin.setEncoding('utf8');
+      process.stdin.once('data', d => { process.stdin.pause(); resolve(d.toString().trim().toLowerCase()); });
+    });
+    if (answer === 'y' || answer === 'yes') {
+      const deps = { loadAgent, loadMemory, config, runEngine, adapter, logExecution };
+      await runPipeline(task, deps);
+      return;
+    }
+    console.log(c.dim('  \u2192 Continuing as single-shot task.\n'));
+  }
+
+  // Auto mode override
+  if (parsed?.complexity === 'complex') {
+    config.validation = true;
+    config.evaluation = true;
+    console.log(c.status('\u26A1 Auto mode: strict (complex task \u2014 validation + evaluation enabled)\n'));
+    logExecution('AUTO MODE: strict \u2014 complexity=complex');
+  }
+
   let skillContext = null;
   const matchedSkill = routeSkill(task);
 
