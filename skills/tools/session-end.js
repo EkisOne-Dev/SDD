@@ -7,6 +7,7 @@ import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { runEngine } from '../../orchestrator/orchestrator.js';
+import { loadActiveInsights } from './insights-command.js';
 import { generateInsights } from './insight-generator.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -40,6 +41,18 @@ export async function runSessionEnd(adapter) {
   // 4. Today's date
   const today = new Date().toISOString().split('T')[0];
 
+  // 4b. Load active insight signals
+  let insightContext = '';
+  try {
+    const activeInsights = loadActiveInsights();
+    if (activeInsights.length > 0) {
+      const lines = activeInsights.map(ins =>
+        `[${ins.confidence}] ${ins.pattern} → ${ins.recommended_action}`
+      );
+      insightContext = '\n\nACTIVE INSIGHT SIGNALS (from insight-generator):\n' + lines.join('\n');
+    }
+  } catch {}
+
   // 5. Build generation prompt
   const prompt = `You are writing a session history entry for SDD — an AI orchestration system built on Android via Termux.
 
@@ -51,7 +64,7 @@ Use EXACTLY this format and nothing else:
 **Commit:** ${latestHash}
 
 RECENT GIT COMMITS THIS SESSION:
-${gitLog}
+${gitLog}${insightContext}
 
 RECENT SPEC CHANGELOG:
 ${specChangelog}

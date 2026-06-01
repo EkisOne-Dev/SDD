@@ -9,8 +9,8 @@
 
 | Field | Value |
 |---|---|
-| Document Version | 5.0.0 |
-| System Version | v5.0.0 — Fully Verified + Universal Thinking Protocol |
+| Document Version | 5.1.0 |
+| System Version | v5.1.0 — Fully Verified + Universal Thinking Protocol |
 | Last Updated | 2026-05-30 |
 | Status | Active Development |
 | Platform | Android / Termux |

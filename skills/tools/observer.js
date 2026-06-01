@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+import { loadActiveInsights } from './insights-command.js';
 const SCORES_FILE = path.join(__dirname, '../../meta/scores/scores.jsonl');
 const PROPOSALS_DIR = path.join(__dirname, '../../meta/proposals');
 
@@ -81,6 +82,38 @@ function observe() {
       staged.push(proposal);
     }
   }
+
+  // Insight-sourced proposals — pattern-driven, not score-threshold-driven
+  try {
+    const activeInsights = loadActiveInsights();
+    for (const ins of activeInsights) {
+      const insightId = 'insight-' + ins.pattern.toLowerCase().replace(/\s+/g, '-').slice(0, 40);
+      const alreadyPending = fs.existsSync(PROPOSALS_DIR) &&
+        fs.readdirSync(PROPOSALS_DIR).some(f => f.startsWith(insightId.slice(0, 30)));
+      if (alreadyPending) continue;
+      const proposal = {
+        id: insightId + '-' + Date.now(),
+        dimension: 'insight',
+        source: 'insight-generator',
+        confidence: ins.confidence,
+        status: 'pending',
+        created: new Date().toISOString(),
+        observed: ins.pattern,
+        issue: ins.evidence && ins.evidence.length > 0
+          ? 'Evidence: ' + ins.evidence.slice(0, 3).join(' | ')
+          : 'Pattern detected by insight-generator.',
+        suggestion: ins.recommended_action,
+        snoozed_until: null,
+        resolved: null
+      };
+      if (!fs.existsSync(PROPOSALS_DIR)) fs.mkdirSync(PROPOSALS_DIR, { recursive: true });
+      fs.writeFileSync(
+        path.join(PROPOSALS_DIR, proposal.id + '.json'),
+        JSON.stringify(proposal, null, 2)
+      );
+      staged.push(proposal);
+    }
+  } catch {}
 
   return staged.length > 0 ? staged : null;
 }
