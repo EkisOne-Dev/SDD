@@ -10,6 +10,14 @@ echo ""
 echo "🔒 SDD Backup — $TIMESTAMP"
 echo "─────────────────────────────────────"
 
+# ── Step 0: Generate version snapshot ───────────────────
+echo "📸 Generating version snapshot..."
+node -e "import('./skills/tools/snapshot.js').then(async m => {
+  const r = await m.generateSnapshot();
+  if (r.created) console.log('   📸 Snapshot written: ' + r.path);
+  else console.log('   ℹ️  Snapshot already exists for v' + r.version);
+}).catch(e => console.error('   ⚠️  Snapshot skipped:', e.message));" 2>/dev/null || true
+
 # ── Step 1: Stage runtime files ───────────────────────────
 echo "📁 Staging runtime files..."
 cd "$SDD_DIR"
@@ -26,6 +34,7 @@ git add \
   constitution.md \
   featurelist.json \
   history.md \
+  versions/*.json \
   2>/dev/null || true
 
 # Only commit if there are staged changes

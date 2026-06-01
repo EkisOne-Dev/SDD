@@ -4,7 +4,7 @@
 > Intended audience: technical reviewers, external auditors, and the system owner.
 
 **System:** Structured Development System (SDD)
-**Version:** 4.10.0
+**Version:** 5.0.0
 **Platform:** Android / Termux
 **Runtime:** Node.js
 **Last Updated:** 2026-06-01
@@ -84,7 +84,7 @@ To verify the full system: run each verification test in order and compare outpu
 | 53 | Semantic Memory Retrieval | ✅ Active | 49 |
 | 54 | Self-Audit Command | ✅ Active | 50 |
 | 55 | Cross-Session Pattern Synthesis | ✅ Active | 52 |
-| 56 | Versioned System Snapshots | 🔲 Planned | 53 |
+| 56 | Versioned System Snapshots | ✅ Active | 53 |
 | 57 | Universal Thinking Protocol | ✅ Active | 47c-prime |
 | 58 | Release Command | ✅ Active | all |
 
@@ -1474,12 +1474,12 @@ Synthesizes cross-session patterns from accumulated meta/logs/ and meta/scores/s
 **What it does:**
 On each version bump, captures a structured JSON snapshot of the system state: active config flags, agent roster, capability count, score averages, known issues, active provider cascade. Writes to versions/vX.Y.Z.json. Enables structured regression comparison across versions without parsing git history.
 
-**Status:** 🔲 Planned — Phase 53
+**Status:** ✅ Active — Phase 53
 
 **Files responsible (planned):**
 - skills/tools/snapshot.js — snapshot generator
 - versions/ — output directory
-- backup.sh — trigger point on version change
+- backup.sh — Step 0 calls generateSnapshot() before git add; versions/*.json staged and committed
 
 ---
 

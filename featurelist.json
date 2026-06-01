@@ -1,5 +1,5 @@
 {
-  "version": "4.10.0",
+  "version": "5.0.0",
   "last_updated": "2026-06-01",
   "completed_phases": [
     0,
@@ -377,7 +377,7 @@
       "id": "F53",
       "phase": 53,
       "title": "Versioned system snapshots — versions/",
-      "status": "planned",
+      "status": "complete",
       "priority": "medium",
       "acceptance_criteria": [
         "versions/ directory exists",
@@ -388,7 +388,7 @@
       ]
     }
   },
-  "system_version": "4.10.0",
+  "system_version": "5.0.0",
   "completed_phases_named": [
     "47b",
     "47c",

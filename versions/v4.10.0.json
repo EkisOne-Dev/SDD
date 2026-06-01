@@ -1,0 +1,73 @@
+{
+  "version": "4.10.0",
+  "timestamp": "2026-06-01T01:21:39.562Z",
+  "config_flags": {
+    "capability_check_enabled": true,
+    "negotiation_enabled": true,
+    "self_research_enabled": true,
+    "scoring_enabled": true,
+    "meta_observation_enabled": true,
+    "cost_tracking_enabled": true,
+    "free_only_mode": true,
+    "local_first": false,
+    "universal_thinking_enabled": true,
+    "semantic_memory_enabled": true,
+    "spec_clarifier_enabled": true,
+    "guardian_angel_enabled": true
+  },
+  "agent_roster": [
+    "analyst",
+    "architect",
+    "basic",
+    "creator",
+    "developer",
+    "mentor",
+    "researcher",
+    "reviewer",
+    "strategist",
+    "validator"
+  ],
+  "capability_count": 60,
+  "score_averages": {
+    "sample_size": 20,
+    "averages": {
+      "clarity": 77.5,
+      "usefulness": 75.1,
+      "efficiency": 66.8,
+      "redundancy": 68.1,
+      "overall": 72
+    }
+  },
+  "provider_cascade": [
+    {
+      "role": "primary",
+      "provider": "gemini",
+      "model": "gemini-2.5-flash-lite"
+    },
+    {
+      "role": "fallback",
+      "provider": "gemini",
+      "model": "gemini-2.5-flash"
+    },
+    {
+      "role": "fallback2",
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile"
+    },
+    {
+      "role": "fallback3",
+      "provider": "openrouter",
+      "model": "google/gemma-4-31b-it:free"
+    },
+    {
+      "role": "fallback4",
+      "provider": "openrouter",
+      "model": "openai/gpt-oss-120b:free"
+    },
+    {
+      "role": "local_fallback",
+      "provider": "ollama",
+      "model": "qwen2.5:7b"
+    }
+  ]
+}
