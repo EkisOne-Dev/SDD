@@ -97,3 +97,9 @@
 **Reason:** To ensure the validator agent receives only the synthesized design artifact, as per the expected behavior defined for KI-001, and not the reviewer's audit output.
 **Impact:** The validator agent will now correctly process synthesized design artifacts, improving the accuracy of the validation stage in complex agent chains and resolving the TASK MISALIGNMENT flagged by the guardian-angel.
 **Commit:** e55127c
+
+### 2026-06-01 — Fix Validator Input for Complex Chains
+**Decision:** Implemented a conditional artifact extraction logic within `extractHandoff()` in `orchestrator/chains.js`. This logic specifically isolates and passes the `[ARTIFACT]` block from reviewer output to the validator agent when it's the next step in a complex chain.
+**Reason:** To ensure the validator agent receives the synthesized design artifact and not the reviewer's audit commentary, correcting a task misalignment issue.
+**Impact:** The validator can now accurately process synthesized design artifacts from complex chains, improving the robustness of the design iteration and validation process. This resolves a critical bottleneck identified by the guardian-angel agent.
+**Commit:** 7ef60d9

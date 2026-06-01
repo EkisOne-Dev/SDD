@@ -1,4 +1,4 @@
-import { readFileSync, appendFileSync, existsSync, mkdirSync } from 'fs';
+import { readFileSync, appendFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -83,15 +83,77 @@ function analyzeImprovements(improvements) {
   return insights;
 }
 
+
+function loadPostmortems(dir) {
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter(f => f.endsWith('.md'))
+    .sort()
+    .map(f => ({ filename: f, content: readFileSync(join(dir, f), 'utf8') }));
+}
+
+function analyzePostmortems(postmortems) {
+  const insights = [];
+  if (postmortems.length < 2) return insights;
+
+  const STAGES = ['propose', 'spec', 'design', 'tasks', 'apply', 'verify', 'archive'];
+  const stageFailCounts = {};
+
+  for (const pm of postmortems) {
+    for (const stage of STAGES) {
+      if (pm.content.includes('[\u274c] ' + stage)) {
+        stageFailCounts[stage] = (stageFailCounts[stage] || 0) + 1;
+      }
+    }
+  }
+
+  // Repeatedly failing stages (>=30% of projects or at least 2)
+  const threshold = Math.max(2, Math.floor(postmortems.length * 0.3));
+  const failingStages = Object.entries(stageFailCounts)
+    .filter(([, count]) => count >= threshold)
+    .sort((a, b) => b[1] - a[1]);
+
+  if (failingStages.length > 0) {
+    const [topStage, topCount] = failingStages[0];
+    insights.push({
+      timestamp: new Date().toISOString(),
+      pattern: 'Pipeline stage repeatedly failing: "' + topStage + '" incomplete in ' + topCount + '/' + postmortems.length + ' projects',
+      evidence: failingStages.map(([s, c]) => s + ': ' + c + ' failure' + (c > 1 ? 's' : '')),
+      confidence: topCount >= 3 ? 'HIGH' : 'MEDIUM',
+      recommended_action: 'Investigate "' + topStage + '" stage — recurring pipeline gap detected across postmortems',
+      source: 'postmortem'
+    });
+  }
+
+  // Catastrophic runs — 3+ failed stages in a single project (last 10)
+  const recent = postmortems.slice(-10);
+  const highFailure = recent.filter(pm =>
+    STAGES.filter(s => pm.content.includes('[\u274c] ' + s)).length >= 3
+  );
+  if (highFailure.length >= 2) {
+    insights.push({
+      timestamp: new Date().toISOString(),
+      pattern: 'Catastrophic pipeline runs: ' + highFailure.length + ' projects with 3+ failed stages (last 10)',
+      evidence: highFailure.map(pm => pm.filename.replace('.md', '')),
+      confidence: 'HIGH',
+      recommended_action: 'Review pipeline stage contracts — multiple stages failing per run indicates systemic issue',
+      source: 'postmortem'
+    });
+  }
+
+  return insights;
+}
+
 export async function generateInsights() {
   const insightsDir = join(sddRoot, 'meta', 'insights');
   if (!existsSync(insightsDir)) mkdirSync(insightsDir, { recursive: true });
 
   const scores = loadJsonl(join(sddRoot, 'meta', 'scores', 'scores.jsonl'));
   const improvements = loadJsonl(join(sddRoot, 'meta', 'logs', 'self-improvements.jsonl'));
+  const postmortems = loadPostmortems(join(sddRoot, 'meta', 'postmortems'));
   const outputPath = join(insightsDir, 'insights.jsonl');
 
-  const insights = [...analyzeScores(scores), ...analyzeImprovements(improvements)];
+  const insights = [...analyzeScores(scores), ...analyzeImprovements(improvements), ...analyzePostmortems(postmortems)];
 
   if (insights.length === 0) return { count: 0, message: 'Insufficient data for pattern synthesis' };
 
