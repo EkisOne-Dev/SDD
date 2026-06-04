@@ -1,5 +1,5 @@
 # SDD — Structured Development System
-**Version:** 5.5.0 | **Platform:** Android / Termux | **Runtime:** Node.js
+**Version:** 5.6.0 | **Platform:** Android / Termux | **Runtime:** Node.js
 
 ## What it is
 A portable general-purpose AI orchestration platform running entirely on mobile hardware using free tools and APIs. Executes multi-agent AI workflows for system design, development, research, analysis, mentorship, and creative tasks.

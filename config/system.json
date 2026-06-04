@@ -1,5 +1,5 @@
 {
-  "version": "5.5.0",
+  "version": "5.6.0",
   "log_level": "info",
   "memory_file": "memory/memory.txt",
   "default_agent": "basic",
@@ -20,5 +20,7 @@
   "guardian_angel_enabled": true,
   "semantic_memory_enabled": true,
   "universal_thinking_enabled": true,
-  "map_reduce_enabled": true
+  "map_reduce_enabled": true,
+  "ai_capability_classifier_enabled": true,
+  "ai_skill_routing_enabled": false
 }

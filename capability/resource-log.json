@@ -27,6 +27,13 @@
       "domain": "financial_advice",
       "confidence": "low",
       "decision": "user_overrode_low_confidence"
+    },
+    {
+      "timestamp": "2026-06-04T12:59:17.939Z",
+      "task": "what stocks should I invest in",
+      "domain": "financial_advice",
+      "confidence": "low",
+      "decision": "user_overrode_low_confidence"
     }
   ]
 }

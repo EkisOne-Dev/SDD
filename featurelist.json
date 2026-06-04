@@ -1,5 +1,5 @@
 {
-  "version": "5.5.0",
+  "version": "5.6.0",
   "last_updated": "2026-06-04",
   "completed_phases": [
     0,
@@ -320,6 +320,24 @@
       "description": "Corrected phi4-mini (16K→32K), gemma3:4b (8K→32K), qwen3.5:0.8b (4K→8K) based on verified native context windows from Ollama registry.",
       "config_flag": null
     },
+    "21": {
+      "id": "F56",
+      "phase": "5.6.0-a",
+      "title": "AI-Powered Capability Classifier",
+      "status": "complete",
+      "priority": "high",
+      "description": "Replaces keyword matching in capability-check.js with qwen3.5:0.8b local classifier. Fallback chain: unambiguous pre-filter → AI classify (3s timeout) → keyword fallback. Config flag: ai_capability_classifier_enabled.",
+      "config_flag": "ai_capability_classifier_enabled"
+    },
+    "22": {
+      "id": "F57",
+      "phase": "5.6.0-b",
+      "title": "AI Skill Routing (dormant)",
+      "status": "planned",
+      "priority": "low",
+      "description": "Scaffold for AI-driven skill selection via local model. Dormant until skill library exceeds 30 entries or user-defined skills are introduced. Config flag: ai_skill_routing_enabled.",
+      "config_flag": "ai_skill_routing_enabled"
+    },
     "phase_47c_context_hardening": {
       "status": "complete",
       "version": "4.3.0",
@@ -458,7 +476,7 @@
       ]
     }
   },
-  "system_version": "5.5.0",
+  "system_version": "5.6.0",
   "completed_phases_named": [
     "47b",
     "47c",

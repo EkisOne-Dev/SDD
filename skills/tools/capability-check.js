@@ -1,4 +1,5 @@
 import fs from "fs";
+import { classifyWithAI } from "./ai-classifier.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import * as readline from "readline";
@@ -70,20 +71,37 @@ function ask(question) {
 
 const CONFIDENCE_RANK = { "high": 0, "medium": 1, "low": 2 };
 
-export async function checkCapability(task) {
+export async function checkCapability(task, config = {}) {
   const map = loadKnowledgeMap();
-  const domains = classifyDomain(task);
 
-  // Find lowest confidence across all matched domains
+  // ── AI classifier (primary) → keyword fallback ───────────────────────
   let worstDomain = null;
   let worstConfidence = "high";
 
-  for (const domain of domains) {
-    if (!map.domains[domain]) continue;
-    const { confidence } = map.domains[domain];
-    if (CONFIDENCE_RANK[confidence] > CONFIDENCE_RANK[worstConfidence]) {
-      worstConfidence = confidence;
-      worstDomain = domain;
+  try {
+    if (!config.ai_capability_classifier_enabled) throw new Error('AI classifier disabled');
+    const aiResult = await classifyWithAI(task);
+    if (aiResult && aiResult.domain && aiResult.confidence) {
+      // Only gate on non-general domains that exist in knowledge-map
+      if (aiResult.domain !== 'general' && map.domains[aiResult.domain]) {
+        worstDomain = aiResult.domain;
+        worstConfidence = aiResult.confidence;
+      } else {
+        return true; // general or unknown domain — pass through
+      }
+    } else {
+      throw new Error('AI classifier unavailable — using keyword fallback');
+    }
+  } catch {
+    // Keyword fallback
+    const domains = classifyDomain(task);
+    for (const domain of domains) {
+      if (!map.domains[domain]) continue;
+      const { confidence } = map.domains[domain];
+      if (CONFIDENCE_RANK[confidence] > CONFIDENCE_RANK[worstConfidence]) {
+        worstConfidence = confidence;
+        worstDomain = domain;
+      }
     }
   }
 

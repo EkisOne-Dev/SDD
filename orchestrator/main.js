@@ -199,7 +199,7 @@ async function run(injectedTask = null) {
 
   // ── Capability check ─────────────────────────────────────────────────────
   if (config.capability_check_enabled) {
-    const capable = await checkCapability(task);
+    const capable = await checkCapability(task, config);
     if (!capable) {
       logExecution(`CAPABILITY CHECK FAILED: ${task}`);
       return;
