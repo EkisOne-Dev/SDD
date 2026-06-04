@@ -1,6 +1,6 @@
 {
   "name": "sdd",
-  "version": "5.6.0",
+  "version": "5.7.0",
   "type": "module",
   "description": "Structured Development System",
   "main": "orchestrator/main.js",
@@ -8,6 +8,7 @@
     "start": "node orchestrator/main.js"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.21.0"
+    "@google/generative-ai": "^0.21.0",
+    "sql.js": "^1.14.1"
   }
 }

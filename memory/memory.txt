@@ -323,3 +323,30 @@ Assistant: The Internet protocol suite, known as TCP/IP, is a layered set of com
 1.  **Factual Accuracy of Protocol Functions:** The descriptions of TCP (connection-oriented, reliable delivery) and UDP (connectionless, best-effort delivery) align with established networking principles and RFC documents defining these protocols.
 2.  **Layered Model Consistency:** The presented four or five-layer model is a standard representation of the TCP/IP stack, widely recognized in networking literature and educational materials.
 3.  **Operational Flow Logic:** The described process of data encapsulation (adding headers as data moves down the stack) and de-encapsulation (removing headers as data moves up the stack) accurately reflects how TCP/IP protocols interact during communication.
+
+User: what is a binary search tree
+Assistant: A binary search tree is a data structure that organizes nodes in a hierarchical manner, adhering to specific ordering properties: for any given node, all values in its left subtree are less than the node's value, and all values in its right subtree are greater than the node's value. This structure allows for efficient searching, insertion, and deletion of elements with an average time complexity of O(log n), where n is the number of nodes. The worst-case time complexity can degrade to O(n) if the tree becomes unbalanced, resembling a linked list.
+
+User: what is a hash table
+Assistant: A hash table, also known as a hash map, is a data structure that implements an associative array abstract data type. It stores key-value pairs. A hash table uses a hash function to compute an index, also called a hash code, into an array of buckets or slots, from which the desired value can be found. The goal is to provide average time complexity of O(1) for insertion, deletion, and retrieval operations.
+
+Hash functions map data of arbitrary size to fixed-size values. When multiple keys map to the same index (a collision), strategies such as separate chaining (using linked lists or other data structures at each bucket) or open addressing (probing for the next available slot) are employed to resolve these collisions.
+
+The efficiency of a hash table depends heavily on the quality of the hash function and the load factor (the ratio of stored elements to the number of slots). A poorly chosen hash function or a high load factor can lead to frequent collisions and degrade performance towards O(n) in the worst case.
+
+User: what is a linked list
+Assistant: A linked list is a linear data structure where elements, called nodes, are not stored contiguously in memory. Each node contains data and a reference (or pointer) to the next node in the sequence. This structure allows for efficient insertion and deletion of elements at any position during iteration. The order of elements is determined by these references, not their physical location in memory.
+
+[HIGH — verified]
+
+User: what is a stack data structure
+Assistant: A stack is a linear data structure that follows the Last-In, First-Out (LIFO) principle. This means the last element added to the stack is the first one to be removed. Imagine a stack of plates; you can only add a new plate to the top, and you can only remove the topmost plate.
+
+The primary operations on a stack are:
+
+*   **Push:** Adds an element to the top of the stack.
+*   **Pop:** Removes and returns the element from the top of the stack.
+*   **Peek (or Top):** Returns the element at the top of the stack without removing it.
+*   **isEmpty:** Checks if the stack is empty.
+
+Stacks are commonly implemented using arrays or linked lists. Their applications include function call management (call stack), expression evaluation, and backtracking algorithms.

@@ -1,5 +1,5 @@
 {
-  "version": "5.6.0",
+  "version": "5.7.0",
   "log_level": "info",
   "memory_file": "memory/memory.txt",
   "default_agent": "basic",
@@ -22,5 +22,9 @@
   "universal_thinking_enabled": true,
   "map_reduce_enabled": true,
   "ai_capability_classifier_enabled": true,
-  "ai_skill_routing_enabled": false
+  "ai_skill_routing_enabled": false,
+  "memory_backend": "shadow",
+  "memory_db_path": "memory/memory.db",
+  "memory_budget_tokens": 500,
+  "memory_prune_days": 30
 }

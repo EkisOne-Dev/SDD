@@ -1,4 +1,5 @@
 import fs from "fs";
+import { getDB, insert, recent, search } from '../memory/memory-db.js';
 import { createSpinner } from "./spinner.js";
 import { validateSystemConfig, validateAdapterConfig } from "./validator.js";
 import path from "path";
@@ -28,6 +29,14 @@ export function loadEngineAdapter() {
 // ── Memory ────────────────────────────────────────────────────────────────────
 
 export function loadMemory(config, task = "") {
+  // Phase 57: sqlite shadow read (fire-and-forget — sync fallback below)
+  if (config.memory_backend === 'sqlite') {
+    try {
+      const dbPath = config.memory_db_path || '../memory/memory.db';
+      // getDB is async — sqlite read deferred to loadMemoryWithSemantics async path
+      // flat file read continues below as L1 hot fallback during transition
+    } catch (err) { /* non-fatal */ }
+  }
   try {
     const raw = fs.readFileSync(path.join(ROOT, config.memory_file), "utf-8");
     if (!task) return raw.slice(-2000);
@@ -102,6 +111,23 @@ export async function loadMemoryWithSemantics(config, task) {
 }
 
 export function saveMemory(config, entry) {
+  // Phase 57: shadow write to sqlite
+  if (config.memory_backend === 'sqlite' || config.memory_backend === 'shadow') {
+    try {
+      const dbPath = config.memory_db_path || '../memory/memory.db';
+      const sessionId = config._session_id || Date.now().toString();
+      // entry is a string: "\nUser: ...\nAssistant: ..."
+      const str = typeof entry === 'string' ? entry : JSON.stringify(entry);
+      const userMatch = str.match(/User:\s*([\s\S]*?)(?=\nAssistant:|$)/);
+      const asstMatch = str.match(/Assistant:\s*([\s\S]*?)$/);
+      const userText = userMatch ? userMatch[1].trim() : '';
+      const asstText = asstMatch ? asstMatch[1].trim() : '';
+      getDB(dbPath).then(() => {
+        if (userText) insert({ session_id: sessionId, role: 'user', content: userText, tokens: Math.ceil(userText.length/4) });
+        if (asstText) insert({ session_id: sessionId, role: 'assistant', content: asstText, tokens: Math.ceil(asstText.length/4) });
+      }).catch(() => {});
+    } catch (err) { /* non-fatal */ }
+  }
   const memPath = path.join(ROOT, config.memory_file);
   fs.appendFileSync(memPath, entry + "\n");
   // Semantic memory: fire-and-forget embed of new entry

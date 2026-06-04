@@ -85,3 +85,7 @@
 {"timestamp":"2026-06-04T12:55:52.535Z","task":"analyze the tradeoffs between REST and GraphQL APIs","api_calls":2,"input_tokens":7894,"output_tokens":4711,"total_tokens":12605}
 {"timestamp":"2026-06-04T12:59:26.337Z","task":"what stocks should I invest in","api_calls":1,"input_tokens":7936,"output_tokens":104,"total_tokens":8040}
 {"timestamp":"2026-06-04T15:47:24.412Z","task":"explain how TCP/IP works","api_calls":2,"input_tokens":9853,"output_tokens":1116,"total_tokens":10969}
+{"timestamp":"2026-06-04T21:35:09.437Z","task":"what is a binary search tree","api_calls":2,"input_tokens":9748,"output_tokens":138,"total_tokens":9886}
+{"timestamp":"2026-06-04T21:36:40.937Z","task":"what is a hash table","api_calls":2,"input_tokens":6622,"output_tokens":256,"total_tokens":6878}
+{"timestamp":"2026-06-04T21:39:07.440Z","task":"what is a linked list","api_calls":2,"input_tokens":3027,"output_tokens":104,"total_tokens":3131}
+{"timestamp":"2026-06-04T21:41:01.787Z","task":"what is a stack data structure","api_calls":3,"input_tokens":3189,"output_tokens":191,"total_tokens":3380}

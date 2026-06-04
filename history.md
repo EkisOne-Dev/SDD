@@ -115,3 +115,9 @@
 **Reason:** The validator was receiving audit commentary instead of the synthesized design due to `extractHandoff()` passing the full reviewer output summary.
 **Impact:** The validator agent now receives the intended synthesized design artifact, ensuring correct evaluation and preventing regressions in complex agent chains. The system is now more robust in its multi-agent communication.
 **Commit:** 14f5a49
+
+### 2026-06-04 — Fix Validator Input to Receive Synthesized Design
+**Decision:** Modified `extractHandoff()` in `orchestrator/chains.js` to specifically extract the `[ARTIFACT]` block when the target agent is the validator. This ensures the validator receives the synthesized design rather than the reviewer's audit output.
+**Reason:** The validator agent was incorrectly receiving the reviewer's critique instead of the synthesized design artifact, causing task misalignment.
+**Impact:** The validator agent will now correctly process the synthesized design for evaluation, resolving the TASK MISALIGNMENT issue and improving the accuracy of the chain's validation stage.
+**Commit:** 56fc60e
