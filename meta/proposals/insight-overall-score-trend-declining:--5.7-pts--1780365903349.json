@@ -1,0 +1,13 @@
+{
+  "id": "insight-overall-score-trend-declining:--5.7-pts--1780365903349",
+  "dimension": "insight",
+  "source": "insight-generator",
+  "confidence": "MEDIUM",
+  "status": "pending",
+  "created": "2026-06-02T02:05:03.349Z",
+  "observed": "Overall score trend declining: -5.7 pts (last 10 vs prior 10)",
+  "issue": "Evidence: Recent avg: 69.2 | Prior avg: 74.9 | Last 5: 76, 74, 63, 76, 73",
+  "suggestion": "Review recent strategy.txt changes — regression likely",
+  "snoozed_until": "2026-06-07T03:40:47.451Z",
+  "resolved": null
+}

@@ -1,0 +1,11 @@
+{
+  "id": "usefulness-1780372125452",
+  "dimension": "usefulness",
+  "status": "pending",
+  "created": "2026-06-02T03:48:45.452Z",
+  "observed": "usefulness scored below 60 in 3 of the last 5 runs (avg: 57)",
+  "issue": "Output has low keyword overlap with the task — may be drifting off-topic.",
+  "suggestion": "Add a task-echo step to agent prompts: agents should restate the task goal before executing.",
+  "snoozed_until": "2026-06-07T03:51:03.970Z",
+  "resolved": null
+}

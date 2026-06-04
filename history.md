@@ -109,3 +109,9 @@
 **Reason:** To ensure the validator agent receives the synthesized design artifact for evaluation, as intended by the workflow.
 **Impact:** The validator agent now correctly receives the clean synthesized design artifact, resolving a critical task misalignment and improving the accuracy of the validation process in complex chains.
 **Commit:** 8e91ff6
+
+### 2026-06-01 — Fix validator input on complex chains
+**Decision:** Modified `orchestrator/chains.js`'s `extractHandoff()` function to specifically extract the `[ARTIFACT]` block from reviewer output when passing to the validator agent, resolving a task misalignment issue.
+**Reason:** The validator was receiving audit commentary instead of the synthesized design due to `extractHandoff()` passing the full reviewer output summary.
+**Impact:** The validator agent now receives the intended synthesized design artifact, ensuring correct evaluation and preventing regressions in complex agent chains. The system is now more robust in its multi-agent communication.
+**Commit:** 14f5a49

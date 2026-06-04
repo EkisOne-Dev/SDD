@@ -20,6 +20,13 @@
       "domain": "financial_advice",
       "confidence": "low",
       "decision": "user_overrode_low_confidence"
+    },
+    {
+      "timestamp": "2026-06-04T10:40:21.019Z",
+      "task": "analyze the tradeoffs between REST and GraphQL APIs",
+      "domain": "financial_advice",
+      "confidence": "low",
+      "decision": "user_overrode_low_confidence"
     }
   ]
 }

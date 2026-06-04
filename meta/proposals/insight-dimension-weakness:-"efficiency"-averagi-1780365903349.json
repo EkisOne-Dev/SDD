@@ -1,0 +1,13 @@
+{
+  "id": "insight-dimension-weakness:-\"efficiency\"-averagi-1780365903349",
+  "dimension": "insight",
+  "source": "insight-generator",
+  "confidence": "HIGH",
+  "status": "pending",
+  "created": "2026-06-02T02:05:03.349Z",
+  "observed": "Dimension weakness: \"efficiency\" averaging 66.8 across last 20 sessions",
+  "issue": "Evidence: clarity: 77.5 | usefulness: 75.1 | efficiency: 66.8",
+  "suggestion": "Target \"efficiency\" in next agent strategy.txt refinement pass",
+  "snoozed_until": "2026-06-07T03:40:42.118Z",
+  "resolved": null
+}

@@ -1,6 +1,6 @@
 {
-  "version": "5.4.0",
-  "last_updated": "2026-06-01",
+  "version": "5.5.0",
+  "last_updated": "2026-06-04",
   "completed_phases": [
     0,
     1,
@@ -293,6 +293,33 @@
         "All local models route correctly by task type"
       ]
     },
+    "18": {
+      "id": "F53",
+      "phase": "5.5.0-a",
+      "title": "Map-Reduce Output Compression",
+      "status": "complete",
+      "priority": "high",
+      "description": "Compresses final chain output exceeding threshold T using phi4-mini (Ollama). T = (active_provider_context_limit × 0.75) / agent_count. Fires on moderate/complex chains only. Zero API cost.",
+      "config_flag": "map_reduce_enabled"
+    },
+    "19": {
+      "id": "F54",
+      "phase": "5.5.0-b",
+      "title": "Capability Check Word-Boundary Fix",
+      "status": "complete",
+      "priority": "medium",
+      "description": "Fixed false-positive domain classification from substring matching (e.g. 'tradeoffs' → financial_advice). Short keywords (≤6 chars) now use regex word-boundary matching.",
+      "config_flag": "capability_check_enabled"
+    },
+    "20": {
+      "id": "F55",
+      "phase": "5.5.0-c",
+      "title": "Ollama Model Context Limit Audit",
+      "status": "complete",
+      "priority": "medium",
+      "description": "Corrected phi4-mini (16K→32K), gemma3:4b (8K→32K), qwen3.5:0.8b (4K→8K) based on verified native context windows from Ollama registry.",
+      "config_flag": null
+    },
     "phase_47c_context_hardening": {
       "status": "complete",
       "version": "4.3.0",
@@ -431,7 +458,7 @@
       ]
     }
   },
-  "system_version": "5.4.0",
+  "system_version": "5.5.0",
   "completed_phases_named": [
     "47b",
     "47c",

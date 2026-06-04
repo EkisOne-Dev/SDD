@@ -25,7 +25,14 @@ function classifyDomain(task) {
   const lower = task.toLowerCase();
   const matched = [];
   for (const [domain, keywords] of Object.entries(DOMAIN_KEYWORDS)) {
-    if (keywords.some(kw => lower.includes(kw))) {
+    if (keywords.some(kw => {
+      // Use word-boundary match for short keywords (≤6 chars) to prevent
+      // substring false positives (e.g. "trade" inside "tradeoffs")
+      if (kw.length <= 6 && !kw.includes(' ')) {
+        return new RegExp(`\\b${kw}\\b`, 'i').test(lower);
+      }
+      return lower.includes(kw);
+    })) {
       matched.push(domain);
     }
   }
