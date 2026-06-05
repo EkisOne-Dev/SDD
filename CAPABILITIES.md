@@ -4,10 +4,10 @@
 > Intended audience: technical reviewers, external auditors, and the system owner.
 
 **System:** Structured Development System (SDD)
-**Version:** 5.7.0
+**Version:** 5.7.1
 **Platform:** Android / Termux
 **Runtime:** Node.js
-**Last Updated:** 2026-06-04
+**Last Updated:** 2026-06-05
 
 ---
 

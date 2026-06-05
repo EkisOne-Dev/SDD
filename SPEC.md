@@ -9,8 +9,8 @@
 
 | Field | Value |
 |---|---|
-| Document Version | 5.7.0 |
-| System Version | v5.7.0 — Fully Verified + Universal Thinking Protocol |
+| Document Version | 5.7.1 |
+| System Version | v5.7.1 — Fully Verified + Universal Thinking Protocol |
 | Last Updated | 2026-05-30 |
 | Status | Active Development |
 | Platform | Android / Termux |
@@ -1613,6 +1613,8 @@ Thermal impact: controlled — vapor chamber handles sequential load spikes safe
 - Add validator chain type to chains.js (phi4-mini analytical pass after reviewer)
 - Remove phi4-mini:latest tag (keep q4_K_M only)
 | 2026-05-27 | 4.2.0 | Phase 47b complete — cognitive fit model architecture live | qwen3:8b pulled; local_model_routing updated to cognitive fit table; validator agent created; validator injected post-reviewer on complex chains; phi4-mini assigned to review/validate/analysis roles |
+| 2026-06-04 | 5.7.0 | Phase 57 complete — Hybrid Memory Layer | sql.js SQLite backend; 3-tier retrieval (L1 hot/L2 LIKE/L3 embedding candidates); shadow write mode; migration script; memory_backend config key; STD-7 compliant |
+| 2026-06-04 | 5.7.0 | Micro-task 57c logged | saveMemory uses floating promise for sqlite shadow write — convert to async/await before 57B to ensure write reliability |
 | 2026-06-01 | 5.2.0 | Phase 55 complete — postmortem loop closure | insight-generator.js now reads meta/postmortems/; two postmortem patterns (repeated failing stages, catastrophic runs); source: postmortem tag prevents collision with score insights |
 | 2026-06-01 | 5.3.0 | Efficiency signal addressed — 13 strategy refinements | CONFIDENCE DECLARATION removed from all 9 agent strategy.txt files (redundant with Universal Thinking Protocol); developer SIDE-CAUSE SCAN capped at 3 alternatives; reviewer INVERT EACH ASSUMPTION scoped to top 3 highest-risk; strategist fast-path gate for simple requests; creator FORMATTING MANDATE removed |
 | 2026-06-01 | 5.4.0 | Phase 56 complete — auto mode override + auto pipeline detection | detectPipelineIntent() added to intent-parser.js using verb+noun pattern matching; pipeline gate wired in main.js with one-confirmation UX; auto mode override upgrades config to strict (validation+evaluation) when intent parser returns complexity:complex |

@@ -127,7 +127,7 @@ export async function runPostChain({ task, result, complexity, chain, promptChar
   console.log(finalResult);
 
   // ── Memory ────────────────────────────────────────────────────────────
-  saveMemory(config, `\nUser: ${task}\nAssistant: ${finalResult}`);
+  await saveMemory(config, `\nUser: ${task}\nAssistant: ${finalResult}`);
   const memAbsPath = process.env.HOME + '/sdd/' + config.memory_file;
   await summarizeMemoryIfNeeded(memAbsPath, runEngine, adapter);
 

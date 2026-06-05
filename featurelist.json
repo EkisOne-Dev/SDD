@@ -1,6 +1,6 @@
 {
-  "version": "5.7.0",
-  "last_updated": "2026-06-04",
+  "version": "5.7.1",
+  "last_updated": "2026-06-05",
   "completed_phases": [
     0,
     1,
@@ -51,7 +51,8 @@
     46,
     47,
     48,
-    57
+    57,
+    "57c"
   ],
   "features": {
     "0": {
@@ -483,9 +484,18 @@
       "description": "sql.js SQLite backend for memory. 3-tier retrieval: L1 hot (recent), L2 LIKE keyword search, L3 embedding candidates. Shadow write mode — flat file remains primary, sqlite writes in parallel. Migration script imports memory.txt. Config keys: memory_backend, memory_db_path, memory_budget_tokens, memory_prune_days.",
       "status": "active",
       "config_flag": "memory_backend"
+    },
+    "micro_task_57c_savememory_async": {
+      "description": "saveMemory converted from floating promise to async/await — sqlite shadow writes now reliable",
+      "status": "complete",
+      "phase": "57c",
+      "files": [
+        "orchestrator/orchestrator.js",
+        "orchestrator/post-chain.js"
+      ]
     }
   },
-  "system_version": "5.7.0",
+  "system_version": "5.7.1",
   "completed_phases_named": [
     "47b",
     "47c",

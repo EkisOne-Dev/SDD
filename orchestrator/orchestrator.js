@@ -110,8 +110,8 @@ export async function loadMemoryWithSemantics(config, task) {
   return loadMemory(config, task);
 }
 
-export function saveMemory(config, entry) {
-  // Phase 57: shadow write to sqlite
+export async function saveMemory(config, entry) {
+  // Phase 57: shadow write to sqlite (57c — async/await, reliable write)
   if (config.memory_backend === 'sqlite' || config.memory_backend === 'shadow') {
     try {
       const dbPath = config.memory_db_path || '../memory/memory.db';
@@ -122,10 +122,9 @@ export function saveMemory(config, entry) {
       const asstMatch = str.match(/Assistant:\s*([\s\S]*?)$/);
       const userText = userMatch ? userMatch[1].trim() : '';
       const asstText = asstMatch ? asstMatch[1].trim() : '';
-      getDB(dbPath).then(() => {
-        if (userText) insert({ session_id: sessionId, role: 'user', content: userText, tokens: Math.ceil(userText.length/4) });
-        if (asstText) insert({ session_id: sessionId, role: 'assistant', content: asstText, tokens: Math.ceil(asstText.length/4) });
-      }).catch(() => {});
+      await getDB(dbPath);
+      if (userText) await insert({ session_id: sessionId, role: 'user', content: userText, tokens: Math.ceil(userText.length/4) });
+      if (asstText) await insert({ session_id: sessionId, role: 'assistant', content: asstText, tokens: Math.ceil(asstText.length/4) });
     } catch (err) { /* non-fatal */ }
   }
   const memPath = path.join(ROOT, config.memory_file);
