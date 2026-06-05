@@ -1,5 +1,5 @@
 {
-  "version": "5.7.1",
+  "version": "5.8.0",
   "last_updated": "2026-06-05",
   "completed_phases": [
     0,
@@ -52,7 +52,8 @@
     47,
     48,
     57,
-    "57c"
+    "57c",
+    "57B"
   ],
   "features": {
     "0": {
@@ -493,9 +494,18 @@
         "orchestrator/orchestrator.js",
         "orchestrator/post-chain.js"
       ]
+    },
+    "phase_57b_blackboard_db": {
+      "description": "Blackboard DB — ephemeral session DB separate from memory.db. 4 tables: pipeline_tasks, task_solutions, session_context, interaction_history. All writes atomic (BEGIN TRANSACTION...COMMIT). VACUUM after every session cleanup.",
+      "status": "complete",
+      "phase": "57B",
+      "files": [
+        "memory/blackboard-db.js",
+        "orchestrator/blackboard.js"
+      ]
     }
   },
-  "system_version": "5.7.1",
+  "system_version": "5.8.0",
   "completed_phases_named": [
     "47b",
     "47c",

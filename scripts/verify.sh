@@ -10,12 +10,12 @@ warn() { echo "  ⚠️  $1"; WARN=$((WARN+1)); }
 
 echo ""
 echo "╔══════════════════════════════════════════╗"
-echo "║       SDD System Verification v5.7.1     ║"
+echo "║       SDD System Verification v5.8.0     ║"
 echo "╚══════════════════════════════════════════╝"
 
 echo ""
 echo "📁 Directory Structure"
-for f in start.sh backup.sh SPEC.md CAPABILITIES.md README.md config/system.json engine/adapter.json orchestrator/main.js orchestrator/orchestrator.js orchestrator/chains.js orchestrator/pipeline.js orchestrator/menu.js orchestrator/post-chain.js orchestrator/validator.js orchestrator/spinner.js orchestrator/colors.js orchestrator/utils.js skills/router.js skills/registry.json skills/tools/capability-check.js skills/tools/negotiator.js skills/tools/self-research.js skills/tools/self-critique.js skills/tools/scorer.js skills/tools/observer.js skills/tools/proposal-manager.js skills/tools/applier.js skills/tools/postmortem.js skills/tools/drift-control.js skills/tools/cost-tracker.js skills/tools/image-gen.js skills/tools/learner.js skills/tools/learn-command.js skills/tools/engine-check.js skills/tools/memory-summarizer.js skills/tools/session-end.js skills/tools/intent-parser.js skills/tools/semantic-memory.js skills/tools/audit.js skills/tools/insight-generator.js skills/tools/snapshot.js; do
+for f in start.sh backup.sh SPEC.md CAPABILITIES.md README.md config/system.json engine/adapter.json orchestrator/main.js orchestrator/orchestrator.js orchestrator/chains.js orchestrator/pipeline.js orchestrator/menu.js orchestrator/post-chain.js orchestrator/validator.js orchestrator/spinner.js orchestrator/colors.js orchestrator/utils.js skills/router.js skills/registry.json skills/tools/capability-check.js skills/tools/negotiator.js skills/tools/self-research.js skills/tools/self-critique.js skills/tools/scorer.js skills/tools/observer.js skills/tools/proposal-manager.js skills/tools/applier.js skills/tools/postmortem.js skills/tools/drift-control.js skills/tools/cost-tracker.js skills/tools/image-gen.js skills/tools/learner.js skills/tools/learn-command.js skills/tools/engine-check.js skills/tools/memory-summarizer.js skills/tools/session-end.js skills/tools/intent-parser.js skills/tools/semantic-memory.js skills/tools/audit.js skills/tools/insight-generator.js skills/tools/snapshot.js memory/blackboard-db.js orchestrator/blackboard.js; do
   [ -f "$HOME/sdd/$f" ] && pass "$f" || fail "$f MISSING"
 done
 
