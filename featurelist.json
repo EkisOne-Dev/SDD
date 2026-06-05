@@ -1,5 +1,5 @@
 {
-  "version": "5.9.1",
+  "version": "5.9.2",
   "last_updated": "2026-06-05",
   "completed_phases": [
     0,
@@ -55,7 +55,8 @@
     "57c",
     "57B",
     "58",
-    "58B"
+    "58B",
+    "60"
   ],
   "features": {
     "0": {
@@ -519,16 +520,30 @@
     },
     "sam_groq_routing": {
       "name": "SAM Groq Provider Routing",
-      "description": "SubAgentManager routes all calls through dedicated groq_sam provider slot to avoid exhausting primary cascade. adapter.json: groq_sam block + sam_provider key. runSubAgentManager() swaps adapter.active on entry.",
-      "status": "active",
       "phase": "58B-hotfix",
-      "files": [
-        "engine/adapter.json",
-        "orchestrator/sub-agent-manager.js"
-      ]
+      "status": "active",
+      "description": "groq_sam adapter block; adapter.active swap on SAM entry/exit"
+    },
+    "blackboard_db": {
+      "name": "Blackboard DB",
+      "phase": "57B",
+      "status": "active",
+      "description": "Ephemeral sql.js SQLite session store for inter-agent state sharing"
+    },
+    "sub_agent_manager": {
+      "name": "SubAgentManager",
+      "phase": "58",
+      "status": "active",
+      "description": "Decompose/execute/synthesize loop for complex multi-step tasks"
+    },
+    "insights_command": {
+      "name": "Insights Command",
+      "phase": "54",
+      "status": "active",
+      "description": "sdd insights — reads insights.jsonl, flags stale signals, feeds observer and session-end"
     }
   },
-  "system_version": "5.9.1",
+  "system_version": "5.9.2",
   "completed_phases_named": [
     "47b",
     "47c",

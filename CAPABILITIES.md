@@ -4,7 +4,7 @@
 > Intended audience: technical reviewers, external auditors, and the system owner.
 
 **System:** Structured Development System (SDD)
-**Version:** 5.9.1
+**Version:** 5.9.2
 **Platform:** Android / Termux
 **Runtime:** Node.js
 **Last Updated:** 2026-06-05
@@ -90,6 +90,9 @@ To verify the full system: run each verification test in order and compare outpu
 | 59 | Insights Command | ✅ Active | 54 |
 | 60 | Auto Mode Override | ✅ Active | 56 |
 | 61 | Auto Pipeline Detection | ✅ Active | 56 |
+| 62 | Blackboard DB | ✅ Active | 57B |
+| 63 | SubAgentManager | ✅ Active | 58 |
+| 64 | SAM Groq Provider Routing | ✅ Active | 58B-hotfix |
 
 ---
 
@@ -1509,7 +1512,7 @@ Expected: Confidence ratings visible inline. No [THINKING PROTOCOL] headers in o
 
 **Known limitations:** Prose framing required to prevent model mirroring structured labels. Adds ~370 chars to every prompt — minimal context budget impact.
 
-*End of CAPABILITIES.md — Update after every phase that adds, modifies, or removes a capability.*
+
 
 ---
 
@@ -1667,7 +1670,7 @@ Expected: Both files show the same version string.
 **What it does:**
 Reads meta/insights/insights.jsonl and prints all active signals to the terminal with pattern, confidence level, and recommended_action. Flags insights older than 10 sessions as stale. Feeds active insights into the meta observer as proposal context, enabling pattern-driven proposals rather than single-event reactions. Injects active signals into the sdd session-end AI summary prompt.
 
-**Status:** 🔲 Planned — Phase 54
+**Status:** ✅ Active — Phase 54
 
 **Trigger:** sdd insights
 
@@ -1678,7 +1681,7 @@ Reads meta/insights/insights.jsonl and prints all active signals to the terminal
 
 ---
 
-*End of CAPABILITIES.md — Update after every phase that adds, modifies, or removes a capability.*
+
 ---
 
 ### 60 — Auto Mode Override
@@ -1720,3 +1723,58 @@ Expected: { detected: true, hint: 'api' }
 
 **Known limitations:** Hint extraction uses first matching noun only. Project slug must be refined manually after pipeline launch if hint is too generic.
 
+---
+
+### 62 — Blackboard DB (Phase 57B)
+
+**What it does:**
+Provides an ephemeral SQLite database (blackboard.db) for within-session inter-agent state sharing. Initialized via initBlackboard(dbPath) before any read/write. Contains a think_chains table for storing reasoning traces. VACUUMed on session cleanup. memory.db is permanent and never VACUUMed mid-session.
+
+**Status:** ✅ Active — Phase 57B
+
+**Trigger:** initBlackboard() called at session start. Accessed by any agent needing shared state.
+
+**Files responsible:**
+- memory/blackboard-db.js — sql.js SQLite implementation
+- orchestrator/blackboard.js — init gate and query interface
+
+**Known limitations:** Ephemeral — all blackboard state lost on session end by design.
+
+---
+
+### 63 — SubAgentManager (Phase 58)
+
+**What it does:**
+Orchestrates multi-step complex tasks via a decompose → execute → synthesize loop. Entry point: runSubAgentManager(masterTask, config, adapter) returns { output, meta }. All internal calls use direct prompt strings (agent.identity + agent.strategy + task) — never buildPrompt(). Reviewer gate fires after synthesis. End-to-end tested: 4/4 sub-tasks PASS.
+
+**Status:** ✅ Active — Phase 58
+
+**Trigger:** Called explicitly for tasks requiring parallel sub-task decomposition.
+
+**Files responsible:**
+- orchestrator/sub-agent-manager.js — full SAM implementation
+
+**Known limitations:** Sequential execution only (OLLAMA_MAX_LOADED_MODELS=1). Parallel SAM deferred to Phase 65.
+
+---
+
+### 64 — SAM Groq Provider Routing (Phase 58B-hotfix)
+
+**What it does:**
+All SubAgentManager calls route through a dedicated groq_sam provider block in adapter.json. runSubAgentManager() swaps adapter.active to groq_sam on entry, restoring original on exit. Prevents Flash-Lite exhaustion on multi-call SAM runs. sam_provider key in adapter.json identifies the override target.
+
+**Status:** ✅ Active — Phase 58B-hotfix
+
+**Trigger:** Any runSubAgentManager() call.
+
+**Files responsible:**
+- engine/adapter.json → groq_sam block + sam_provider key
+- orchestrator/sub-agent-manager.js → adapter.active swap on entry/exit
+
+**Known limitations:** SAM inherits Groq rate limits. Phase 58C (batch execution) deferred until limits become a constraint.
+
+---
+
+---
+
+*End of CAPABILITIES.md — Update after every phase that adds, modifies, or removes a capability.*
