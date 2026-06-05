@@ -1,5 +1,5 @@
 {
-  "version": "5.10.2",
+  "version": "5.10.3",
   "last_updated": "2026-06-05",
   "completed_phases": [
     0,
@@ -575,7 +575,7 @@
       ]
     }
   },
-  "system_version": "5.10.2",
+  "system_version": "5.10.3",
   "completed_phases_named": [
     "47b",
     "47c",

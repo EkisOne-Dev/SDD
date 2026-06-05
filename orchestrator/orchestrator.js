@@ -316,7 +316,7 @@ export async function runEngine(prompt, adapter, agentName = null, complexity = 
     adapter[_reasoningKey] &&
     _reasoningAgents.includes(agentName) &&
     (complexity === 'complex' || complexity === 'moderate') &&
-    !agentOverrideKey
+    !(agentOverrideKey && adapter[agentOverrideKey]?.think === true)
   ) {
     active = { ...adapter[_reasoningKey] };
     agentOverrideKey = _reasoningKey;

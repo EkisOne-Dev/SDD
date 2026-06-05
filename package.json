@@ -1,6 +1,6 @@
 {
   "name": "sdd",
-  "version": "5.10.2",
+  "version": "5.10.3",
   "type": "module",
   "description": "Structured Development System",
   "main": "orchestrator/main.js",
