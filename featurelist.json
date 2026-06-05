@@ -1,5 +1,5 @@
 {
-  "version": "5.9.2",
+  "version": "5.10.0",
   "last_updated": "2026-06-05",
   "completed_phases": [
     0,
@@ -56,7 +56,8 @@
     "57B",
     "58",
     "58B",
-    "60"
+    "60",
+    61
   ],
   "features": {
     "0": {
@@ -541,9 +542,19 @@
       "phase": "54",
       "status": "active",
       "description": "sdd insights — reads insights.jsonl, flags stale signals, feeds observer and session-end"
+    },
+    "reasoning_provider_infrastructure": {
+      "name": "Reasoning Provider Infrastructure",
+      "phase": 61,
+      "status": "active",
+      "description": "T3 reasoning tier for architect/strategist agents on complex/moderate tasks. cerebras_reasoning (Qwen3 235B, think:true) as primary; groq_deepseek (DeepSeek-R1-distill-70B) as secondary. thinking_budget: moderate=2048, complex=8192. Local fallback: deepseek-r1:7b.",
+      "files": [
+        "engine/adapter.json",
+        "orchestrator/orchestrator.js"
+      ]
     }
   },
-  "system_version": "5.9.2",
+  "system_version": "5.10.0",
   "completed_phases_named": [
     "47b",
     "47c",

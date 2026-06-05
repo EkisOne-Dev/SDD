@@ -139,5 +139,23 @@
       "simple": "gemini-2.5-flash-lite",
       "complex": "gemini-2.5-flash-lite"
     }
-  }
+  },
+  "groq_deepseek": {
+    "provider": "groq",
+    "model": "deepseek-r1-distill-llama-70b",
+    "api_key_env": "GROQ_API_KEY",
+    "base_url": "https://api.groq.com/openai/v1",
+    "context_limit": 128000,
+    "_note": "Reasoning model — DeepSeek-R1 distill on Groq. Emits <think> blocks — strip before extractHandoff(). Local fallback: deepseek-r1:7b"
+  },
+  "cerebras_reasoning": {
+    "provider": "cerebras",
+    "model": "qwen-3-235b-a22b",
+    "api_key_env": "CEREBRAS_API_KEY",
+    "base_url": "https://api.cerebras.ai/v1",
+    "context_limit": 8192,
+    "think": true,
+    "_note": "Reasoning model — Qwen3 235B on Cerebras LPU with think:true. T3 tier. thinking_budget injected by runEngine() per complexity."
+  },
+  "reasoning_provider": "cerebras_reasoning"
 }

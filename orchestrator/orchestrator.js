@@ -306,7 +306,26 @@ export async function runEngine(prompt, adapter, agentName = null, complexity = 
     }
   }
 
-  // Cascade fallback chain on failure — fallback5 added; override starts chain
+  // Phase 61 — Reasoning provider tier gate (T3)
+  // architect/strategist + complex → reasoning_provider (cerebras_reasoning)
+  // thinking_budget: moderate=2048, complex=8192
+  const _reasoningAgents = ['architect', 'strategist'];
+  const _reasoningKey = adapter.reasoning_provider;
+  if (
+    _reasoningKey &&
+    adapter[_reasoningKey] &&
+    _reasoningAgents.includes(agentName) &&
+    (complexity === 'complex' || complexity === 'moderate') &&
+    !agentOverrideKey
+  ) {
+    active = { ...adapter[_reasoningKey] };
+    agentOverrideKey = _reasoningKey;
+    active.thinking_budget = complexity === 'complex' ? 8192 : 2048;
+    if (active.context_limit) prompt = trimToContextBudget(prompt, active.context_limit);
+    logExecution(`REASONING TIER: ${active.model} (thinking_budget=${active.thinking_budget}) for ${agentName}/${complexity}`);
+  }
+
+    // Cascade fallback chain on failure — fallback5 added; override starts chain
   const _cascadeKeys = ['fallback', 'fallback2', 'fallback3', 'fallback4', 'fallback5', 'local_fallback'];
   const providerChain = agentOverrideKey
     ? [agentOverrideKey, ..._cascadeKeys.filter(k => adapter[k])]
