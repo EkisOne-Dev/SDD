@@ -496,6 +496,7 @@ async function runOllama(prompt, config) {
     const adapterRaw = fs.readFileSync(path.join(ROOT, 'engine/adapter.json'), 'utf-8');
     const adapterCfg = JSON.parse(adapterRaw);
     num_ctx = adapterCfg.ollama_model_config?.[config.model]?.num_ctx ?? 2048;
+    if (adapterCfg.ollama_model_config?.[config.model]?.think === true) config.think = true;
   } catch {}
 
   const response = await fetch(`${config.base_url}/generate`, {
@@ -505,7 +506,7 @@ async function runOllama(prompt, config) {
       model: config.model,
       prompt: prompt,
       stream: false,
-      options: { num_ctx }
+      options: { num_ctx, ...(config.think === true ? { think: true } : {}) }
     })
   });
 

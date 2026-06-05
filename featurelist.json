@@ -1,5 +1,5 @@
 {
-  "version": "5.10.0",
+  "version": "5.10.1",
   "last_updated": "2026-06-05",
   "completed_phases": [
     0,
@@ -57,7 +57,8 @@
     "58",
     "58B",
     "60",
-    61
+    61,
+    62
   ],
   "features": {
     "0": {
@@ -552,9 +553,19 @@
         "engine/adapter.json",
         "orchestrator/orchestrator.js"
       ]
+    },
+    "qwen3_thinking_mode": {
+      "name": "Qwen3 Thinking Mode",
+      "phase": 62,
+      "status": "active",
+      "description": "think:true wired for qwen3:8b in Ollama options when complexity=complex. Flag read from ollama_model_config in adapter.json and injected into runOllama() options. Activates genuine local CoT for architect/strategist Ollama fallback calls.",
+      "files": [
+        "engine/adapter.json",
+        "orchestrator/orchestrator.js"
+      ]
     }
   },
-  "system_version": "5.10.0",
+  "system_version": "5.10.1",
   "completed_phases_named": [
     "47b",
     "47c",

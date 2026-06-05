@@ -4,7 +4,8 @@
   "ollama_model_config": {
     "qwen3:8b": {
       "num_ctx": 32768,
-      "context_limit": 32768
+      "context_limit": 32768,
+      "think": true
     },
     "qwen2.5-coder:7b": {
       "num_ctx": 32768,
