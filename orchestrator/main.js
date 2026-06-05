@@ -28,6 +28,7 @@ import { indexMemory } from '../skills/tools/semantic-memory.js';
 import { runAudit } from '../skills/tools/audit.js';
 import { runInsightsCommand } from '../skills/tools/insights-command.js';
 import { generateImage } from '../skills/tools/image-gen.js';
+import { runSubAgentManager } from './sub-agent-manager.js';
 import { runProposalManager } from "../skills/tools/proposal-manager.js";
 import { runPostChain } from "./post-chain.js";
 import { c } from "./colors.js";
@@ -77,6 +78,18 @@ async function run(injectedTask = null) {
     const deps = { loadAgent, loadMemory, config: loadConfig(), runEngine, adapter: loadEngineAdapter(), logExecution };
     await resumePipeline(projectName, deps);
     return;
+  }
+
+  if (task.toLowerCase().startsWith('subagent ') || task.toLowerCase() === 'subagent') {
+    const subTask = task.replace(/^subagent\s*/i, '').trim();
+    if (!subTask) {
+      console.log('\nUsage: sdd subagent "<master task>"\n');
+      process.exit(0);
+    }
+    const samResult = await runSubAgentManager(subTask, config, adapter);
+    console.log('\n' + samResult.output);
+    console.log('\nSubAgentManager: ' + samResult.meta.passed + ' passed, ' + samResult.meta.blocked + ' blocked of ' + samResult.meta.subTasks + ' sub-tasks');
+    process.exit(0);
   }
 
   if (task.toLowerCase() === 'check-engines') {

@@ -1,5 +1,5 @@
 {
-  "version": "5.8.0",
+  "version": "5.9.0",
   "last_updated": "2026-06-05",
   "completed_phases": [
     0,
@@ -53,7 +53,8 @@
     48,
     57,
     "57c",
-    "57B"
+    "57B",
+    "58"
   ],
   "features": {
     "0": {
@@ -503,9 +504,20 @@
         "memory/blackboard-db.js",
         "orchestrator/blackboard.js"
       ]
+    },
+    "phase_58_sub_agent_manager": {
+      "description": "SubAgentManager — 5-phase multi-agent decomposition: Decompose→Execute→Reviewer gate→Map-Reduce→Synthesis→Archive→VACUUM. phi4-mini reviewer gate (PASS/FAIL/RETRY, max 2 retries→BLOCKED). Compression threshold T=(context_limit×0.75)/task_count. Cognitive fit routing preserved. Invoked via sdd subagent \"<task>\".",
+      "status": "complete",
+      "phase": "58",
+      "files": [
+        "orchestrator/sub-agent-manager.js",
+        "orchestrator/blackboard.js",
+        "memory/blackboard-db.js",
+        "orchestrator/main.js"
+      ]
     }
   },
-  "system_version": "5.8.0",
+  "system_version": "5.9.0",
   "completed_phases_named": [
     "47b",
     "47c",
