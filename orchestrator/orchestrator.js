@@ -459,7 +459,12 @@ async function runGemini(prompt, config) {
 
   const { GoogleGenerativeAI } = await import("@google/generative-ai");
   const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: config.model });
+  // Phase 63 — inject thinkingBudget when set by reasoning tier gate
+  const _modelConfig = { model: config.model };
+  if (config.thinking_budget) {
+    _modelConfig.generationConfig = { thinkingConfig: { thinkingBudget: config.thinking_budget } };
+  }
+  const model = genAI.getGenerativeModel(_modelConfig);
   const result = await model.generateContent(prompt);
   return result.response.text();
 }

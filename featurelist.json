@@ -1,5 +1,5 @@
 {
-  "version": "5.10.1",
+  "version": "5.10.2",
   "last_updated": "2026-06-05",
   "completed_phases": [
     0,
@@ -58,7 +58,8 @@
     "58B",
     "60",
     61,
-    62
+    62,
+    63
   ],
   "features": {
     "0": {
@@ -563,9 +564,18 @@
         "engine/adapter.json",
         "orchestrator/orchestrator.js"
       ]
+    },
+    "gemini_flash_thinking_mode": {
+      "name": "Gemini Flash Thinking Mode",
+      "phase": 63,
+      "status": "active",
+      "description": "thinkingConfig.thinkingBudget injected into getGenerativeModel() when config.thinking_budget is set. moderate=2048, complex=8192. Activated by Phase 61 reasoning tier gate for architect/strategist on complex/moderate tasks routed through Gemini.",
+      "files": [
+        "orchestrator/orchestrator.js"
+      ]
     }
   },
-  "system_version": "5.10.1",
+  "system_version": "5.10.2",
   "completed_phases_named": [
     "47b",
     "47c",
