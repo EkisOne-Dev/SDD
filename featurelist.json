@@ -1,5 +1,5 @@
 {
-  "version": "5.10.3",
+  "version": "5.11.0",
   "last_updated": "2026-06-05",
   "completed_phases": [
     0,
@@ -59,7 +59,8 @@
     "60",
     61,
     62,
-    63
+    63,
+    65
   ],
   "features": {
     "0": {
@@ -573,9 +574,15 @@
       "files": [
         "orchestrator/orchestrator.js"
       ]
+    },
+    "parallel_sam": {
+      "name": "Parallel SAM Execute",
+      "phase": 65,
+      "status": "active",
+      "description": "Promise.all() on SAM execute phase with max 3 concurrent slots. Sequential gate preserved for Ollama provider. Decompose, reviewer gate, map-reduce, and synthesis remain sequential."
     }
   },
-  "system_version": "5.10.3",
+  "system_version": "5.11.0",
   "completed_phases_named": [
     "47b",
     "47c",

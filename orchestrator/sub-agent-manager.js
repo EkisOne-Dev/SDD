@@ -34,6 +34,21 @@ const COGNITIVE_FIT = {
   basic:      'phi4-mini:3.8b-q4_K_M'
 };
 
+
+// ── Phase 65: Concurrency limiter (max 3 parallel slots) ─────────────────────
+function makeLimiter(max) {
+  let active = 0;
+  const queue = [];
+  const next = () => {
+    if (active >= max || queue.length === 0) return;
+    active++;
+    const { fn, resolve, reject } = queue.shift();
+    fn().then(v => { active--; resolve(v); next(); })
+       .catch(e => { active--; reject(e); next(); });
+  };
+  return fn => new Promise((resolve, reject) => { queue.push({ fn, resolve, reject }); next(); });
+}
+const PARALLEL_LIMIT = 3;
 // ── Phase 1: Decompose ────────────────────────────────────────────────────────
 // Uses architect agent to break the master task into sub-tasks.
 // Returns array of { slug, description, agent } objects.
@@ -171,10 +186,13 @@ export async function runSubAgentManager(masterTask, config, adapter) {
   writeSessionContext(sessionId, { masterTask, taskCount: subTasks.length });
 
   // Phase 2 + 3: Execute loop with reviewer gate
+  // Phase 65: parallel on cloud providers, sequential on Ollama
   const solutions = [];
   const priorContext = { solutions: [], taskCount: subTasks.length };
 
-  for (const subTask of subTasks) {
+  const isOllama = adapter[adapter.active]?.provider === 'ollama';
+
+  async function runSubTaskWithGate(subTask) {
     console.log(c.dim(`\n   ▶ [${subTask.slug}] ${subTask.description.slice(0, 60)}`));
     updateTaskStatus(sessionId, subTask.slug, 'running');
 
@@ -201,8 +219,29 @@ export async function runSubAgentManager(masterTask, config, adapter) {
     }
 
     writeTaskSolution(sessionId, subTask.slug, subTask.agent, solution || '', 0);
-    solutions.push({ slug: subTask.slug, solution: solution || '', status: verdict });
-    priorContext.solutions.push({ slug: subTask.slug, solution: solution || '' });
+    return { slug: subTask.slug, solution: solution || '', status: verdict };
+  }
+
+  let executed;
+  if (isOllama) {
+    // Sequential — OLLAMA_MAX_LOADED_MODELS=1 constraint
+    console.log(c.dim('   [SAM] Sequential mode (Ollama)'));
+    executed = [];
+    for (const subTask of subTasks) {
+      const result = await runSubTaskWithGate(subTask);
+      executed.push(result);
+      priorContext.solutions.push({ slug: result.slug, solution: result.solution });
+    }
+  } else {
+    // Parallel — max PARALLEL_LIMIT concurrent slots
+    console.log(c.dim(`   [SAM] Parallel mode (max ${PARALLEL_LIMIT} concurrent)`));
+    const limit = makeLimiter(PARALLEL_LIMIT);
+    executed = await Promise.all(subTasks.map(st => limit(() => runSubTaskWithGate(st))));
+  }
+
+  for (const r of executed) {
+    solutions.push(r);
+    priorContext.solutions.push({ slug: r.slug, solution: r.solution });
   }
 
   // Phase 4: Map-Reduce

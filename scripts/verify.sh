@@ -10,7 +10,7 @@ warn() { echo "  ⚠️  $1"; WARN=$((WARN+1)); }
 
 echo ""
 echo "╔══════════════════════════════════════════╗"
-echo "║       SDD System Verification v5.10.3     ║"
+echo "║       SDD System Verification v5.11.0     ║"
 echo "╚══════════════════════════════════════════╝"
 
 echo ""
