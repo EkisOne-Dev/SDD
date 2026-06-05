@@ -1578,6 +1578,281 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 
 ---
 
+## REASONING INTELLIGENCE ROADMAP (Established v5.9.1)
+
+> This roadmap defines the phased implementation of genuine reasoning capabilities across SDD.
+> Derived from expert analysis of the gap between orchestration quality and model reasoning depth.
+> All phases are free-only compliant. Ordered by impact-to-effort ratio.
+
+---
+
+### Design Philosophy
+
+**Core principle:** Orchestration amplifies model capability — it does not replace it.
+The goal is to extract maximum reasoning from available models through surgical scaffolding,
+tiered execution, and infrastructure that preserves and reuses reasoning chains.
+
+**The fundamental tradeoff:** Reasoning models trade speed for quality. This is not solvable —
+it is managed by applying reasoning depth only where it changes the outcome, and using fast
+execution everywhere else. Three-tier execution is the governing architecture.
+
+---
+
+### Tier Execution Model (Governing Architecture)
+
+| Tier | Latency | Models | Task Types |
+|---|---|---|---|
+| T1 — Fast | <2s | Gemini Flash-Lite, phi4-mini, qwen3.5:0.8b | Classification, routing, simple Q&A, reviewer gate verdicts, formatting |
+| T2 — Standard | 2–15s | Gemini Flash, Groq Llama 3.3 70B, Cerebras Qwen3 235B (no think) | Moderate analysis, code generation, research synthesis, single-agent tasks |
+| T3 — Reasoning | 15s–4min | Cerebras Qwen3 235B (/think), Groq DeepSeek-R1 70B, Gemini Flash (thinking_config), local deepseek-r1:7b | Architecture design, strategic planning, complex analysis, novel problem solving |
+
+**Routing rule:** complexity classifier drives tier selection.
+- simple → T1
+- moderate → T2
+- complex → T3 (reasoning path)
+
+---
+
+### Phase 61 — Reasoning Provider Infrastructure
+
+**Problem:** No reasoning-capable provider slot exists. Complex tasks route through T1 models
+(Flash-Lite) that lack chain-of-thought training. Cerebras at position 5 in cascade is
+unreachable for most runs. DeepSeek-R1 70B on Groq is not in the system at all.
+
+| Item | Description |
+|---|---|
+| groq_deepseek block | Add provider block to adapter.json: Groq / deepseek-r1-distill-llama-70b — genuine reasoning model at 200-315 t/s, free tier |
+| cerebras_reasoning block | Dedicated Cerebras block with Qwen3 235B and think: true flag — 1000-2000 t/s, 1M tokens/day |
+| reasoning_provider key | adapter.json key pointing to cerebras_reasoning — routes architect/strategist agents on complex tasks |
+| Tier routing in runEngine() | When complexity === 'complex' and agent is architect/strategist: swap to reasoning_provider before API call |
+| thinking_budget control | Pass thinking_budget: 2048 for moderate, 8192 for complex to Gemini Flash and Cerebras calls |
+| deepseek-r1:7b local pull | ollama pull deepseek-r1:7b — local reasoning fallback when all cloud providers fail |
+
+**Files:** engine/adapter.json, orchestrator/orchestrator.js → runEngine()
+
+**Value:** Gives architect and strategist agents access to genuine reasoning models.
+Cerebras at 1000-2000 t/s produces reasoned output faster than Flash-Lite produces
+non-reasoned output — speed and quality both improve simultaneously for complex tasks.
+
+---
+
+### Phase 62 — Qwen3 Thinking Mode Activation
+
+**Problem:** qwen3:8b is already pulled and assigned to architect/strategist roles but
+thinking mode is never activated. Qwen3 was trained with hybrid thinking — /think prefix
+or think: true in Ollama options activates genuine chain-of-thought. Currently running
+at ~30% of its actual reasoning capacity.
+
+| Item | Description |
+|---|---|
+| Ollama think flag | Add think: true to options{} in runOllama() when model is qwen3:8b and complexity === 'complex' |
+| Think block stripping | Strip <think>...</think> from qwen3 output before extractHandoff() — pass only clean response to next agent |
+| Think block archival | Store stripped think blocks in blackboard.db (think_chains table) tagged by task_slug and agent — reasoning evidence preserved for later retrieval |
+| /think prefix fallback | If think: true flag not supported by Ollama version, prepend "/think
+" to prompt as fallback |
+
+**Files:** orchestrator/orchestrator.js → runOllama(), memory/blackboard-db.js (new table), orchestrator/blackboard.js
+
+**Value:** Zero new models, zero API calls. Activates reasoning capability already present
+in a model you already have. Most direct path to better local reasoning quality.
+
+---
+
+### Phase 63 — Gemini Flash Thinking Mode Integration
+
+**Problem:** Gemini 2.5 Flash supports thinking_config with thinking_budget parameter.
+Currently never passed in API calls. On complex tasks this activates extended deliberation
+before response generation — same free quota, dramatically better reasoning output.
+
+| Item | Description |
+|---|---|
+| thinking_config injection | Add thinking_config: { thinkingBudget: N } to Gemini API call body when complexity === 'complex' |
+| Budget scale | moderate → thinkingBudget: 2048, complex → thinkingBudget: 8192 |
+| T1 exclusion | Never inject thinking_config for Flash-Lite — not supported, wastes quota |
+| Flash promotion | Promote Gemini Flash (not Flash-Lite) as primary for complex chains — Flash-Lite remains primary for T1/T2 |
+| Think token tracking | Track thinking token consumption separately in cost-tracker.js to monitor quota impact |
+
+**Files:** orchestrator/orchestrator.js → runGemini(), skills/tools/cost-tracker.js
+
+**Value:** Turns a model already in your cascade into a reasoning model at zero additional cost.
+Thinking budget cap prevents quota exhaustion. Flash with thinking_budget: 8192 on architecture
+tasks produces output qualitatively competitive with much larger non-reasoning models.
+
+---
+
+### Phase 64 — Two-Call Real Chain-of-Thought
+
+**Problem:** TRI-STRUCTURE simulates reasoning but the model reasons and answers in one
+forward pass — it cannot revise based on its own reasoning. Real CoT requires the reasoning
+to exist as context before the answer is generated. Two separate calls enforce genuine
+deliberation because call 1 output shapes call 2 input.
+
+| Item | Description |
+|---|---|
+| runReasoning() | New function in orchestrator.js — takes agent, task, adapter; runs two sequential calls |
+| Call 1 — Deliberation | Prompt: think through the problem, identify assumptions, explore alternatives, do NOT produce final answer yet. Returns reasoning chain. |
+| Call 2 — Synthesis | Prompt: given your reasoning above [inject call 1 output], now produce the final structured answer using TRI-STRUCTURE. |
+| Gate condition | Only fires when complexity === 'complex' AND agent is architect, strategist, or analyst |
+| Cost tracking | Two calls tracked separately — deliberation call flagged as reasoning overhead in cost log |
+| Reasoning chain storage | Call 1 output stored in blackboard.db think_chains table alongside qwen3 think blocks |
+
+**Files:** orchestrator/orchestrator.js (new runReasoning()), orchestrator/chains.js (gate condition)
+
+**Value:** The most impactful prompt-level change for reasoning quality on any model tier.
+Even T2 models (Llama 3.3 70B, Qwen3 235B without think) produce measurably better output
+on hard problems when their reasoning is externalized before answer generation.
+Costs one extra API call on complex tasks only — acceptable tradeoff for architecture/strategy work.
+
+---
+
+### Phase 65 — Parallel SAM Execution
+
+**Problem:** SAM executes sub-tasks sequentially. On cloud providers with sufficient rate
+limits, sub-tasks are independent and can run concurrently with Promise.all(). A 4-task
+SAM run currently takes 4× single-task latency. Parallelization reduces this to ~1× latency
+for the execute phase, keeping reviewer gate and synthesis sequential.
+
+| Item | Description |
+|---|---|
+| Promise.all() execute loop | Replace sequential for-loop in runSubAgentManager() execute phase with Promise.all() over sub-tasks |
+| Rate limit guard | Wrap Promise.all() with concurrency limiter (max 3 simultaneous) — prevents simultaneous burst that triggers provider rate limits |
+| Sequential gate preserved | Reviewer gate and synthesis remain sequential — parallelization applies to execute phase only |
+| Provider awareness | Parallel execution only when sam_provider is a cloud provider — never parallel on Ollama (OLLAMA_MAX_LOADED_MODELS=1 enforced) |
+| Blackboard write safety | Ensure writePipelineTask() and writeTaskSolution() are safe for concurrent calls — add per-task mutex if needed |
+
+**Files:** orchestrator/sub-agent-manager.js → runSubAgentManager() execute loop
+
+**Value:** Reduces SAM wall-clock time from O(N) to O(1) for the execute phase.
+On Groq at 315 t/s with 4 parallel tasks: ~60s → ~20s total run time.
+No quality tradeoff — sub-tasks are independent, parallelization does not affect output.
+
+---
+
+### Phase 66 — Reasoning Chain Memory
+
+**Problem:** Semantic memory retrieves prior *answers* but not prior *reasoning chains*.
+A model shown how a similar problem was reasoned through reasons significantly faster
+and better than one shown only the final answer. Think blocks and deliberation outputs
+from Phases 62-64 accumulate in blackboard.db but nothing retrieves them as reasoning scaffolds.
+
+| Item | Description |
+|---|---|
+| think_chains table | blackboard-db.js: new table — id, task_slug, agent, model, think_content, score, timestamp |
+| Reasoning retrieval | semantic-memory.js: new retrieveReasoningChain(task, agent) — finds top-1 similar prior reasoning chain by embedding similarity |
+| Scaffold injection | buildPrompt() / runReasoning(): inject retrieved chain as "Prior reasoning on similar problem:" block before deliberation call |
+| Quality gate | Only inject chains from runs scoring ≥80 — low-quality reasoning chains degrade rather than help |
+| Chain pruning | Prune think_chains older than 30 sessions or scoring <70 — prevent stale reasoning from polluting retrieval |
+
+**Files:** memory/blackboard-db.js, orchestrator/blackboard.js, skills/tools/semantic-memory.js, orchestrator/orchestrator.js
+
+**Value:** Closes the reasoning reuse loop. High-quality prior reasoning becomes a scaffold
+for future similar problems — models reason faster and better when given valid prior chains.
+Compounds over time: the more the system runs, the better its reasoning scaffolds become.
+
+---
+
+### Phase 67 — Adversarial Verification Pass
+
+**Problem:** Reviewer agent critiques output quality but does not actively seek to falsify
+the reasoning. A devil's advocate pass — an agent instructed to find the strongest argument
+*against* the proposed solution — stress-tests reasoning in a way that standard review cannot.
+This is the closest free-tier equivalent to senior peer review.
+
+| Item | Description |
+|---|---|
+| adversarial-reviewer skill | New agent prompt mode — identity: "Your only job is to find what is wrong with this. Assume the analysis is flawed. Find the flaw." |
+| Gate condition | Fires after reviewer pass on complex chains when agent is architect or strategist |
+| Reconciliation pass | After adversarial output, strategist agent receives both original output + adversarial critique and produces reconciled final version |
+| Score impact tracking | Track whether adversarial pass correlates with score improvement — disable if no signal after 10 runs |
+| Cost cap | Adversarial + reconciliation = 2 additional calls — only on complexity === 'complex' and task type in [architecture, strategy, analysis] |
+
+**Files:** orchestrator/chains.js, agents/reviewer/ (new adversarial mode), orchestrator/orchestrator.js
+
+**Value:** Forces the system to defend its reasoning before delivery. Catches second-order
+failures that standard review misses — assumption violations, architectural dead-ends,
+unstated dependencies. Particularly valuable for architecture design and strategic planning tasks.
+
+---
+
+### Phase 68 — Streaming Output Display
+
+**Problem:** runEngine() waits for complete response before displaying anything. On T3
+reasoning tasks this means 30-120s of silence before output appears. Streaming delivers
+tokens in real time — perceived latency drops dramatically even when total completion
+time is identical. Gemini, Groq, and Cerebras all support SSE streaming on free tiers.
+
+| Item | Description |
+|---|---|
+| streamEngine() | New function alongside runEngine() — same signature, uses SSE/streaming API mode |
+| Provider support | Implement for Gemini (stream: true), Groq (stream: true), Cerebras (stream: true) |
+| Think block filtering | For reasoning models: suppress think block tokens from display stream — show only post-think output in real time |
+| Fallback | If streaming fails or provider unsupported, fall back to runEngine() silently |
+| Gate | Streaming only on T2/T3 tasks — T1 fast responses do not benefit meaningfully |
+
+**Files:** orchestrator/orchestrator.js (new streamEngine()), orchestrator/main.js (use streamEngine for complex tasks)
+
+**Value:** Eliminates perceived latency on reasoning tasks. User sees reasoning output
+arriving token by token rather than waiting for complete generation. No quality impact —
+streaming is a display change only, not an inference change.
+
+---
+
+### Phase 69 — Confidence-Gated Mandatory Self-Research
+
+**Problem:** guardian-angel flags LOW/MEDIUM confidence claims but the gate is advisory —
+flagged claims can pass through to output unresolved. This allows confident-sounding
+hallucination to survive the quality chain. A hard gate that triggers mandatory self-research
+on any LOW confidence claim before output is finalized closes this gap.
+
+| Item | Description |
+|---|---|
+| Hard confidence gate | post-chain.js: parse guardian-angel output for LOW confidence flags; block output delivery until each is resolved |
+| Self-research trigger | For each LOW confidence claim: run self-research.js with the specific claim as query — inject result back into final prompt |
+| MEDIUM threshold | MEDIUM confidence: soft flag only — logged to blackboard.db, not blocking |
+| Timeout guard | Self-research per claim capped at 10s — if no result, flag claim explicitly in output rather than blocking delivery |
+| Claim tracking | Store resolved/unresolved confidence flags in blackboard.db per run — feeds insight-generator as hallucination rate signal |
+
+**Files:** orchestrator/post-chain.js, skills/tools/self-research.js, orchestrator/blackboard.js
+
+**Value:** Prevents hallucination from passing through the quality chain uncontested.
+Mandatory grounding on LOW confidence claims converts the guardian-angel from an advisor
+into an enforcement layer. Most impactful for research and analysis tasks where factual
+accuracy is critical.
+
+---
+
+### Implementation Order and Dependencies
+
+| Phase | Depends on | Can parallelize with |
+|---|---|---|
+| 61 — Reasoning Provider Infrastructure | None | 62, 68 |
+| 62 — Qwen3 Thinking Mode | None | 61, 63, 68 |
+| 63 — Gemini Flash Thinking Mode | None | 61, 62, 68 |
+| 64 — Two-Call Real CoT | 61 (reasoning provider recommended) | 65 |
+| 65 — Parallel SAM Execution | None | 64 |
+| 66 — Reasoning Chain Memory | 62, 63, 64 (need think_chains populated) | 67 |
+| 67 — Adversarial Verification | 64 (CoT makes adversarial more effective) | 69 |
+| 68 — Streaming Output | 61 (more valuable with reasoning models) | 62, 63 |
+| 69 — Confidence-Gated Self-Research | None | 67 |
+
+**Recommended build sequence:** 61 → 62 → 63 → 65 → 64 → 68 → 66 → 67 → 69
+
+---
+
+### Expected Capability Delta After Full Implementation
+
+| Dimension | Current state | After Phases 61-69 |
+|---|---|---|
+| Reasoning depth | Simulated (TRI-STRUCTURE, single pass) | Genuine (think mode + two-call CoT + adversarial) |
+| Architecture quality | Competent, occasionally shallow | Deep, stress-tested, assumption-aware |
+| Latency on complex tasks | Same as simple tasks (no tiering) | Tiered — T1 unchanged, T3 ~20-60s with streaming |
+| Hallucination rate | Flagged but not blocked | LOW confidence claims blocked until grounded |
+| SAM throughput | Sequential, ~60s per 4-task run | Parallel execute, ~20s per 4-task run |
+| Reasoning reuse | None | Compounding — prior chains scaffold future runs |
+| Model utilization | ~30-40% of available reasoning capacity | ~70-85% of available reasoning capacity |
+
+---
+
 ## COGNITIVE FIT MODEL ARCHITECTURE (Established Phase 47b)
 
 ### Design Priority Order

@@ -121,3 +121,31 @@
 **Reason:** The validator agent was incorrectly receiving the reviewer's critique instead of the synthesized design artifact, causing task misalignment.
 **Impact:** The validator agent will now correctly process the synthesized design for evaluation, resolving the TASK MISALIGNMENT issue and improving the accuracy of the chain's validation stage.
 **Commit:** 56fc60e
+
+### 2026-06-05 — Stabilized validator agent's input by fixing handoff logic
+**Decision:** Modified `orchestrator/chains.js`'s `extractHandoff()` function to selectively extract only the `[ARTIFACT]` block from reviewer output when passing to the validator agent, preventing the validator from receiving the reviewer's audit commentary.
+**Reason:** The validator was receiving incorrect input (reviewer's audit instead of the synthesized design) due to an imprecise artifact extraction in the handoff process.
+**Impact:** The validator agent now correctly receives and processes the synthesized design artifacts, ensuring accurate evaluation and synthesis within complex agent chains. This resolves a critical task misalignment issue.
+**Commit:** 687aa46
+
+RECENT GIT COMMITS THIS SESSION:
+687aa46 chore: v5.9.1 — version sync across all architectural design files
+f1b1303 chore: v5.9.0 — version sync across all architectural design files
+3120525 chore: v5.8.0 — version sync across all architectural design files
+f1b1303 chore: v5.9.0 — version sync across all architectural design files
+3120525 chore: v5.8.0 — version sync across all architectural design files
+f1b1303 chore: v5.9.0 — version sync across all architectural design files
+3120525 chore: v5.8.0 — version sync across all architectural design files
+a719a01 chore: v5.7.1 — version sync across all architectural design files
+70c3b03 chore: v5.7.0 — version sync across all architectural design files
+
+ACTIVE INSIGHT SIGNALS (from insight-generator):
+[HIGH] Dimension weakness: "efficiency" averaging 66.8 across last 20 sessions → Target "efficiency" in next agent strategy.txt refinement pass
+[MEDIUM] Overall score trend declining: -5.7 pts (last 10 vs prior 10) → Review recent strategy.txt changes — regression likely
+
+RECENT SPEC CHANGELOG:
+2026-05-30 | ✅ Fixed — documented in ENGINE ADAPTER section in SPEC.md or CAPABILITIES.md | Audit 2026-05-30 | Document in SPEC.md engine adapter section |
+| I-006 | ~~mode.json: active_mode is fast~~ | Audit 2026-05-30 | ✅ Fixed — documented in System Behaviors — disables validation, evaluation, multi-agent chains. Not documented as active system behavior | Audit 2026-05-30 | Document in System Behaviors section |
+| I-007 | ~~skills/library/: model-gemma3.md missing~~ | Audit 2026-05-30 | ✅ Fixed — model-gemma3.md created — gemma3:4b assigned to creator agent but has no per-model skill file | Audit 2026-05-30 | Create model-gemma3.md |
+| M-001 | ~~skills/registry.json: spec-clarifier + guardian-angel library_file paths~~ | Audit 2026-05-30 | ✅ Fixed — paths normalized use inconsistent prefix format | Audit 2026-05-30 | Normalize paths |
+| KI-001 | ~~Validator receives reviewer's audit output rather than synthesized design~~ | Phase 47b test | ✅ Fixed Phase 51 — preReviewerOutput tracker + structured [DESIGN TO VALIDATE] handoff |
