@@ -78,6 +78,14 @@
     "context_limit": 8192,
     "_cerebras_note": "8192 token context cap on free tier — same model as OR fallback4, independent rate limit pool on LPU"
   },
+  "groq_sam": {
+    "provider": "groq",
+    "model": "llama-3.3-70b-versatile",
+    "api_key_env": "GROQ_API_KEY",
+    "base_url": "https://api.groq.com/openai/v1",
+    "context_limit": 32000,
+    "_note": "SAM-dedicated Groq slot — high req/day limit, 315 TPS, avoids Flash-Lite exhaustion"
+  },
   "mistral_codestral": {
     "provider": "mistral",
     "model": "codestral-latest",
@@ -92,6 +100,7 @@
     "base_url": "http://localhost:11434",
     "context_limit": 32768
   },
+  "sam_provider": "groq_sam",
   "agent_models": {
     "basic": {
       "simple": "gemini-2.5-flash-lite",

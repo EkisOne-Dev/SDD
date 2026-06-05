@@ -39,15 +39,23 @@ const COGNITIVE_FIT = {
 // Returns array of { slug, description, agent } objects.
 async function decompose(masterTask, config, adapter) {
   const agent = await loadAgent('architect');
-  const prompt = buildPrompt(agent, config, masterTask,
-    `You are decomposing a complex task into atomic sub-tasks for a multi-agent system.
+  const decomposeTemplate = `{identity}
+
+You are decomposing a complex task into atomic sub-tasks for a multi-agent system.
 Master task: ${masterTask}
 
 Respond ONLY with a JSON array. Each element must have:
   { "slug": "short-id", "description": "one sentence", "agent": "architect|developer|researcher|reviewer|creator|strategist|analyst" }
 
-Return 2–6 sub-tasks maximum. No prose, no markdown fences — raw JSON array only.`
-  );
+Return 2–6 sub-tasks maximum. No prose, no markdown fences — raw JSON array only.
+{task}`;
+  const decomposeContract = {
+    goal: masterTask,
+    constraints: ['Return raw JSON array only — no prose, no markdown'],
+    success_criteria: 'Valid JSON array of 2-6 sub-task objects',
+    output_format: 'Raw JSON array'
+  };
+  const prompt = buildPrompt(decomposeTemplate, decomposeContract, agent, '', masterTask, '', 'simple');
   const raw = await runEngine(prompt, adapter, 'architect', 'complex', 'architecture');
   let tasks = [];
   try {
@@ -85,10 +93,7 @@ async function executeSubTask(subTask, masterTask, priorContext, config, adapter
     ? `Prior sub-task results (compressed to fit context budget):\n${priorStr}\n\n`
     : '';
 
-  const prompt = buildPrompt(agent, config,
-    `${systemCtx}Master task: ${masterTask}\nYour sub-task: ${subTask.description}`,
-    ''
-  );
+  const prompt = `${agent.identity}\n\n${agent.strategy}\n\n${systemCtx}Master task: ${masterTask}\nYour sub-task: ${subTask.description}\n\nDeliver a complete, high-quality response.`;
 
   const result = await runEngine(prompt, adapter, agentName, 'complex', agentName);
   return result;
@@ -134,22 +139,17 @@ function mapReduce(solutions, contextLimit, taskCount) {
 // Strategist agent synthesizes all PASS'd sub-results into a final unified output.
 async function synthesize(masterTask, reducedContext, config, adapter) {
   const agent = await loadAgent('strategist');
-  const prompt = buildPrompt(agent, config,
-    `You are synthesizing the results of a multi-agent decomposition into a single coherent response.
-Master task: ${masterTask}
-
-Sub-task results:
-${reducedContext}
-
-Produce a unified, complete, well-structured final answer. Use TRI-STRUCTURE format.`,
-    ''
-  );
+  const prompt = `${agent.identity}\n\n${agent.strategy}\n\nYou are synthesizing the results of a multi-agent decomposition into a single coherent response.\n\nMaster task: ${masterTask}\n\nSub-task results:\n${reducedContext}\n\nProduce a unified, complete, well-structured final answer. Use TRI-STRUCTURE format.`;
   return runEngine(prompt, adapter, 'strategist', 'complex', 'strategy');
 }
 
 // ── Public entry point ────────────────────────────────────────────────────────
 
 export async function runSubAgentManager(masterTask, config, adapter) {
+  // Route all SAM calls through dedicated sam_provider to avoid exhausting primary cascade
+  if (adapter.sam_provider && adapter[adapter.sam_provider]) {
+    adapter = { ...adapter, active: adapter.sam_provider };
+  }
   const sessionId = config._session_id || Date.now().toString();
   const bbPath = config.blackboard_db_path
     ? (config.blackboard_db_path.startsWith('/')

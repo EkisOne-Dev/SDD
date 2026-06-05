@@ -86,6 +86,8 @@ async function run(injectedTask = null) {
       console.log('\nUsage: sdd subagent "<master task>"\n');
       process.exit(0);
     }
+    const config = loadConfig();
+    const adapter = loadEngineAdapter();
     const samResult = await runSubAgentManager(subTask, config, adapter);
     console.log('\n' + samResult.output);
     console.log('\nSubAgentManager: ' + samResult.meta.passed + ' passed, ' + samResult.meta.blocked + ' blocked of ' + samResult.meta.subTasks + ' sub-tasks');

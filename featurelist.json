@@ -1,5 +1,5 @@
 {
-  "version": "5.9.0",
+  "version": "5.9.1",
   "last_updated": "2026-06-05",
   "completed_phases": [
     0,
@@ -54,7 +54,8 @@
     57,
     "57c",
     "57B",
-    "58"
+    "58",
+    "58B"
   ],
   "features": {
     "0": {
@@ -515,9 +516,19 @@
         "memory/blackboard-db.js",
         "orchestrator/main.js"
       ]
+    },
+    "sam_groq_routing": {
+      "name": "SAM Groq Provider Routing",
+      "description": "SubAgentManager routes all calls through dedicated groq_sam provider slot to avoid exhausting primary cascade. adapter.json: groq_sam block + sam_provider key. runSubAgentManager() swaps adapter.active on entry.",
+      "status": "active",
+      "phase": "58B-hotfix",
+      "files": [
+        "engine/adapter.json",
+        "orchestrator/sub-agent-manager.js"
+      ]
     }
   },
-  "system_version": "5.9.0",
+  "system_version": "5.9.1",
   "completed_phases_named": [
     "47b",
     "47c",

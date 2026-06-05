@@ -9,8 +9,8 @@
 
 | Field | Value |
 |---|---|
-| Document Version | 5.9.0 |
-| System Version | v5.9.0 — Fully Verified + Universal Thinking Protocol |
+| Document Version | 5.9.1 |
+| System Version | v5.9.1 — Fully Verified + Universal Thinking Protocol |
 | Last Updated | 2026-05-30 |
 | Status | Active Development |
 | Platform | Android / Termux |
@@ -1551,6 +1551,18 @@ Source hierarchy (searched in order, stops when sufficient verified content foun
 | session-end context | Active insights injected as context into the AI session summary prompt |
 
 **Value:** Closes the insight loop. Currently insight-generator writes findings that nothing reads back. This command surfaces signals on demand and feeds them into the proposal generation cycle — turning pattern detection into pattern-driven self-improvement.
+
+---
+
+### Phase 58C — SAM Batch Execution (Future Micro-Task)
+| Item | Description |
+|---|---|
+| Problem | SubAgentManager consumes 2N+2 API calls per run (N=sub-tasks). At N=4, that is 10 calls — exhausts Flash-Lite (20 req/day) in two runs. Current fix: dedicated groq_sam provider slot routes all SAM calls through Groq, avoiding primary cascade exhaustion. |
+| Current fix | adapter.json: groq_sam provider block + sam_provider key. runSubAgentManager() swaps adapter.active to sam_provider on entry. Groq free tier handles high request volume at 315 TPS. |
+| Future optimization | Batch all sub-task executions into a single structured API call. One batch-execute call + one batch-review call replaces N execute + N reviewer gate calls. Reduces call count from 2N+2 to 4 regardless of sub-task count. |
+| Tradeoff | Batching loses per-task reviewer gate granularity. Requires structured JSON output parsing across multiple tasks in one response — higher parse failure risk. Defer until SAM usage patterns justify the complexity. |
+| Files to modify | orchestrator/sub-agent-manager.js — executeSubTask() + reviewer gate loop |
+| Trigger condition | Implement when SAM is used frequently enough that even Groq rate limits become a constraint, or when call latency becomes unacceptable. |
 
 ---
 
