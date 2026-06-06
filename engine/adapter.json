@@ -147,7 +147,8 @@
     "api_key_env": "GROQ_API_KEY",
     "base_url": "https://api.groq.com/openai/v1",
     "context_limit": 128000,
-    "_note": "Reasoning model — DeepSeek-R1 distill on Groq. Emits <think> blocks — strip before extractHandoff(). Local fallback: deepseek-r1:7b"
+    "_note": "Reasoning model — DeepSeek-R1 distill on Groq. Emits <think> blocks — strip before extractHandoff(). Local fallback: deepseek-r1:7b",
+    "stream": true
   },
   "cerebras_reasoning": {
     "provider": "cerebras",
@@ -156,7 +157,8 @@
     "base_url": "https://api.cerebras.ai/v1",
     "context_limit": 8192,
     "think": true,
-    "_note": "Reasoning model — Qwen3 235B on Cerebras LPU with think:true. T3 tier. thinking_budget injected by runEngine() per complexity."
+    "_note": "Reasoning model — Qwen3 235B on Cerebras LPU with think:true. T3 tier. thinking_budget injected by runEngine() per complexity.",
+    "stream": true
   },
   "reasoning_provider": "cerebras_reasoning"
 }

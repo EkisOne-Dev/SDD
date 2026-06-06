@@ -454,16 +454,66 @@ async function executeEngine(prompt, active) {
 async function runOpenAICompatible(prompt, config) {
   const apiKey = process.env[config.api_key_env];
   if (!apiKey) throw new Error(`Missing env variable: ${config.api_key_env}`);
+
+  // Phase 68 — streaming path for T3 reasoning providers
+  if (config.stream === true) {
+    const response = await fetch(`${config.base_url}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: config.model,
+        max_tokens: config.max_tokens ?? 4096,
+        messages: [{ role: 'user', content: prompt }],
+        stream: true
+      }),
+      signal: AbortSignal.timeout(config.timeout_ms ?? 60000)
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      const e = new Error(`${config.provider} stream error: ${err?.message ?? response.statusText}`);
+      e.status = response.status;
+      throw e;
+    }
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let assembled = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      for (const line of chunk.split('\n')) {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith('data:')) continue;
+        const jsonStr = trimmed.slice(5).trim();
+        if (jsonStr === '[DONE]') continue;
+        try {
+          const parsed = JSON.parse(jsonStr);
+          const token = parsed.choices?.[0]?.delta?.content ?? '';
+          if (token) {
+            process.stdout.write(token);
+            assembled += token;
+          }
+        } catch { /* malformed SSE chunk — skip */ }
+      }
+    }
+    process.stdout.write('\n');
+    return assembled;
+  }
+
+  // Non-streaming path (unchanged)
   const response = await fetch(`${config.base_url}/chat/completions`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${apiKey}`
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
     },
     body: JSON.stringify({
       model: config.model,
       max_tokens: config.max_tokens ?? 4096,
-      messages: [{ role: "user", content: prompt }]
+      messages: [{ role: 'user', content: prompt }]
     }),
     signal: AbortSignal.timeout(config.timeout_ms ?? 15000)
   });
@@ -476,23 +526,36 @@ async function runOpenAICompatible(prompt, config) {
   const data = await response.json();
   return data.choices?.[0]?.message?.content ?? '';
 }
-
 async function runGemini(prompt, config) {
   const apiKey = process.env[config.api_key_env];
   if (!apiKey) throw new Error(`Missing env variable: ${config.api_key_env}`);
 
-  const { GoogleGenerativeAI } = await import("@google/generative-ai");
+  const { GoogleGenerativeAI } = await import('@google/generative-ai');
   const genAI = new GoogleGenerativeAI(apiKey);
-  // Phase 63 — inject thinkingBudget when set by reasoning tier gate
   const _modelConfig = { model: config.model };
   if (config.thinking_budget) {
     _modelConfig.generationConfig = { thinkingConfig: { thinkingBudget: config.thinking_budget } };
   }
   const model = genAI.getGenerativeModel(_modelConfig);
+
+  // Phase 68 — streaming path
+  if (config.stream === true) {
+    const streamResult = await model.generateContentStream(prompt);
+    let assembled = '';
+    for await (const chunk of streamResult.stream) {
+      const token = chunk.text();
+      if (token) {
+        process.stdout.write(token);
+        assembled += token;
+      }
+    }
+    process.stdout.write('\n');
+    return assembled;
+  }
+
   const result = await model.generateContent(prompt);
   return result.response.text();
 }
-
 async function runOpenRouter(prompt, config) {
   const apiKey = process.env[config.api_key_env];
   if (!apiKey) throw new Error(`Missing env variable: ${config.api_key_env}`);
@@ -528,9 +591,54 @@ async function runOllama(prompt, config) {
     if (adapterCfg.ollama_model_config?.[config.model]?.think === true) config.think = true;
   } catch {}
 
+  // Phase 68 — streaming path (NDJSON)
+  if (config.stream === true) {
+    const response = await fetch(`${config.base_url}/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: config.model,
+        prompt: prompt,
+        stream: true,
+        options: { num_ctx, ...(config.think === true ? { think: true } : {}) }
+      })
+    });
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(`Ollama stream error: ${err}`);
+    }
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let assembled = '';
+    let buffer = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const nl = buffer.lastIndexOf('\n');
+      if (nl === -1) continue;
+      const block = buffer.slice(0, nl);
+      buffer = buffer.slice(nl + 1);
+      for (const line of block.split('\n')) {
+        if (!line.trim()) continue;
+        try {
+          const parsed = JSON.parse(line);
+          const token = parsed.response ?? '';
+          if (token) {
+            process.stdout.write(token);
+            assembled += token;
+          }
+        } catch { /* partial JSON — skip */ }
+      }
+    }
+    process.stdout.write('\n');
+    return assembled;
+  }
+
+  // Non-streaming path (unchanged)
   const response = await fetch(`${config.base_url}/generate`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: config.model,
       prompt: prompt,

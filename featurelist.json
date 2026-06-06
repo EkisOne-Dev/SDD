@@ -1,5 +1,5 @@
 {
-  "version": "5.12.0",
+  "version": "5.13.0",
   "last_updated": "2026-06-06",
   "completed_phases": [
     0,
@@ -61,7 +61,8 @@
     62,
     63,
     65,
-    64
+    64,
+    68
   ],
   "features": {
     "0": {
@@ -587,9 +588,14 @@
       "phase": 64,
       "status": "active",
       "description": "Strips <think> blocks from DeepSeek-R1 output before extractHandoff(). Stores raw think chain in blackboard.db think_chains table. stripThinkBlock() exported from orchestrator.js. writeThinkChain() wired in blackboard.js + blackboard-db.js. Safe no-op when blackboard not initialised."
+    },
+    "streaming_output": {
+      "description": "Streaming output for T3 reasoning providers — SSE for OAI-compat (Groq/Cerebras), SDK stream for Gemini, NDJSON for Ollama. Gated by config.stream===true per provider block. Tokens printed via process.stdout.write() as they arrive; fully-assembled string returned to callers unchanged.",
+      "phase": 68,
+      "status": "complete"
     }
   },
-  "system_version": "5.12.0",
+  "system_version": "5.13.0",
   "completed_phases_named": [
     "47b",
     "47c",

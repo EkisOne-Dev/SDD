@@ -1,5 +1,5 @@
 {
-  "version": "5.12.0",
+  "version": "5.13.0",
   "log_level": "info",
   "memory_file": "memory/memory.txt",
   "default_agent": "basic",
