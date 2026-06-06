@@ -4,11 +4,23 @@ import { createSpinner } from "./spinner.js";
 import { validateSystemConfig, validateAdapterConfig } from "./validator.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import { writeThinkChain } from './blackboard.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 
 // ── Config loaders ────────────────────────────────────────────────────────────
+
+// ── Phase 64: DeepSeek Think-Chain stripper ──────────────────────────────────
+// Strips <think>...</think> blocks from DeepSeek-R1 output.
+// Returns { clean, thinkRaw } — clean is safe for extractHandoff().
+export function stripThinkBlock(raw) {
+  const match = raw.match(/<think>([\s\S]*?)<\/think>/i);
+  if (!match) return { clean: raw, thinkRaw: null };
+  const thinkRaw = match[1].trim();
+  const clean = raw.replace(/<think>[\s\S]*?<\/think>/i, '').trim();
+  return { clean, thinkRaw };
+}
 
 export function loadConfig() {
   const filePath = path.join(ROOT, "config/system.json");
@@ -365,7 +377,19 @@ export async function runEngine(prompt, adapter, agentName = null, complexity = 
     }
   }
 
-  return tryWithFallback(providerChain);
+  const _raw = await tryWithFallback(providerChain);
+  // Phase 64 — strip <think> blocks from DeepSeek-R1 output; store in blackboard
+  if (_raw && typeof _raw === 'string' && _raw.includes('<think>')) {
+    const { clean, thinkRaw } = stripThinkBlock(_raw);
+    if (thinkRaw) {
+      try {
+        writeThinkChain('runEngine', chainType || agentName || 'unknown', agentName || 'unknown', thinkRaw);
+      } catch (_) { /* blackboard may not be init'd in all call paths — safe to skip */ }
+      logExecution(`THINK-CHAIN stored: ${thinkRaw.length} chars for ${agentName || chainType}`);
+    }
+    return clean;
+  }
+  return _raw;
 }
 
 

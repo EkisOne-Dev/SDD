@@ -11,6 +11,7 @@ import {
   bbInsertSolution,
   bbUpsertContext,
   bbInsertInteraction,
+  bbInsertThinkChain,
   bbGetTasks,
   bbGetSolutions,
   bbGetContext,
@@ -48,6 +49,10 @@ export function writeSessionContext(session_id, context) {
 
 export function writeInteraction(session_id, role, content, agent = null) {
   bbInsertInteraction(session_id, role, content, agent);
+}
+
+export function writeThinkChain(session_id, task_slug, agent, think_raw) {
+  bbInsertThinkChain(session_id, task_slug, agent, think_raw);
 }
 
 // ── Read API ──────────────────────────────────────────────────────────────────

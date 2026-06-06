@@ -82,6 +82,16 @@ function _initSchema() {
       created_at INTEGER DEFAULT (strftime('%s','now'))
     )
   `);
+  _db.run(`
+    CREATE TABLE IF NOT EXISTS think_chains (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      session_id TEXT NOT NULL,
+      task_slug TEXT,
+      agent TEXT,
+      think_raw TEXT,
+      created_at INTEGER DEFAULT (strftime('%s','now'))
+    )
+  `);
   _db.run('COMMIT');
   _persist();
 }
@@ -143,6 +153,16 @@ export function bbInsertInteraction(session_id, role, content, agent = null) {
   _persist();
 }
 
+export function bbInsertThinkChain(session_id, task_slug, agent, think_raw) {
+  _db.run('BEGIN TRANSACTION');
+  _db.run(
+    'INSERT INTO think_chains (session_id, task_slug, agent, think_raw) VALUES (?,?,?,?)',
+    [session_id, task_slug, agent, think_raw]
+  );
+  _db.run('COMMIT');
+  _persist();
+}
+
 // ── Read helpers ──────────────────────────────────────────────────────────────
 
 export function bbGetTasks(session_id) {
@@ -189,6 +209,7 @@ export function bbCleanupSession(session_id) {
   _db.run('DELETE FROM task_solutions WHERE session_id=?', [session_id]);
   _db.run('DELETE FROM session_context WHERE session_id=?', [session_id]);
   _db.run('DELETE FROM interaction_history WHERE session_id=?', [session_id]);
+  _db.run('DELETE FROM think_chains WHERE session_id=?', [session_id]);
   _db.run('COMMIT');
   // VACUUM after every cleanup — blackboard.db is ephemeral by design
   _db.run('VACUUM');

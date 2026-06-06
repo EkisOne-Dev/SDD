@@ -1,6 +1,6 @@
 {
-  "version": "5.11.0",
-  "last_updated": "2026-06-05",
+  "version": "5.12.0",
+  "last_updated": "2026-06-06",
   "completed_phases": [
     0,
     1,
@@ -60,7 +60,8 @@
     61,
     62,
     63,
-    65
+    65,
+    64
   ],
   "features": {
     "0": {
@@ -580,9 +581,15 @@
       "phase": 65,
       "status": "active",
       "description": "Promise.all() on SAM execute phase with max 3 concurrent slots. Sequential gate preserved for Ollama provider. Decompose, reviewer gate, map-reduce, and synthesis remain sequential."
+    },
+    "deepseek_think_chain_storage": {
+      "name": "DeepSeek Think-Chain Storage",
+      "phase": 64,
+      "status": "active",
+      "description": "Strips <think> blocks from DeepSeek-R1 output before extractHandoff(). Stores raw think chain in blackboard.db think_chains table. stripThinkBlock() exported from orchestrator.js. writeThinkChain() wired in blackboard.js + blackboard-db.js. Safe no-op when blackboard not initialised."
     }
   },
-  "system_version": "5.11.0",
+  "system_version": "5.12.0",
   "completed_phases_named": [
     "47b",
     "47c",
