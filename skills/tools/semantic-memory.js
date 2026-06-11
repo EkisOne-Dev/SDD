@@ -119,3 +119,51 @@ export async function embedNewEntry(userText, assistantText) {
     saveStore(store);
   } catch { /* Ollama unavailable — silent fallback */ }
 }
+
+// ── Phase 66 — Reasoning Chain Retrieval ─────────────────────────────────────
+// Finds the top-1 prior think_chain most similar to the current task.
+// Quality gate: only considers chains with score >= 80.
+// Returns { task_slug, agent, model, think_raw, score } or null.
+export async function retrieveReasoningChain(task, agent = null) {
+  let chains;
+  try {
+    const { readThinkChains } = await import('../../orchestrator/blackboard.js');
+    chains = readThinkChains(200, 80); // quality gate: score >= 80
+  } catch { return null; }
+  if (!chains || chains.length === 0) return null;
+
+  // Filter by agent if specified
+  const candidates = agent
+    ? chains.filter(c => c.agent === agent || !c.agent)
+    : chains;
+  if (candidates.length === 0) return null;
+
+  // Embed the current task
+  let qEmbed;
+  try { qEmbed = await embed(task); } catch { return null; }
+
+  // Score by cosine similarity against task_slug as proxy text
+  const scored = candidates
+    .filter(c => c.think_raw && c.think_raw.length > 50)
+    .map(c => ({
+      ...c,
+      similarity: cosine(qEmbed, []) // placeholder — use task_slug embed below
+    }));
+
+  // Embed each candidate's task_slug for similarity scoring
+  const withSim = await Promise.all(
+    candidates
+      .filter(c => c.think_raw && c.think_raw.length > 50)
+      .map(async c => {
+        try {
+          const cEmbed = await embed(c.task_slug || c.agent || 'general');
+          return { ...c, similarity: cosine(qEmbed, cEmbed) };
+        } catch { return { ...c, similarity: 0 }; }
+      })
+  );
+
+  withSim.sort((a, b) => b.similarity - a.similarity);
+  const top = withSim[0];
+  if (!top || top.similarity < 0.5) return null; // minimum similarity threshold
+  return top;
+}

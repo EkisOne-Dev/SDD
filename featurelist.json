@@ -1,6 +1,6 @@
 {
-  "version": "5.13.0",
-  "last_updated": "2026-06-06",
+  "version": "5.14.0",
+  "last_updated": "2026-06-11",
   "completed_phases": [
     0,
     1,
@@ -62,7 +62,8 @@
     63,
     65,
     64,
-    68
+    68,
+    66
   ],
   "features": {
     "0": {
@@ -593,9 +594,14 @@
       "description": "Streaming output for T3 reasoning providers — SSE for OAI-compat (Groq/Cerebras), SDK stream for Gemini, NDJSON for Ollama. Gated by config.stream===true per provider block. Tokens printed via process.stdout.write() as they arrive; fully-assembled string returned to callers unchanged.",
       "phase": 68,
       "status": "complete"
+    },
+    "reasoning_chain_memory": {
+      "description": "Phase 66 — Reasoning Chain Memory: think_chains table gains score+model columns; bbGetRecentThinkChains()/bbPruneThinkChains() added to blackboard-db.js; readThinkChains()/pruneThinkChains() exposed via blackboard.js; retrieveReasoningChain(task, agent) added to semantic-memory.js — embedding similarity over stored chains, quality gate score>=80, min similarity 0.5, returns top-1; scaffold injected into runEngine() as Prior reasoning block prepended to prompt on architect/strategist complex/moderate tasks; pruning fires on every bbCleanupSession (chains older than 30d or score<70 deleted).",
+      "phase": 66,
+      "status": "complete"
     }
   },
-  "system_version": "5.13.0",
+  "system_version": "5.14.0",
   "completed_phases_named": [
     "47b",
     "47c",

@@ -8,7 +8,7 @@ import { summarizeMemoryIfNeeded } from "../skills/tools/memory-summarizer.js";
 import { runProposalManager } from "../skills/tools/proposal-manager.js";
 import { c } from "./colors.js";
 
-export function stripTriStructure(result, complexity) {
+function stripTriStructure(result, complexity) {
   if (complexity !== 'simple' || !result.includes('[INTERNAL REASONING]')) {
     return result;
   }

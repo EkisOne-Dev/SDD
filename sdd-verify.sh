@@ -6,7 +6,7 @@
 # Does NOT make API calls or run live sdd commands (no quota consumed).
 # ─────────────────────────────────────────────────────────────────────────────
 
-SDD="$(cd "$(dirname "$0")/.." && pwd)"
+SDD="$(cd "$(dirname "$0")" && pwd)"
 
 GREEN='\033[0;32m'
 RED='\033[0;31m'

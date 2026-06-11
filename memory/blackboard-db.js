@@ -88,7 +88,9 @@ function _initSchema() {
       session_id TEXT NOT NULL,
       task_slug TEXT,
       agent TEXT,
+      model TEXT,
       think_raw TEXT,
+      score REAL DEFAULT 0,
       created_at INTEGER DEFAULT (strftime('%s','now'))
     )
   `);
@@ -153,11 +155,40 @@ export function bbInsertInteraction(session_id, role, content, agent = null) {
   _persist();
 }
 
-export function bbInsertThinkChain(session_id, task_slug, agent, think_raw) {
+export function bbInsertThinkChain(session_id, task_slug, agent, think_raw, model = null, score = 0) {
   _db.run('BEGIN TRANSACTION');
   _db.run(
-    'INSERT INTO think_chains (session_id, task_slug, agent, think_raw) VALUES (?,?,?,?)',
-    [session_id, task_slug, agent, think_raw]
+    'INSERT INTO think_chains (session_id, task_slug, agent, model, think_raw, score) VALUES (?,?,?,?,?,?)',
+    [session_id, task_slug, agent, model, think_raw, score]
+  );
+  _db.run('COMMIT');
+  _persist();
+}
+
+// Phase 66 — retrieve recent think_chains above quality gate for embedding search
+export function bbGetRecentThinkChains(limit = 200, minScore = 0) {
+  const rows = _db.exec(
+    `SELECT id, task_slug, agent, model, think_raw, score, created_at
+     FROM think_chains
+     WHERE score >= ?
+     ORDER BY created_at DESC
+     LIMIT ?`,
+    [minScore, limit]
+  );
+  if (!rows.length) return [];
+  return rows[0].values.map(r => ({
+    id: r[0], task_slug: r[1], agent: r[2], model: r[3],
+    think_raw: r[4], score: r[5], created_at: r[6]
+  }));
+}
+
+// Phase 66 — prune stale or low-quality chains
+export function bbPruneThinkChains(maxAge = 30 * 86400, minScore = 70) {
+  const cutoff = Math.floor(Date.now() / 1000) - maxAge;
+  _db.run('BEGIN TRANSACTION');
+  _db.run(
+    'DELETE FROM think_chains WHERE created_at < ? OR score < ?',
+    [cutoff, minScore]
   );
   _db.run('COMMIT');
   _persist();
@@ -210,6 +241,9 @@ export function bbCleanupSession(session_id) {
   _db.run('DELETE FROM session_context WHERE session_id=?', [session_id]);
   _db.run('DELETE FROM interaction_history WHERE session_id=?', [session_id]);
   _db.run('DELETE FROM think_chains WHERE session_id=?', [session_id]);
+  // Phase 66 — prune stale/low-quality chains on every cleanup
+  const _cutoff = Math.floor(Date.now() / 1000) - (30 * 86400);
+  _db.run('DELETE FROM think_chains WHERE created_at < ? OR (score > 0 AND score < 70)', [_cutoff]);
   _db.run('COMMIT');
   // VACUUM after every cleanup — blackboard.db is ephemeral by design
   _db.run('VACUUM');

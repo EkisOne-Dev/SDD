@@ -16,6 +16,8 @@ import {
   bbGetSolutions,
   bbGetContext,
   bbGetInteractions,
+  bbGetRecentThinkChains,
+  bbPruneThinkChains,
   bbCleanupSession,
   bbClose
 } from '../memory/blackboard-db.js';
@@ -51,8 +53,18 @@ export function writeInteraction(session_id, role, content, agent = null) {
   bbInsertInteraction(session_id, role, content, agent);
 }
 
-export function writeThinkChain(session_id, task_slug, agent, think_raw) {
-  bbInsertThinkChain(session_id, task_slug, agent, think_raw);
+export function writeThinkChain(session_id, task_slug, agent, think_raw, model = null, score = 0) {
+  bbInsertThinkChain(session_id, task_slug, agent, think_raw, model, score);
+}
+
+// Phase 66 — read recent think chains for embedding retrieval
+export function readThinkChains(limit = 200, minScore = 0) {
+  return bbGetRecentThinkChains(limit, minScore);
+}
+
+// Phase 66 — prune stale/low-quality chains (maxAge in days)
+export function pruneThinkChains(maxAgeDays = 30, minScore = 70) {
+  bbPruneThinkChains(maxAgeDays * 86400, minScore);
 }
 
 // ── Read API ──────────────────────────────────────────────────────────────────

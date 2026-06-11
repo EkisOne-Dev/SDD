@@ -103,18 +103,24 @@ console.log(`   Files updated: ${updated.join(', ')}\n`);
 // ── Verify ───────────────────────────────────────────────────────────────────
 console.log('🔍 Running verify.sh...');
 try {
-  const result = execSync('bash ~/sdd/scripts/verify.sh', { encoding: 'utf8' });
-  const passLine = result.match(/✅ Passed:\s+\d+/)?.[0] || '';
-  const failLine = result.match(/❌ Failed:\s+\d+/)?.[0] || '';
-  console.log(`   ${passLine}   ${failLine}`);
-  if (result.includes('Failed:   0')) {
-    console.log('   ✅ Verification passed\n');
+  const verifyPath = join(ROOT, 'scripts', 'verify.sh');
+  const raw = execSync(`bash "${verifyPath}"`, { encoding: 'utf8' });
+  const clean = raw.replace(/\x1b\[[0-9;]*m/g, '');
+  const totalMatch = clean.match(/Total checks\s*:\s*(\d+)/);
+  const passMatch  = clean.match(/Passed\s*:\s*(\d+)/);
+  const failMatch  = clean.match(/Failed\s*:\s*(\d+)/);
+  const total = totalMatch?.[1] ?? '?';
+  const pass  = passMatch?.[1]  ?? '?';
+  const fail  = parseInt(failMatch?.[1] ?? '1', 10);
+  console.log(`   ${pass}/${total} checks passed`);
+  if (fail === 0) {
+    console.log('   ✅ All checks passed — system verified\n');
   } else {
-    console.log('   ⚠️  Verification has failures — review before committing\n');
+    console.log(`   ⚠️  ${fail} check(s) failed — fix before committing\n`);
     process.exit(1);
   }
 } catch (e) {
-  console.error('   ❌ verify.sh failed:', e.message);
+  console.error('   ❌ verify.sh failed to run:', e.message);
   process.exit(1);
 }
 

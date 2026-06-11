@@ -318,6 +318,24 @@ export async function runEngine(prompt, adapter, agentName = null, complexity = 
     }
   }
 
+
+  // Phase 66 — Reasoning Chain Memory: retrieve prior scaffold for architect/strategist complex tasks
+  let _reasoningScaffold = '';
+  if (
+    _reasoningKey &&
+    adapter[_reasoningKey] &&
+    _reasoningAgents.includes(agentName) &&
+    (complexity === 'complex' || complexity === 'moderate')
+  ) {
+    try {
+      const { retrieveReasoningChain } = await import('../skills/tools/semantic-memory.js');
+      const _chain = await retrieveReasoningChain(prompt.slice(0, 300), agentName);
+      if (_chain) {
+        _reasoningScaffold = '\n\n--- Prior reasoning on similar problem (' + _chain.agent + '/' + _chain.model + ', score:' + _chain.score + ') ---\n' + _chain.think_raw.slice(0, 1500) + '\n--- End prior reasoning ---\n\n';
+        logExecution('REASONING SCAFFOLD: injected ' + _chain.think_raw.length + ' chars from ' + _chain.task_slug);
+      }
+    } catch { /* non-fatal — Ollama may be offline */ }
+  }
   // Phase 61 — Reasoning provider tier gate (T3)
   // architect/strategist + complex → reasoning_provider (cerebras_reasoning)
   // thinking_budget: moderate=2048, complex=8192
@@ -333,6 +351,7 @@ export async function runEngine(prompt, adapter, agentName = null, complexity = 
     active = { ...adapter[_reasoningKey] };
     agentOverrideKey = _reasoningKey;
     active.thinking_budget = complexity === 'complex' ? 8192 : 2048;
+    if (_reasoningScaffold) prompt = _reasoningScaffold + prompt;
     if (active.context_limit) prompt = trimToContextBudget(prompt, active.context_limit);
     logExecution(`REASONING TIER: ${active.model} (thinking_budget=${active.thinking_budget}) for ${agentName}/${complexity}`);
   }

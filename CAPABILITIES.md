@@ -4,10 +4,10 @@
 > Intended audience: technical reviewers, external auditors, and the system owner.
 
 **System:** Structured Development System (SDD)
-**Version:** 5.13.0
+**Version:** 5.14.0
 **Platform:** Android / Termux
 **Runtime:** Node.js
-**Last Updated:** 2026-06-06
+**Last Updated:** 2026-06-11
 
 ---
 
@@ -1644,7 +1644,7 @@ Expected: Structured session entry with date header and AI-generated summary.
 ### 58 — Release Command
 
 **What it does:**
-Syncs the version string across all 7 architectural design files in a single atomic operation. Updates SPEC.md, CAPABILITIES.md, verify.sh, config/system.json, package.json, README.md, and featurelist.json. Runs verify.sh to confirm 62/62 checks pass, then commits and triggers backup. Invoked via sdd release <version>.
+Syncs the version string across all 7 architectural design files in a single atomic operation. Updates SPEC.md, CAPABILITIES.md, verify.sh, config/system.json, package.json, README.md, and featurelist.json. Runs verify.sh to confirm 109/109 checks pass, then commits and triggers backup. Invoked via sdd release <version>.
 
 **Trigger:** sdd release <version> (e.g. sdd release 5.0.0)
 
@@ -1660,7 +1660,7 @@ grep -r 'version' ~/sdd/package.json ~/sdd/config/system.json
 ```
 Expected: Both files show the same version string.
 
-**Known limitations:** Requires clean working tree. Fails fast if verify.sh does not pass 62/62.
+**Known limitations:** Requires clean working tree. Fails fast if verify.sh does not pass 109/109.
 
 ---
 
